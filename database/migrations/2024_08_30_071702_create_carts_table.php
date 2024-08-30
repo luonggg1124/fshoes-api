@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('product_variation_id')->nullable()->constrained('product_variations');
             $table->foreignId('product_id')->constrained('products');
             $table->integer('quantity');
+            
             $table->timestamps();
         });
     }

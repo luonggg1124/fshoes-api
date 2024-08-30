@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug');
             $table->string('media_url')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

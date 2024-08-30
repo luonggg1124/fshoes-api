@@ -22,6 +22,7 @@ return new class extends Migration
             $table->timestamp('birthday')->nullable();
             $table->string('avatar')->nullable();
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
 
