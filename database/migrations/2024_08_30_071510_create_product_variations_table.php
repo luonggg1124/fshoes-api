@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('stock_qty');
             $table->integer('stock_sold');
             $table->text('image_url')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

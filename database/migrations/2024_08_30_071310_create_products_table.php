@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('sku')->nullable();
             $table->boolean('status')->default(1);
             $table->integer('stock_qty')->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
