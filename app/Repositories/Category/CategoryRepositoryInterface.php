@@ -2,8 +2,9 @@
 
 namespace App\Repositories\Category;
 
-interface CategoryRepositoryInterface
+use App\Repositories\BaseRepositoryInterface;
+
+interface CategoryRepositoryInterface extends BaseRepositoryInterface
 {
-    function all();
-    function find($id);
+
 }

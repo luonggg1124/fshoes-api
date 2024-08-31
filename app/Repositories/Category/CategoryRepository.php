@@ -3,14 +3,14 @@
 namespace App\Repositories\Category;
 
 use App\Models\Category;
+use App\Repositories\BaseRepository;
 
-class CategoryRepository implements CategoryRepositoryInterface
+
+class CategoryRepository extends BaseRepository implements CategoryRepositoryInterface
 {
-    public function all()
+    public function __construct(Category $model)
     {
-        return Category::all();
+        parent::__construct($model);
     }
-    public function find($id){
-        return Category::query()->findOrFail($id);
-    }
+
 }
