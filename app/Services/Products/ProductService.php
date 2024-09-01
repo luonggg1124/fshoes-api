@@ -1,13 +1,13 @@
 <?php
 namespace App\Services\Products;
-
-use App\Repositories\Attribute\AttributesRepositoryInterface;
-use App\Repositories\AttributeValues\AttributeValuesRepositoryInterface;
-use App\Repositories\ProductImages\ProductImagesRepositoryInterface;
-use App\Repositories\ProductVariations\ProductVariationsRepositoryInterface;
 use Exception;
 use App\Services\Products\ProductServiceInterface;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use App\Repositories\Products\ProductRepositoryInterface;
+use App\Repositories\Attribute\AttributesRepositoryInterface;
+use App\Repositories\ProductImages\ProductImagesRepositoryInterface;
+use App\Repositories\AttributeValues\AttributeValuesRepositoryInterface;
+use App\Repositories\ProductVariations\ProductVariationsRepositoryInterface;
 
 
 class ProductService implements ProductServiceInterface{
@@ -36,15 +36,21 @@ class ProductService implements ProductServiceInterface{
     public function createProduct(array $data){
         try{
             //add product and get id
-            $product =  $this->productRepository->create($data['product']);
-            if($data['is_variant']){
-                    //add variant first
-                    foreach($data["product_variations"] as $variation ){
+            $product =  $this->productRepository->create($data);
+            if(isset($data['is_variant']) && isset($data['product_variations'])){
+                    //add variant first   
+                    foreach(json_decode($data["product_variations"]) as $variation ){
                             $product_variation_value = $variation['product_variation_value'];
                             unset($variation['product_variation_value']);
-
-                            $variation["product_id"]= $product;
+                            $variation["product_id"]= $product->id;
                             $newVariation = $this->productVariationsRepository->create($variation);
+                            if($variation['image_url']){
+                                $cloudinaryImage = new Cloudinary();
+                                $cloudinaryImage =$this->image->storeOnCloudinary('product_variations');
+                                $url = $cloudinaryImage->getSecurePath();
+                                $newVariation->image_url = $url;
+                                $newVariation->save();
+                            }
                             //"product_variation_value"=> {
                             //     "color"=>"red",
                             //     "size"=>"M",

@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Product;
+use App\Models\ProductImage;
+use Exception;
 use Illuminate\Http\Request;
 use App\Jobs\UploadProductImage;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use App\Services\Products\ProductServiceInterface;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Symfony\Component\HttpFoundation\Response as Status;
 
 class ProductController extends Controller
@@ -25,14 +30,29 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+    
         $input = $request->all();
         $newProduct =  $this->productService->createProduct($input);
         //Add Image
-        if($request->product_images){
-            $second  =0;
-            foreach($request->product_images as $image){
-                UploadProductImage::dispatch($image, $newProduct->id)->delay(now()->addSeconds(5+$second));
-                $second+=3;
+        if ($request->hasFile('product_images')) {
+            if (is_array($request->file('product_images'))) {
+                $images = $request->file('product_images');
+            } else {
+                $images = [$request->file('product_images')];
+            }
+
+            foreach ($images ?? [] as $key=> $image) {
+                $cloudinaryImage = new Cloudinary();
+                $cloudinaryImage = $image->storeOnCloudinary('products');
+                $url = $cloudinaryImage->getSecurePath();
+                $public_id = $cloudinaryImage->getPublicId();
+
+                ProductImage::insert([
+                    "product_id"=>$newProduct->id,
+                    "image_url"=>$url,
+                    "alt_text"=>"Product Image",
+                    "id_image"=>$public_id
+                ]);
             }
         }
         return response()->json($newProduct, Status::HTTP_CREATED);
@@ -52,7 +72,9 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $input = $request->all();
+        $newProduct =  $this->productService->updateProduct($id,$input);
+        return response()->json($newProduct, Status::HTTP_OK);
     }
 
     /**
@@ -71,7 +93,11 @@ class ProductController extends Controller
     }
     public function forceDelete(string $id)
     {
-        $forceDelete = $this->productService->forceDeleteProduct($id);
-        return response()->json($forceDelete , Status::HTTP_OK);
+        try{
+            $forceDelete = $this->productService->forceDeleteProduct($id);
+            return response()->json($forceDelete , Status::HTTP_OK);
+        }catch(Exception $e){
+            response()->json($e->getMessage() , Status::HTTP_INTERNAL_SERVER_ERROR); 
+        }
     }
 }

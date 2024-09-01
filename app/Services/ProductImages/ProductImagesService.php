@@ -13,15 +13,16 @@ class ProductImagesService implements ProductImagesServiceInterface{
         $this->productImagesRepository = $productImagesRepository;
     }
     public function getAllImage(){
-
+        return $this->productImagesRepository->all();
     }
     public function getImageById($id){
+        return $this->productImagesRepository->findById($id);
 
     }
     public function createImage(array $data){
 
     }
     public function deleteImage($id){
-
+        return $this->productImagesRepository->delete($id);
     }
 }

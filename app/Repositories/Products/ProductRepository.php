@@ -31,11 +31,14 @@ class ProductRepository implements ProductRepositoryInterface{
     }
 
     public function delete($id){
-        return $this->products->find($id)->delete();
+        return $this->products->where('id' , $id)->delete();
     }
 
     public function forceDelete($id){
-        return $this->products->withTrashed()->find($id)->forceDelete(); 
+        $product =  $this->products->withTrashed()->where('id', $id)->first();
+        $product->images()->delete();
+        return  $product->forceDelete();
+      
     }
     
     public function restore($id){

@@ -1,26 +1,23 @@
 <?php
 
-namespace App\Repositories\Products;
+namespace App\Repositories\ProductImages;
 use App\Models\Product;
 use App\Models\ProductImage;
-use App\Repositories\Products\ProductRepositoryInterface;
+use App\Repositories\ProductImages\ProductImagesRepositoryInterface;
 
-class ProductImagesRepository implements ProductRepositoryInterface{
+class ProductImagesRepository implements ProductImagesRepositoryInterface{
     protected $productImages;
     public function __construct(ProductImage $productImages){
         $this->productImages = $productImages;
     }
 
     public function all(){
-        return $this->productImages->withTrashed()->get();
+        return $this->productImages->get();
     }
 
-    public function paginate($rowPerPage){
-        return $this->productImages->withTrashed()->paginate($rowPerPage);
-    }
 
     public function findById($id){
-        return $this->productImages->withTrashed()->find($id);
+        return $this->productImages->find($id);
     }
 
     public function create(array $data){
@@ -35,12 +32,5 @@ class ProductImagesRepository implements ProductRepositoryInterface{
         return $this->productImages->find($id)->delete();
     }
 
-    public function forceDelete($id){
-        return $this->productImages->withTrashed()->find($id)->forceDelete(); 
-    }
-    
-    public function restore($id){
-        return $this->productImages->withTrashed()->find($id)->restore(); 
-    }
 }
 

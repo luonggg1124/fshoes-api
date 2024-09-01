@@ -15,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
             // Repositories
             \App\Repositories\Products\ProductRepositoryInterface::class => \App\Repositories\Products\ProductRepository::class,
             \App\Repositories\ProductVariations\ProductVariationsRepositoryInterface::class => \App\Repositories\ProductVariations\ProductVariationsRepository::class,
-            \App\Repositories\ProductImages\ProductImagesRepositoryInterface::class => \App\Repositories\ProductImages\ProductImagesRepositoryInterface::class,
+            \App\Repositories\ProductImages\ProductImagesRepositoryInterface::class => \App\Repositories\ProductImages\ProductImagesRepository::class,
             \App\Repositories\Attribute\AttributesRepositoryInterface::class => \App\Repositories\Attribute\AttributesRepository::class,
             \App\Repositories\AttributeValues\AttributeValuesRepositoryInterface::class => \App\Repositories\AttributeValues\AttributeValuesRepository::class,
             

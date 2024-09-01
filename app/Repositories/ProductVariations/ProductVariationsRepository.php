@@ -2,9 +2,9 @@
 
 namespace App\Repositories\ProductVariations;
 use App\Models\ProductVariations;
-use App\Repositories\Products\ProductRepositoryInterface;
+use App\Repositories\ProductVariations\ProductVariationsRepositoryInterface;
 
-class ProductVariationsRepository implements ProductRepositoryInterface{
+class ProductVariationsRepository implements ProductVariationsRepositoryInterface{
     protected $productVariations;
     public function __construct(ProductVariations $productVariations){
         $this->productVariations = $productVariations;
