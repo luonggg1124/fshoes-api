@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products');
             $table->text('image_url');
-            $table->text('alt_text')->nullable();
+            $table->string('alt_text')->nullable();
+            $table->string('id_image')->nullable();
             $table->timestamps();
         });
     }
