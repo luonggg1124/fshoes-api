@@ -43,7 +43,7 @@ class CategoryService implements CategoryServiceInterface
         try {
             $category = $this->categoryRepository->create($data);
             if($option['image']){
-                $upload = $this->uploadImage($option['image']);
+                $upload = $this->uploadImageCloudinary($option['image']);
                 $category->image_url = $upload['path'];
                 $category->public_id = $upload['public_id'];
                 $category->save();
@@ -75,7 +75,11 @@ class CategoryService implements CategoryServiceInterface
    {
        try {
            $category = $this->categoryRepository->find($id);
+           if($category->delete_at){
+              return false;
+           }
            $category->delete($id);
+
        }catch (\Exception $e){
            throw new \Exception('Cannot delete category');
        }
