@@ -15,16 +15,21 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class CategoryService implements CategoryServiceInterface
 {
     use CanLoadRelationships,Cloudinary;
+    private array $relations = ['products'];
     public function __construct(protected CategoryRepositoryInterface $categoryRepository){}
 
     public function getAll(): AnonymousResourceCollection
     {
-        return CategoryResource::collection($this->categoryRepository->all());
+        $categories = $this->loadRelationships($this->categoryRepository->query()->latest());
+       return CategoryResource::collection(
+           $categories->paginate()
+       );
     }
 
     public function findById(int|string $id)
     {
-        $category = $this->categoryRepository->find($id);
+        $category = $this->loadRelationships($this->categoryRepository->find($id));
+
         if(!$category){
             throw new ModelNotFoundException('Category not found');
         }
@@ -61,7 +66,7 @@ class CategoryService implements CategoryServiceInterface
                 $category->public_id = $upload['public_id'];
                 $category->save();
             }
-            return new CategoryResource($category);
+            return new CategoryResource($this->loadRelationships($category));
         }catch (\Exception $e){
             throw new \Exception('Cannot update category');
         }

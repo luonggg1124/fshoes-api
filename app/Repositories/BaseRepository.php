@@ -43,5 +43,8 @@ class BaseRepository implements BaseRepositoryInterface
         }
         return false;
     }
-
+    public function query()
+    {
+        return $this->model;
+    }
 }
