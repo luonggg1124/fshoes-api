@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products');
             $table->text('image_url');
+            $table->string('public_id');
             $table->text('alt_text')->nullable();
             $table->timestamps();
         });

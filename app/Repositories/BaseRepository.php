@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BaseRepository implements BaseRepositoryInterface
 {
@@ -10,32 +11,31 @@ class BaseRepository implements BaseRepositoryInterface
     {
     }
 
-    public function all():? array
+    public function all()
     {
-        return $this->model->all()->toArray();
+        return $this->model->all();
     }
 
-    public function find(int $id):? array
+    public function find(int $id)
     {
-
-        return $this->model->query()->findOrFail($id)?->toArray();
+        return $this->model->query()->find($id);
     }
 
-    public function create(array $data):? array
+    public function create(array $data)
     {
-        return $this->model->query()->create($data)->toArray();
+        return $this->model->query()->create($data);
     }
 
-    public function update(array $data, $id):? array
+    public function update($id, array $data)
     {
         $record = $this->model->query()->find($id);
-        if($record){
-            $record->update($data);
-            return $record;
+        if(!$record){
+            throw new ModelNotFoundException('Record not found');
         }
-        return null;
+        $record->update($data);
+        return $record;
     }
-    public function delete(int $id):? bool
+    public function delete(int $id)
     {
         $record = $this->model->query()->find($id);
         if($record){
@@ -43,4 +43,5 @@ class BaseRepository implements BaseRepositoryInterface
         }
         return false;
     }
+
 }

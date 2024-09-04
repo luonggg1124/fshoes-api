@@ -3,48 +3,121 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\CategoryService;
-use Illuminate\Http\Request;
+use App\Http\Requests\Category\CreateCategoryRequest;
+use App\Http\Requests\Category\UpdateCategoryRequest;
+use App\Services\Category\CategoryServiceInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
 
-    public function __construct(protected CategoryService $categoryService)
+    public function __construct(protected CategoryServiceInterface $categoryService)
     {}
-    public function index()
+    public function index():Response|JsonResponse
     {
-        return response()->json($this->categoryService->getAll());
+
+        return response()->json(
+           $this->categoryService->getAll()
+        );
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateCategoryRequest $request):Response|JsonResponse
     {
-        //
+
+        try {
+            $category = $this->categoryService->create($request->validated(),[
+                'image' => $request->file('image'),
+            ]);
+            return response()->json([
+                'message' => 'Category created successfully',
+                'category' => $category
+            ],201);
+        }catch (\Exception $e){
+
+            Log::error('Some thing went wrong!', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(int $id)
+    public function show(int $id):Response|JsonResponse
     {
-        return response()->json($this->categoryService->getById($id));
+        try {
+            return response()->json($this->categoryService->findById($id));
+        }catch (ModelNotFoundException $e){
+            return response()->json(['error' => $e->getMessage()], 404);
+        }
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateCategoryRequest $request, int $id):Response|JsonResponse
     {
-        //
+        try {
+            $category = $this->categoryService->update($id,$request->validated(),[
+                'image' => $request->file('image'),
+            ]);
+            return response()->json([
+                'message' => 'Category updated successfully',
+                'category' => $category
+            ],201);
+        }catch (\Exception $e){
+
+            Log::error('Some thing went wrong!', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string|int $id):Response|JsonResponse
     {
-        //
+        try {
+            $this->categoryService->delete($id);
+            return response()->json([
+                'message' => 'Category deleted successfully',
+            ]);
+        }catch (\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+
     }
+
+    public  function forceDelete(int|string $id):Response|JsonResponse
+    {
+        try {
+            $this->categoryService->forceDelete($id);
+            return response()->json([
+                'message' => 'The category has been permanently deleted.',
+            ]);
+        }catch (\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+
 }

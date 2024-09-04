@@ -8,3 +8,10 @@ Route::get('/', function () {
         'success' => true
     ]);
 });
+
+Route::get('test', function () {
+    $path = '/temp/category/XyiMYQQVKWawEHV3t7ZtXYvK1ygGm34QxQQjv2M8.png';
+   return view('test',[
+       'path' => $path
+   ]);
+});

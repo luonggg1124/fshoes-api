@@ -9,8 +9,9 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 // Category Start
-Route::get('/categories',[CategoryController::class,'index']);
-Route::get('category/{id}',[CategoryController::class,'show']);
+
+Route::apiResource('category', CategoryController::class)
+    ->parameter('category', 'id');
 
 
 // Category End

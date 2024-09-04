@@ -14,7 +14,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $repositories = [
             'category' => [\App\Repositories\Category\CategoryRepositoryInterface::class, \App\Repositories\Category\CategoryRepository::class],
         ];
-        //$this->app->bind(\App\Repositories\Category\CategoryRepositoryInterface::class, \App\Repositories\Category\CategoryRepository::class);
+
         foreach ($repositories as $repository) {
             $this->app->bind($repository[0],$repository[1]);
         }

@@ -11,7 +11,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        
+        $services = [
+            'category' => [
+                \App\Services\Category\CategoryServiceInterface::class,
+                \App\Services\Category\CategoryService::class
+            ],
+            'user' => [
+                \App\Services\User\UserServiceInterface::class,
+                \App\Services\User\UserService::class
+            ]
+        ];
+
+        foreach ($services as $service) {
+            $this->app->bind($service[0], $service[1]);
+        }
     }
 
     /**
@@ -19,6 +32,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        
+
     }
 }
