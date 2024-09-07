@@ -16,12 +16,20 @@ class AppServiceProvider extends ServiceProvider
                 \App\Services\Category\CategoryServiceInterface::class,
                 \App\Services\Category\CategoryService::class
             ],
+            'product' => [
+                \App\Services\Product\ProductServiceInterface::class,
+                \App\Services\Product\ProductService::class
+            ],
             'user' => [
                 \App\Services\User\UserServiceInterface::class,
                 \App\Services\User\UserService::class
+            ],
+            'attribute' => [
+                \App\Services\Attribute\AttributeServiceInterface::class,
+                \App\Services\Attribute\AttributeService::class,
             ]
         ];
-
+            
         foreach ($services as $service) {
             $this->app->bind($service[0], $service[1]);
         }

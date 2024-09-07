@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Repositories\Product;
+use App\Repositories\BaseRepositoryInterface;
 
-interface ProductRepositoryInterface
+interface ProductRepositoryInterface extends BaseRepositoryInterface
 {
 
 }

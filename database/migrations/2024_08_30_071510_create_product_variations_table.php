@@ -15,12 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products');
             $table->string('sku')->nullable();
-            $table->decimal('price');
-            $table->decimal('sale_price');
+            $table->decimal('price',10,2);
+            $table->decimal('sale_price',10,2);
             $table->boolean('is_sale');
             $table->integer('stock_qty');
-            $table->integer('stock_sold');
-            $table->text('image_url')->nullable();
+            $table->integer('qty_sold');
             $table->softDeletes();
             $table->timestamps();
         });
