@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Storage;
 
 trait Cloudinary
 {
-    public function uploadImageCloudinary(UploadedFile $file):?array
+    public function uploadImageCloudinary(UploadedFile $file,string $folder = ''):?array
     {
-        $upload = $file->storeOnCloudinary('category');
+        $upload = $file->storeOnCloudinary($folder);
         $path = $upload->getSecurePath();
         $public_id = $upload->getPublicId();
         return [

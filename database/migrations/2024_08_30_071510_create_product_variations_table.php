@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('sku')->nullable();
             $table->decimal('price',10,2);
             $table->decimal('sale_price',10,2);
-            $table->boolean('is_sale');
+            $table->boolean('is_sale')->default(0);
+            $table->boolean('status')->default(1);
             $table->integer('stock_qty');
             $table->integer('qty_sold');
             $table->softDeletes();

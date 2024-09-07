@@ -31,11 +31,16 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->variations && $request->variations[0] != null){
-            dd($request->all());
-        }
-        
-        dd($request->all());
+        $data = $request->all();
+        return $this->productService->create($data,[
+            'variations' => $request->variations
+        ]);
+        // try{
+            
+        // }catch(\Exception $e){
+        //     return response()->json(['message' => $e->getMessage()],500);
+        // }
+       
     }
 
     /**
@@ -47,6 +52,8 @@ class ProductController extends Controller
             return response()->json($this->productService->findById($id));
         }catch (ModelNotFoundException $e){
             return response()->json(['error' => $e->getMessage()], 404);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 

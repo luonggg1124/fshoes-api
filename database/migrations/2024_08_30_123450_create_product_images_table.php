@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('product_images', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('products');
+            $table->unsignedBigInteger('product_variation_id')->nullable();
             $table->text('image_url');
             $table->string('public_id');
             $table->text('alt_text')->nullable();
