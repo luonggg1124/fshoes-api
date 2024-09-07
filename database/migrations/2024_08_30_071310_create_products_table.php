@@ -13,17 +13,19 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->constrained('categories');
             $table->string('name');
-            $table->string('slug');
-            $table->decimal('price');
-            $table->decimal('sale_price');
+            $table->string('slug')->unique();
+            $table->decimal('price',10,2);
+            $table->decimal('sale_price',10,2);
             $table->boolean('is_sale')->default(false);
-            $table->string('short_description');
-            $table->text('description');
+            $table->string('short_description')->nullable();
+            $table->text('description')->nullable();
             $table->string('sku')->nullable();
             $table->boolean('status')->default(1);
             $table->integer('stock_qty')->default(0);
+            $table->integer('qty_sold')->default(0);
+            $table->string('image_url');
+            $table->string('image_public_id');
             $table->softDeletes();
             $table->timestamps();
         });

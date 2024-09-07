@@ -19,7 +19,15 @@ class AppServiceProvider extends ServiceProvider
             'user' => [
                 \App\Services\User\UserServiceInterface::class,
                 \App\Services\User\UserService::class
-            ]
+            ],
+            'order' => [
+                \App\Services\Order\OrderServiceInterface::class,
+                \App\Services\Order\OrderService::class
+            ],
+            'order-detail' => [
+                \App\Services\OrderDetail\OrderDetailServiceInterface::class,
+                \App\Services\OrderDetail\OrderDetailService::class
+            ],
         ];
 
         foreach ($services as $service) {
