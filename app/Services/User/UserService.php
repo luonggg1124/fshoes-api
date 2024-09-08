@@ -2,7 +2,7 @@
 
 namespace App\Services\User;
 
-class UserService
+class UserService implements UserServiceInterface
 {
 
 }
