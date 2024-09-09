@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'louis@gmail.com',
             'nickname' => 'louis.ng'
         ]);
-        User::factory(30)->create();
+        // User::factory(30)->create();
         UserProfile::create([
             'user_id' => 1,
             'given_name' => 'Louis',

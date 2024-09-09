@@ -28,8 +28,18 @@ class UserController extends Controller
         }
     }
 
-    public function create(Request $request){
-        
+    public function store(Request $request){
+        $data = $request->all();
+           
+        try{
+            
+            $user = $this->userService->create($data);
+            return response()->json([
+                'user' => $user
+            ],201);
+        }catch(\Exception $e){
+            return response()->json(['error' => $e->getMessage()],500);
+        }
     }
     public function update(Request $request, string $nickname) {
 

@@ -7,11 +7,12 @@ use App\Http\Traits\CanLoadRelationships;
 use App\Http\Traits\Cloudinary;
 use App\Http\Traits\Paginate;
 use App\Repositories\User\UserRepositoryInterface;
+use Illuminate\Http\UploadedFile;
 
 class UserService implements UserServiceInterface
 {
     use CanLoadRelationships,Cloudinary,Paginate;
-    protected array $relations = ['profile','interestingCategories','addresses'];
+    protected array $relations = ['profile','interestingCategories','addresses','allAvatars'];
     public function __construct(
         public UserRepositoryInterface $userRepository
     ){
@@ -28,14 +29,33 @@ class UserService implements UserServiceInterface
             'data' => UserResource::collection($users->items())
         ];
     }
-    public function create(array $data,array $options = []){
+    public function create(array $data,array $options = ['avatar' => null,'profile' => null]){
+        if($this->userRepository->query()->where('email',$data['email'])->exists()) throw new \Exception('The user already exists');
+        $data['status'] = 'active';
         $user = $this->userRepository->create($data);
+
         if(!$user) throw new \Exception('Could not create user');
 
+        if($options['avatar'] && $options['avatar'] instanceof UploadedFile){
+            $upload = $this->uploadImageCloudinary($options['avatar'],'avatars');
+            $dataAvatar = [
+                'user_id' => $user->id,
+                'avatar_url' => $upload['path'],
+                'cloudinary_public_id' => $upload['public_id'],
+                'is_active' => true
+            ];
+            $this->userRepository->createAvatar($dataAvatar);
+        }
+        
         if($options['profile']){
             $options['profile']['user_id'] = $user->id;
             $this->userRepository->createProfile($options['profile']);
+        }else{
+            $this->userRepository->createProfile([
+                'user_id' => $user->id
+            ]);
         }
+    
         return new UserResource($this->loadRelationships($user));
     }
     public function update(string $nickname, array $data, array $options = []){

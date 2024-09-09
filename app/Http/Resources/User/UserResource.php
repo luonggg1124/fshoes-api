@@ -23,14 +23,15 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'password' => $this->password,
-            'avatar' => $this->avatar,
             'email_verified_at' => $this->email_verified_at ? (new Carbon($this->email_verified_at))->format('H:m d-m-Y') : null,
             'google_id' => $this->google_id,
             'is_admin' => $this->is_admin,
-            'is_active' => $this->is_active,
+            'status' => $this->status,
             'profile' => new UserProfileResource($this->whenLoaded('profile')),
             'interestingCategories' => CategoryResource::collection($this->whenLoaded('interestingCategories')),
             'addresses' => UserAddressResource::collection($this->whenLoaded('addresses')),
+            'avatar' => new AvatarResource($this->avatar()),
+            'allAvatars' => AvatarResource::collection($this->whenLoaded('allAvatars'))
         ];
     }
 }

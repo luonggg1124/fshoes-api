@@ -3,6 +3,8 @@
 namespace App\Repositories\User;
 
 use App\Models\User;
+use App\Models\User\UserAddress;
+use App\Models\User\UserAvatar;
 use App\Models\User\UserProfile;
 use App\Repositories\BaseRepository;
 
@@ -12,7 +14,9 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
     public function __construct(
         User $model,
-        public UserProfile $profile
+        public UserProfile $profile,
+        public UserAddress $address,
+        public UserAvatar $avatar
     )
     {
         parent::__construct($model);
@@ -32,5 +36,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         $user = $this->model->where('nickname',$nickname)->first();
         if(!$user) throw new \Exception('Could not find the user');
         return $user;
+    }
+    public function createAvatar(array $data){
+        return $this->avatar->query()->create($data);
     }
 }

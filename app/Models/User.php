@@ -4,15 +4,17 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\User\UserAvatar;
 use App\Models\User\UserAddress;
 use App\Models\User\UserProfile;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -29,10 +31,10 @@ class User extends Authenticatable
         'email',
         'password',
         'google_id',
-        'avatar',
         'email_verified_at',
         'is_admin',
-        'is_active'
+        'is_active',
+        'status'
     ];
 
     /**
@@ -69,5 +71,18 @@ class User extends Authenticatable
     public function addresses():HasMany
     {
         return $this->hasMany(UserAddress::class);
+    }
+    public function allAvatars():HasMany
+    {
+        return $this->hasMany(UserAvatar::class,'user_id');
+    }
+    public function avatar()
+    {
+       
+        $avatar = $this->allAvatars()->where('is_active',true)->first();
+        if(!$avatar){
+            return null;
+        }
+        return $avatar;
     }
 }
