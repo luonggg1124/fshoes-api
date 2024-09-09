@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
                 \App\Services\Attribute\AttributeService::class,
             ]
         ];
-            
+      
         foreach ($services as $service) {
             $this->app->bind($service[0], $service[1]);
         }

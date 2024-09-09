@@ -4,5 +4,8 @@ namespace App\Services\User;
 
 interface UserServiceInterface
 {
-
+    public function create(array $user);
+    public function findByNickname(string $nickname);
+    function update(string $nickname, array $data, array $options = []);
+    public function all();
 }

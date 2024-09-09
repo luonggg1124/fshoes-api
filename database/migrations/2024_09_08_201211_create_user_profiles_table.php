@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('user_profiles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('address_active_id')->constrained('user_addresses');
-            $table->string('given_name');
-            $table->string('family_name');
+            $table->foreignId('user_id')->unique()->constrained('users');
+            $table->foreignId('address_active_id')->nullable()->constrained('user_addresses');
+            $table->string('given_name')->nullable();
+            $table->string('family_name')->nullable();
             $table->timestamp('birth_date')->nullable();
             $table->timestamps();
         });

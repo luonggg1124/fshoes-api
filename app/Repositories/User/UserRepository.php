@@ -3,12 +3,34 @@
 namespace App\Repositories\User;
 
 use App\Models\User;
+use App\Models\User\UserProfile;
 use App\Repositories\BaseRepository;
+
+
 
 class UserRepository extends BaseRepository implements UserRepositoryInterface
 {
-    public function __construct(User $model)
+    public function __construct(
+        User $model,
+        public UserProfile $profile
+    )
     {
         parent::__construct($model);
+    }
+
+    public function createProfile(array $data){
+        return $this->profile->query()->create($data);
+    }
+    public function updateProfile(int|string $userId, array $data){
+        $profile = $this->profile->query()->where('user_id',$userId)->first();
+        if(!$profile) throw new \Exception('Could not find the user profile');
+        $profile->update($data);
+        return $profile;
+    }
+
+    public function findByNickname(string $nickname){
+        $user = $this->model->where('nickname',$nickname)->first();
+        if(!$user) throw new \Exception('Could not find the user');
+        return $user;
     }
 }

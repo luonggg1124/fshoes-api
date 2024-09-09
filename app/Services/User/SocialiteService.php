@@ -1,19 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Api\User;
+namespace App\Services\User;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 
-class AuthController extends Controller
-{
+class SocialiteService extends UserService{
     public function redirectToGoogle(){
         return Socialite::driver('google')->redirect();
     }
     public function handleGoogleCallback(){
        try{
         $data = Socialite::driver('google')->user();
+        //$this->create([]);
         return response()->json([
             'user' => $data,
         ]);

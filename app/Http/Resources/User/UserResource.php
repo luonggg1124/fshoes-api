@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources\User;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Http\Resources\CategoryResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -15,6 +17,20 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'nickname' => $this->nickname,
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => $this->password,
+            'avatar' => $this->avatar,
+            'email_verified_at' => $this->email_verified_at ? (new Carbon($this->email_verified_at))->format('H:m d-m-Y') : null,
+            'google_id' => $this->google_id,
+            'is_admin' => $this->is_admin,
+            'is_active' => $this->is_active,
+            'profile' => new UserProfileResource($this->whenLoaded('profile')),
+            'interestingCategories' => CategoryResource::collection($this->whenLoaded('interestingCategories')),
+            'addresses' => UserAddressResource::collection($this->whenLoaded('addresses')),
+        ];
     }
 }

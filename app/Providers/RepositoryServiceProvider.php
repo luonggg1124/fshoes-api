@@ -19,7 +19,12 @@ class RepositoryServiceProvider extends ServiceProvider
             'product' => [
                 \App\Repositories\Product\ProductRepositoryInterface::class,
                 \App\Repositories\Product\ProductRepository::class
-            ]
+            ],
+            'user' => [
+                \App\Repositories\User\UserRepositoryInterface::class,
+                \App\Repositories\User\UserRepository::class
+            ],
+           
         ];
 
         foreach ($repositories as $repository) {

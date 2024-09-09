@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\User\AuthController;
+use App\Http\Controllers\Api\User\SocialiteController;
 
 Route::get('/', function () {
     return response()->json([
@@ -9,7 +9,9 @@ Route::get('/', function () {
         'success' => true
     ]);
 });
-
+Route::get('login',function(){
+    return 'login page';
+});
 Route::get('test', function () {
     $path = '/temp/category/XyiMYQQVKWawEHV3t7ZtXYvK1ygGm34QxQQjv2M8.png';
    return view('test',[
@@ -17,5 +19,5 @@ Route::get('test', function () {
    ]);
 });
 
-Route::get('auth/google/redirect', [AuthController::class, 'redirectToGoogle']);
-Route::get('auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
+Route::get('auth/google/redirect', [SocialiteController::class, 'googleRedirect']);
+Route::get('auth/google/callback', [SocialiteController::class, 'handleGoogleCallback']);

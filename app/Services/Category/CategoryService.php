@@ -22,7 +22,10 @@ class CategoryService implements CategoryServiceInterface
     public function getAll()
     {
         $perPage = request()->query('per_page');
-        $categories = $this->loadRelationships($this->categoryRepository->query()->latest())->paginate($perPage);
+        $column = request()->query('column') ?? 'id';
+        $sort = request()->query('sort') ?? 'desc';
+        if($sort !== 'desc' && $sort !== 'asc') $sort = 'asc';
+        $categories = $this->loadRelationships($this->categoryRepository->query()->orderBy($column,$sort))->paginate($perPage);
         //return $categories;
         return [
             'paginator' => $this->paginate($categories),
