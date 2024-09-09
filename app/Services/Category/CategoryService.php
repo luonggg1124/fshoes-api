@@ -51,7 +51,7 @@ class CategoryService implements CategoryServiceInterface
     /**
      * @throws \Exception
      */
-    public function create(array $data, array $option = [])
+    public function create(array $data, array $option = ['image' => null])
     {
         try {
             $category = $this->categoryRepository->create($data);
@@ -67,7 +67,7 @@ class CategoryService implements CategoryServiceInterface
             throw new \Exception('Cannot create category');
         }
     }
-    public function update(int|string $id, array $data, array $option = [])
+    public function update(int|string $id, array $data, array $option = ['image' => null])
     {
         try {
             $category = $this->categoryRepository->update($id, $data);

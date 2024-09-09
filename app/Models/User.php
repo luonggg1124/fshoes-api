@@ -79,7 +79,7 @@ class User extends Authenticatable
     public function avatar()
     {
        
-        $avatar = $this->allAvatars()->where('is_active',true)->first();
+        $avatar = $this->allAvatars()->where('is_active',true)->latest()->first();
         if(!$avatar){
             return null;
         }

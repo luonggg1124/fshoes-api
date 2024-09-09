@@ -29,10 +29,10 @@ class UserController extends Controller
     }
 
     public function store(Request $request){
-        $data = $request->all();
+        
            
         try{
-            
+            $data = $request->all();
             $user = $this->userService->create($data);
             return response()->json([
                 'user' => $user

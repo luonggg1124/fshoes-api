@@ -37,24 +37,10 @@ class UserService implements UserServiceInterface
         if(!$user) throw new \Exception('Could not create user');
 
         if($options['avatar'] && $options['avatar'] instanceof UploadedFile){
-            $upload = $this->uploadImageCloudinary($options['avatar'],'avatars');
-            $dataAvatar = [
-                'user_id' => $user->id,
-                'avatar_url' => $upload['path'],
-                'cloudinary_public_id' => $upload['public_id'],
-                'is_active' => true
-            ];
-            $this->userRepository->createAvatar($dataAvatar);
+            $this->createAvatar($user->id,$options['avatar'] );
         }
         
-        if($options['profile']){
-            $options['profile']['user_id'] = $user->id;
-            $this->userRepository->createProfile($options['profile']);
-        }else{
-            $this->userRepository->createProfile([
-                'user_id' => $user->id
-            ]);
-        }
+       $this->createProfile($user->id,$options['profile']);
     
         return new UserResource($this->loadRelationships($user));
     }
@@ -66,5 +52,20 @@ class UserService implements UserServiceInterface
         if(!$user) throw new \Exception('User not found');
         return new UserResource($this->loadRelationships($user));
     }
-    
+    protected function createAvatar(int|string $userId,UploadedFile $file)
+    {
+        $upload = $this->uploadImageCloudinary($file,'avatars');
+        $dataAvatar = [
+            'user_id' => $userId,
+            'avatar_url' => $upload['path'],
+            'cloudinary_public_id' => $upload['public_id'],
+            'is_active' => true
+        ];
+        return $this->userRepository->createAvatar($dataAvatar);
+    }
+    public function createProfile(string|int $userId, array $data)
+    {
+        $data['user_id'] = $userId;
+        return $this->userRepository->createProfile($data);
+    }
 }
