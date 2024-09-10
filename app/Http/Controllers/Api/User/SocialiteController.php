@@ -19,6 +19,14 @@ class SocialiteController extends Controller
 
    public function googleCallback()
    {
-     return $this->socialiteService->handleGoogleCallback();
+    try{
+      return $this->socialiteService->handleGoogleCallback();
+    }catch(\Exception $e){
+      return response()->json([
+        'error' => 'Something went wrong.',
+        'success' => false
+      ],500);
+    }
+   
    }
 }

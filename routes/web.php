@@ -19,5 +19,5 @@ Route::get('test', function () {
    ]);
 });
 
-Route::get('auth/google/redirect', [SocialiteController::class, 'googleRedirect']);
+Route::get('auth/google/redirect', [SocialiteController::class, 'googleRedirect'])->middleware();
 Route::get('auth/google/callback', [SocialiteController::class, 'googleCallback']);

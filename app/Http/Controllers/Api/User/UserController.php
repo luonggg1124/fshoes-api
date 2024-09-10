@@ -27,11 +27,11 @@ class UserController extends Controller
                 'token' => $token
             ])->cookie($cookie);
         }catch(\Throwable $th){
+            Log::error(__CLASS__.'@'.__FUNCTION__,[
+                "line" => $th->getLine(),
+                "message" => $th->getMessage()
+            ]);
             if($th instanceof ValidationException){
-                Log::error(__CLASS__.'@'.__FUNCTION__,[
-                    "line" => $th->getLine(),
-                    "message" => $th->getMessage()
-                ]);
                 return response()->json([
                     'error' => $th->getMessage()
                 ],422);
@@ -79,11 +79,12 @@ class UserController extends Controller
                 'user' => $user
             ],201);
         }catch(\Throwable $th){
+            Log::error(__CLASS__.'@'.__FUNCTION__,[
+                "line" => $th->getLine(),
+                "message" => $th->getMessage()
+            ]);
             if($th instanceof ValidationException){
-                Log::error(__CLASS__.'@'.__FUNCTION__,[
-                    "line" => $th->getLine(),
-                    "message" => $th->getMessage()
-                ]);
+                
                 return response()->json([
                     'error' => $th->getMessage()
                 ],422);
