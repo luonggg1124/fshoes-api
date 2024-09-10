@@ -2,6 +2,7 @@
 
 namespace App\Services\User;
 
+use App\Http\Resources\User\UserResource;
 use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteService extends UserService{
@@ -9,15 +10,28 @@ class SocialiteService extends UserService{
         return Socialite::driver('google')->redirect();
     }
     public function handleGoogleCallback(){
-       try{
+       
         $data = Socialite::driver('google')->user();
-        //$this->create([]);
-        return response()->json([
-            'user' => $data,
+        if(!$data) return response()->json(['error' => 'Something went wrong!']);
+        
+        $user = $this->create([
+            'name' => $data->name,
+            'email' => $data->email,
+            'avatar' => $data->avatar,
+            'google_id' => $data->id,
+            'email_verified_at' => now(),
+            
+        ],[
+            'profile' => [
+                'given_name' => $data->user['given_name'],
+                'family_name' => $data->user['family_name'],
+            ],
         ]);
-       }catch(\Exception $e){
-            return response()->json(['error' => 'Something went wrong!']);
-       }
+        return response()->json([        
+            'user' => new UserResource($user->load('profile'))
+        ]);
+      
+       
         
     }
 }

@@ -29,10 +29,12 @@ Route::group(['middleware' => ['auth:sanctum','is_admin']], function(){
 Route::get('user',[UserController::class,'index']);
 // Auth
 Route::group(['middleware' => ['auth:sanctum']],function(){
-  
+    Route::apiResource('user',UserController::class)->parameter('user','nickname')->except(['index','destroy']);
+    Route::post('logout',[UserController::class,'logout']);
 });
 
-Route::apiResource('user',UserController::class)->parameter('user','nickname')->except(['index','destroy']);
+
+Route::post('login',[UserController::class,'login']);
 // End Auth
 
 // Category Start
@@ -52,3 +54,5 @@ Route::apiResource('product',ProductController::class)->parameter('product','slu
 // Attribute - Attribute Value Start
 Route::apiResource('attribute.value',ProductController::class)->parameters(['attribute'=>'aid','value' => 'vid']);
 //Attribute - Attribute Value End
+
+Route::get('test',[UserController::class,'test']);
