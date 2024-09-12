@@ -20,7 +20,7 @@ class UserController extends Controller
             $data =$request->only('email','password');
             
             $token = $this->userService->login($data['email'], $data['password']);
-            $cookie = cookie('XSRF-TOKEN', $token,24*60);
+            $cookie = cookie('XSRF-TOKEN', $token,24*60,httpOnly:true,sameSite:'strict');
             return response()->json([
                 'message' => 'Login successful',
                 'success' => true,

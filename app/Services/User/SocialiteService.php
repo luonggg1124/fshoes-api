@@ -33,7 +33,7 @@ class SocialiteService extends UserService{
             ]);
         }
         $token = $user->createToken('api-token')->plainTextToken;
-        $cookie = cookie('XSRF-TOKEN', $token,24*60);
+        $cookie = cookie('XSRF-TOKEN', $token,24*60,httpOnly:true,sameSite:'strict');
         
         return response()->json([        
             'message' => 'Login successful',

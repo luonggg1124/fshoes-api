@@ -12,8 +12,7 @@ Route::get('/user', function (Request $request) {
 
 
 Route::get('auth/redirect-to/login',function(){
-    $redirect_login = env('APP_URL').':8000/login';
-    return response()->redirectTo($redirect_login);
+    return redirect()->to('/login');
 })->name('login');
 
 

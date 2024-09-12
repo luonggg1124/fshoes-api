@@ -20,4 +20,4 @@ Route::get('test', function () {
 });
 
 Route::get('auth/google/redirect', [SocialiteController::class, 'googleRedirect'])->middleware();
-Route::get('auth/google/callback', [SocialiteController::class, 'googleCallback']);
+Route::post('auth/google/callback', [SocialiteController::class, 'googleCallback']);
