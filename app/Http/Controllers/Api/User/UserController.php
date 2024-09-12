@@ -48,10 +48,12 @@ class UserController extends Controller
 
     public function logout(Request $request){
         $request->user()->currentAccessToken()->delete();
+        $cookie =  cookie('XSRF-TOKEN', '',0,httpOnly:true,sameSite:'strict');
+        $laravel_session = cookie('laravel_session', '',0,httpOnly:true,sameSite:'strict');
         return response()->json([
             'message' => 'Logout successful',
            'success' => true
-        ])->withCookie(cookie()->forget('XSRF-TOKEN'));
+        ])->cookie($cookie)->withCookie($laravel_session);
     }
     public function index(){
         return response()->json([
