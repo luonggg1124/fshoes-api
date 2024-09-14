@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('shipping_cost')->default(0);
             $table->decimal('tax_amount')->nullable();
             $table->integer('amount_collected');
+            $table->enum("status" , ["Waiting Confirm" , "Confirmed" , "Pending" , "Cancelled" , "Transporting" , "Done"]);
             $table->text('note')->nullable();
             $table->timestamps();
         });
