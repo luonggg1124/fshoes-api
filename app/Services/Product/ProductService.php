@@ -67,6 +67,20 @@ class ProductService implements ProductServiceInterface
             return $this->loadRelationships($product);
         });
     }
+    public function update(int $id, array $data,array $options=[
+        'images' => []
+    ])
+    {
+        return DB::transaction(function () use ($id,$data, $options) {
+
+            $product = $this->productRepository->find($data);
+            if(!$product) throw new \Exception('Product not found');
+            if(count($options['images']) > 0){
+                $this->createProductImages($options['images'],$product);
+            }
+            return $this->loadRelationships($product);
+        });
+    }
     public function createVariation(
         array $data = [],
         array $options = [
@@ -100,29 +114,28 @@ class ProductService implements ProductServiceInterface
             }
             return $model->productImages();
         }
-        return null;
+        throw new \Exception('Failed to create product images');
     }
-    // protected function updateImage(array $data ,Product|ProductVariations $model)
-    // {
-    //     if ($data && count($data) > 0) {
-    //         foreach ($data as $image) {
-    //             if ($image instanceof UploadedFile) {
-    //                 if ($model instanceof ProductVariations) {
-    //                     $upload = $this->uploadImageCloudinary($image);
-    //                     $upload['product_variation_id'] = $model->id;
-    //                     $upload['product_id'] = $model->product_id;
-    //                     $this->productRepository->createImage($upload);
-    //                 }else{
-    //                     $upload = $this->uploadImageCloudinary($image);
-    //                     $upload['product_id'] = $model->id;
-    //                     $this->productRepository->createImage($upload);
-    //                 }
-    //             }
-    //         }
-    //         return $model;
+     protected function updateProductImage(array $data ,Product $model)
+     {
+         if ($data && count($data) > 0) {
+             foreach ($data as $image) {
+                 if ($image instanceof UploadedFile) {
+                     $upload = $this->uploadImageCloudinary($image);
+                     $model->id;
+                     $img = [
+                         'product_id' => $model->id,
+                         'image_url' => $upload['path'],
+                         'public_id' => $upload['public_id'],
+                         'alt_text' => 'image '.$model->name ?? '',
+                     ];
+                     $this->productRepository->createImage($img);
+                 }
+             }
+             return $model;
 
-    //     }
-    //     return null;
-    // }
+         }
+         throw new \Exception('Failed to update product images');
+     }
 
 }
