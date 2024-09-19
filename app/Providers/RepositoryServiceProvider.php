@@ -24,7 +24,10 @@ class RepositoryServiceProvider extends ServiceProvider
                 \App\Repositories\User\UserRepositoryInterface::class,
                 \App\Repositories\User\UserRepository::class
             ],
-           
+            'review' => [
+                \App\Repositories\Review\ReviewRepositoryInterface::class,
+                \App\Repositories\Review\ReviewRepository::class
+            ]
         ];
 
         foreach ($repositories as $repository) {

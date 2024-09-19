@@ -22,8 +22,7 @@ class Product extends Model
         'status',
         'qty_sold',
         'stock_qty',
-        'image_url',
-        'image_public_id'
+
     ];
     public function categories():BelongsToMany
     {
@@ -36,5 +35,10 @@ class Product extends Model
     public function variations():HasMany
     {
         return $this->hasMany(ProductVariations::class);
+    }
+
+    public function reviews():HasMany
+    {
+        return $this->hasMany(Review::class);
     }
 }

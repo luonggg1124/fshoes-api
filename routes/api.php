@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\User\UserController;
+use App\Http\Controllers\Api\Review\ReviewController;
+use App\Http\Controllers\Api\User\SocialiteController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -45,13 +47,20 @@ Route::apiResource('category', CategoryController::class)
 // Category End
 
 //Product Start
-Route::apiResource('product',ProductController::class)->parameter('product','slug');
+Route::apiResource('product',ProductController::class)->parameter('product','id');
 
 //Product End
+
+// Review 
+Route::apiResource('review',ReviewController::class)->parameter('review','id');
+
+// End Review
 
 
 // Attribute - Attribute Value Start
 Route::apiResource('attribute.value',ProductController::class)->parameters(['attribute'=>'aid','value' => 'vid']);
 //Attribute - Attribute Value End
+//Route::get('api/auth/google/redirect', [SocialiteController::class, 'googleRedirect']);
+//Route::post('auth/google/callback', [SocialiteController::class, 'googleCallback']);
 
 Route::get('test',[UserController::class,'test']);

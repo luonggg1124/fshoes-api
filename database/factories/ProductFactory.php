@@ -28,8 +28,7 @@ class ProductFactory extends Factory
             'status' => $this->faker->boolean(),
             'stock_qty' => $this->faker->numberBetween(50, 70),
             'qty_sold' => $this->faker->numberBetween(50, 70),
-            'image_url' => $this->faker->imageUrl(),
-            'image_public_id' => $this->faker->uuid(),
+
 
         ];
     }

@@ -25,6 +25,16 @@ class DatabaseSeeder extends Seeder
             'given_name' => 'Louis',
             'family_name' => 'Nguyen'
         ]);
+        User::factory()->create([
+            'email' => 'quoc@gmail.com',
+            'nickname' => 'quocaa'
+        ]);
+        // User::factory(30)->create();
+        UserProfile::create([
+            'user_id' => 2,
+            'given_name' => 'Quoc',
+            'family_name' => 'Anh'
+        ]);
         $this->call([
             CategorySeeder::class,
             ProductSeeder::class,

@@ -28,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
             'attribute' => [
                 \App\Services\Attribute\AttributeServiceInterface::class,
                 \App\Services\Attribute\AttributeService::class,
+            ],
+            'review' => [
+                \App\Services\Review\ReviewServiceInterface::class,
+                \App\Services\Review\ReviewService::class,
             ]
         ];
       

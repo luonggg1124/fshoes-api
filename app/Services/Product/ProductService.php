@@ -12,6 +12,7 @@ use App\Http\Traits\CanLoadRelationships;
 use App\Models\ProductVariations;
 use App\Repositories\Product\ProductRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 class ProductService implements ProductServiceInterface
 {
@@ -25,7 +26,11 @@ class ProductService implements ProductServiceInterface
 
     public function all()
     {
-        $products = $this->loadRelationships($this->productRepository->query()->latest())->paginate();
+        $perPage = request()->query('per_page');
+        $column = request()->query('column') ?? 'id';
+        $sort = request()->query('sort') ?? 'desc';
+        if($sort !== 'desc' && $sort !== 'asc') $sort = 'asc';
+        $products = $this->loadRelationships($this->productRepository->query()->orderBy($column,$sort)->latest())->paginate($perPage);
         return [
             'paginator' => $this->paginate($products),
             'data' => ProductResource::collection(
@@ -40,46 +45,60 @@ class ProductService implements ProductServiceInterface
         $product = $this->productRepository->find($id);
 
         if (!$product) {
-            throw new ModelNotFoundException('Category not found');
+            throw new ModelNotFoundException('Product not found');
         }
         $product = $this->loadRelationships($product);
         return new ProductResource($product);
     }
-    public function create(array $data, array $option = [])
-    {
 
+    public function create(
+        array $data,
+        array $options = [
+            'images' => []
+        ]
+    )
+    {
+        return DB::transaction(function () use ($data, $options) {
+            $product = $this->productRepository->create($data);
+            if(!$product) throw new \Exception('Product not created');
+            if(count($options['images']) > 0){
+                $this->createProductImages($options['images'],$product);
+            }
+            return $this->loadRelationships($product);
+        });
     }
-    public function createVariation(array $data = [], array $option = [])
+    public function createVariation(
+        array $data = [],
+        array $options = [
+            'images' => []
+        ]
+    )
     {
         $variation = $this->productRepository->createVariations($data);
-        if ($option['images']) {
-            $this->createImages($option['images'],$variation);
-        }
+
         return $variation;
     }
-    public function updateVariation(int|string $id, array $data = [], array $option = [])
+    public function updateVariation(int|string $id, array $data = [], array $options = [])
     {
 
     }
-    protected function createImages(array $data ,Product|ProductVariations $model)
+    protected function createProductImages(array $data ,Product $model)
     {
         if ($data && count($data) > 0) {
             foreach ($data as $image) {
                 if ($image instanceof UploadedFile) {
-                    if ($model instanceof ProductVariations) {
-                        $upload = $this->uploadImageCloudinary($image);
-                        $upload['product_variation_id'] = $model->id;
-                        $upload['product_id'] = $model->product_id;
-                        $this->productRepository->createImage($upload);
-                    }else{
-                        $upload = $this->uploadImageCloudinary($image);
-                        $upload['product_id'] = $model->id;
-                        $this->productRepository->createImage($upload);
-                    }
+                    $upload = $this->uploadImageCloudinary($image);
+                    $model->id;
+                    $img = [
+                        'product_id' => $model->id,
+                        'image_url' => $upload['path'],
+                        'public_id' => $upload['public_id'],
+                        'alt_text' => 'image '.$model->name ?? '',
+                    ];
+                    $this->productRepository->createImage($img);
                 }
             }
-            return $model;
-
+            return $model->productImages();
         }
         return null;
     }
