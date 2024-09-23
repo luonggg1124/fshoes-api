@@ -20,6 +20,14 @@ class RepositoryServiceProvider extends ServiceProvider
                 \App\Repositories\Product\ProductRepositoryInterface::class,
                 \App\Repositories\Product\ProductRepository::class
             ],
+            'attribute' => [
+                \App\Repositories\Attribute\AttributeRepositoryInterface::class,
+                \App\Repositories\Attribute\AttributeRepository::class
+            ],
+            'attributeValue' => [
+                \App\Repositories\Attribute\Value\AttributeValueRepositoryInterface::class,
+                \App\Repositories\Attribute\Value\AttributeValueRepository::class
+            ],
             'user' => [
                 \App\Repositories\User\UserRepositoryInterface::class,
                 \App\Repositories\User\UserRepository::class

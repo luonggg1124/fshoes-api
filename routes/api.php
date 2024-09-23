@@ -18,11 +18,11 @@ Route::get('auth/redirect-to/login',function(){
 })->name('login');
 
 
-//Admin 
+//Admin
 Route::group(['middleware' => ['auth:sanctum','is_admin']], function(){
     Route::apiResource('category',CategoryController::class)->parameter('category','id')->except(['index','show']);
     Route::delete('user/{nickname}',[UserController::class,'destroy']);
-   
+
 });
 
 // End Admin
@@ -51,14 +51,15 @@ Route::apiResource('product',ProductController::class)->parameter('product','id'
 
 //Product End
 
-// Review 
+// Review
 Route::apiResource('review',ReviewController::class)->parameter('review','id');
 
 // End Review
 
 
 // Attribute - Attribute Value Start
-Route::apiResource('attribute.value',ProductController::class)->parameters(['attribute'=>'aid','value' => 'vid']);
+Route::apiResource('attribute',\App\Http\Controllers\Api\Attribute\AttributeController::class)->parameter('attribute','id');
+Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\AttributeValueController::class)->parameters(['attribute'=>'aid','value' => 'id']);
 //Attribute - Attribute Value End
 //Route::get('api/auth/google/redirect', [SocialiteController::class, 'googleRedirect']);
 //Route::post('auth/google/callback', [SocialiteController::class, 'googleCallback']);
