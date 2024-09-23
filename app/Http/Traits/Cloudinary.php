@@ -17,6 +17,11 @@ trait Cloudinary
             'public_id' => $public_id,
         ];
     }
+
+    public function updateImageCloudinary(UploadedFile $file,string $folder = ''):?array
+    {
+
+    }
     public function deleteImageCloudinary(string $public_id):void
     {
         if(Storage::disk('cloudinary')->fileExists($public_id)){

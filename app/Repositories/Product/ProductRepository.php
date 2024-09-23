@@ -68,6 +68,9 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         return false;
 
     }
+    public function findImageProduct(int|string $id)
+    {
 
+    }
 
 }
