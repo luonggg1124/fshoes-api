@@ -29,12 +29,16 @@ class AppServiceProvider extends ServiceProvider
                 \App\Services\Attribute\AttributeServiceInterface::class,
                 \App\Services\Attribute\AttributeService::class,
             ],
+            'attributeValue' => [
+                \App\Services\Attribute\Value\AttributeValueServiceInterface::class,
+                \App\Services\Attribute\Value\AttributeValueService::class
+            ],
             'review' => [
                 \App\Services\Review\ReviewServiceInterface::class,
                 \App\Services\Review\ReviewService::class,
             ]
         ];
-      
+
         foreach ($services as $service) {
             $this->app->bind($service[0], $service[1]);
         }
@@ -45,6 +49,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-      
+
     }
 }

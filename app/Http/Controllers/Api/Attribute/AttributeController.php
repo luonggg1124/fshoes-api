@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class AttributeController extends Controller
@@ -30,6 +31,7 @@ class AttributeController extends Controller
         try {
             if(empty($request->name)){
                 return \response()->json([
+                    'status' => false,
                     'error' => 'The name is required'
                 ],422);
             }
@@ -38,11 +40,13 @@ class AttributeController extends Controller
             ];
             $attribute = $this->attributeService->create($data);
             return \response()->json([
+                'status' => true,
                 'attribute' => $attribute
             ]);
 
         }catch (\Throwable $throw){
             return \response()->json([
+                'status' => false,
                 'error' => $throw->getMessage()
             ],500);
         }
@@ -56,6 +60,7 @@ class AttributeController extends Controller
         try {
             $attribute = $this->attributeService->find($id);
             return \response()->json([
+                'status' => true,
                 'attribute' => $attribute
             ]);
         }catch (\Throwable $throw){
@@ -72,6 +77,7 @@ class AttributeController extends Controller
         try {
             if(empty($request->name)){
                 return \response()->json([
+                    'status' => true,
                     'error' => 'The name is required'
                 ],422);
             }
@@ -93,17 +99,43 @@ class AttributeController extends Controller
             if($throw instanceof ModelNotFoundException){
                 return \response()->json([
                    $throw->getMessage()
-                ],400);
+                ],404);
             }
             return \response()->json([
+                'status' => false,
                 'error' => $throw->getMessage()
             ],500);
         }
     }
 
 
-    public function destroy(int|string $aid)
+    public function destroy(int|string $id)
     {
-        //
+        try {
+            DB::transaction(function () use ($id){
+                $this->attributeService->delete($id);
+            });
+            return \response()->json([
+                'status' => true,
+                'message' => 'Deleted successfully'
+            ],201);
+        }catch (\Throwable $throw){
+            Log::error(
+                message: __CLASS__.'@'.__FUNCTION__,context: [
+                'line' => $throw->getLine(),
+                'message' => $throw->getMessage()
+            ]
+            );
+            if($throw instanceof ModelNotFoundException){
+                return \response()->json([
+                    'status' => false,
+                   'error' => $throw->getMessage()
+                ],404);
+            }
+            return \response()->json([
+                'status' => false,
+                'error' => 'Something went wrong.Please try later!'
+            ],500);
+        }
     }
 }

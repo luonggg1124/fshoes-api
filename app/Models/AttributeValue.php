@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AttributeValue extends Model
 {
-    use HasFactory;
+    protected $fillable = ['value','attribute_id'];
+    use HasFactory, SoftDeletes;
     public function attributes():BelongsTo
     {
         return $this->belongsTo(AttributeValue::class,'attribute_id');
@@ -18,5 +20,5 @@ class AttributeValue extends Model
     {
         return $this->belongsToMany(ProductVariations::class,'product_variation_attributes','attribute_value_id','variation_id');
     }
-    
+
 }

@@ -4,6 +4,7 @@ namespace App\Services\Attribute;
 use App\Http\Traits\CanLoadRelationships;
 use App\Http\Traits\Paginate;
 use App\Repositories\Attribute\AttributeRepositoryInterface;
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 
@@ -44,5 +45,12 @@ class AttributeService implements AttributeServiceInterface
         if(!$attribute) throw new ModelNotFoundException('Attribute not found');
         $attribute->update($data);
         return $this->loadRelationships($attribute);
+    }
+    public function delete(int|string $id){
+        $attribute = $this->attributeRepository->find($id);
+        if(!$attribute) throw new ModelNotFoundException('Attribute not found');
+        $attribute->values()->delete();
+        $attribute->delete();
+            return true;
     }
 }

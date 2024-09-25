@@ -15,4 +15,6 @@ class AttributeValueRepository extends BaseRepository implements AttributeValueR
     {
         parent::__construct($model);
     }
+
+
 }
