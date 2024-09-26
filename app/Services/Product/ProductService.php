@@ -19,6 +19,21 @@ class ProductService implements ProductServiceInterface
     use CanLoadRelationships, Cloudinary, Paginate;
 
     private array $relations = ['categories', 'productImages', 'variations'];
+    private array $columns = [
+        'name',
+        'slug',
+        'price',
+        'sale_price',
+        'is_sale',
+        'short_description',
+        'description',
+        'sku',
+        'status',
+        'qty_sold',
+        'stock_qty',
+        'created_at',
+        'updated_at',
+    ];
     public function __construct(
         protected ProductRepositoryInterface $productRepository,
     ) {
@@ -28,6 +43,7 @@ class ProductService implements ProductServiceInterface
     {
         $perPage = request()->query('per_page');
         $column = request()->query('column') ?? 'id';
+        if(!in_array($column,$this->columns)) $column = 'id';
         $sort = request()->query('sort') ?? 'desc';
         if($sort !== 'desc' && $sort !== 'asc') $sort = 'asc';
         $products = $this->loadRelationships($this->productRepository->query()->orderBy($column,$sort)->latest())->paginate($perPage);

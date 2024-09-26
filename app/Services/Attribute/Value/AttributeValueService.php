@@ -12,6 +12,7 @@ class AttributeValueService  implements AttributeValueServiceInterface
 {
     use CanLoadRelationships,Paginate;
     private array $relations = ['attribute','productVariation'];
+    private array $columns = ['attribute_id','value','created_at','updated_at'];
     public function __construct(
         protected AttributeValueRepositoryInterface $repository,
         protected AttributeRepositoryInterface $attributeRepository,
@@ -24,6 +25,7 @@ class AttributeValueService  implements AttributeValueServiceInterface
             throw new ModelNotFoundException('Attribute not found');
 
         $column = request()->query('column') ?? 'id';
+        if(!in_array($column,$this->columns)) $column = 'id';
         $sort = request()->query('sort') ?? 'desc';
         if($sort !== 'desc' && $sort !== 'asc') $sort = 'asc';
         $values = $attribute->values()->orderBy($column, $sort);

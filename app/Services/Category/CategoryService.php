@@ -17,12 +17,14 @@ class CategoryService implements CategoryServiceInterface
 {
     use CanLoadRelationships, Cloudinary,Paginate;
     private array $relations = ['products'];
+    private array $columns = ['name', 'slug', 'parent_id','created_at','updated_at'];
     public function __construct(protected CategoryRepositoryInterface $categoryRepository) {}
 
     public function getAll()
     {
         $perPage = request()->query('per_page');
         $column = request()->query('column') ?? 'id';
+        if(!in_array($column,$this->columns)) $column = 'id';
         $sort = request()->query('sort') ?? 'desc';
         if($sort !== 'desc' && $sort !== 'asc') $sort = 'asc';
         $categories = $this->loadRelationships($this->categoryRepository->query()->orderBy($column,$sort))->paginate($perPage);
@@ -32,7 +34,7 @@ class CategoryService implements CategoryServiceInterface
             'data' => CategoryResource::collection(
                 $categories->items()
             ),
-            
+
 
         ];
     }

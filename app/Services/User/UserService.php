@@ -17,6 +17,19 @@ class UserService implements UserServiceInterface
 {
     use CanLoadRelationships, Cloudinary, Paginate;
     protected array $relations = ['profile', 'interestingCategories', 'addresses', 'allAvatars'];
+    private array $columns = [
+        'nickname',
+        'name',
+        'email',
+        'password',
+        'google_id',
+        'email_verified_at',
+        'is_admin',
+        'is_active',
+        'status',
+        'created_at',
+        'updated_at',
+    ];
     public function __construct(
         public UserRepositoryInterface $userRepository
     ) {
@@ -39,6 +52,7 @@ class UserService implements UserServiceInterface
     public function all()
     {
         $column = request()->query('column') ?? 'id';
+        if(!in_array($column,$this->columns)) $column = 'id';
         $sort = request()->query('sort') ?? 'desc';
         if ($sort !== 'desc' && $sort !== 'asc')
             $sort = 'asc';

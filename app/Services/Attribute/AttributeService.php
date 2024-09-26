@@ -12,7 +12,7 @@ class AttributeService implements AttributeServiceInterface
 {
     use CanLoadRelationships,Paginate;
     private array $relations = ['values'];
-
+    private array $columns = ['value','attribute_id','created_at','updated_at'];
     public function __construct(
         protected AttributeRepositoryInterface $attributeRepository,
     )
@@ -22,6 +22,7 @@ class AttributeService implements AttributeServiceInterface
     {
         $perPage = request()->query('per_page');
         $column = request()->query('column') ?? 'id';
+        if(!in_array($column,$this->columns)) $column = 'id';
         $sort = request()->query('sort') ?? 'desc';
         if($sort !== 'desc' && $sort !== 'asc') $sort = 'asc';
         $attributes = $this->loadRelationships($this->attributeRepository->query()->orderBy($column, $sort))->paginate($perPage);
