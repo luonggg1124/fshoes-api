@@ -6,9 +6,11 @@ interface BaseRepositoryInterface
 {
 
     function all();
-    function find(int $id);
+
+    function find(int|string $id);
+
     function create(array $data);
     function update($id, array $data);
-    function delete(int $id);
+    function delete(int|string $id);
     function query();
 }

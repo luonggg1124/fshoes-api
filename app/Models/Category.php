@@ -16,4 +16,8 @@ class Category extends Model
     {
         return $this->belongsToMany(Product::class, 'category_product', 'category_id', 'product_id');
     }
+    public function interestedBy():BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_interests', 'category_id', 'user_id');
+    }
 }
