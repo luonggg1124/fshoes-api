@@ -9,8 +9,11 @@
         "cloudinary-labs/cloudinary-laravel": "^2.2",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
-        "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
+        "php-http/guzzle7-adapter": "^1.0",
+        "srmklive/paypal": "~3.0",
+        "stripe/stripe-php": "^15.10",
+        "laravel/socialite": "^5.16",
         "simplesoftwareio/simple-qrcode": "^4.2"
     },
     "require-dev": {
