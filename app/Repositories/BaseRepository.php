@@ -16,7 +16,7 @@ class BaseRepository implements BaseRepositoryInterface
         return $this->model->all();
     }
 
-    public function find(int $id)
+    public function find(int|string $id)
     {
         return $this->model->query()->find($id);
     }
@@ -35,7 +35,7 @@ class BaseRepository implements BaseRepositoryInterface
         $record->update($data);
         return $record;
     }
-    public function delete(int $id)
+    public function delete(int|string $id)
     {
         $record = $this->model->query()->find($id);
         if($record){

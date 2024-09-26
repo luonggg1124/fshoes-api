@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -16,10 +17,15 @@ class AppServiceProvider extends ServiceProvider
                 \App\Services\Category\CategoryServiceInterface::class,
                 \App\Services\Category\CategoryService::class
             ],
+            'product' => [
+                \App\Services\Product\ProductServiceInterface::class,
+                \App\Services\Product\ProductService::class
+            ],
             'user' => [
                 \App\Services\User\UserServiceInterface::class,
                 \App\Services\User\UserService::class
             ],
+
             'order' => [
                 \App\Services\Order\OrderServiceInterface::class,
                 \App\Services\Order\OrderService::class
@@ -28,6 +34,20 @@ class AppServiceProvider extends ServiceProvider
                 \App\Services\OrderDetail\OrderDetailServiceInterface::class,
                 \App\Services\OrderDetail\OrderDetailService::class
             ],
+
+            'attribute' => [
+                \App\Services\Attribute\AttributeServiceInterface::class,
+                \App\Services\Attribute\AttributeService::class,
+            ],
+            'attributeValue' => [
+                \App\Services\Attribute\Value\AttributeValueServiceInterface::class,
+                \App\Services\Attribute\Value\AttributeValueService::class
+            ],
+            'review' => [
+                \App\Services\Review\ReviewServiceInterface::class,
+                \App\Services\Review\ReviewService::class,
+            ]
+
         ];
 
         foreach ($services as $service) {
