@@ -17,17 +17,17 @@ class AttributeValueService  implements AttributeValueServiceInterface
         protected AttributeRepositoryInterface $attributeRepository,
     ){}
 
-    public function all()
+    public function index(int|string $aid)
     {
-        $perPage = request()->query('per_page');
+        $attribute = $this->attributeRepository->find($aid);
+        if(!$attribute)
+            throw new ModelNotFoundException('Attribute not found');
+
         $column = request()->query('column') ?? 'id';
         $sort = request()->query('sort') ?? 'desc';
         if($sort !== 'desc' && $sort !== 'asc') $sort = 'asc';
-        $values = $this->loadRelationships($this->repository->query()->orderBy($column, $sort))->paginate($perPage);
-        return [
-            'paginator' => $this->paginate($values),
-            'data' => $values->items(),
-        ];
+        $values = $attribute->values()->orderBy($column, $sort);
+        return $this->loadRelationships($values)->get();
     }
     public function create(int|string $aid,array $data){
         $attribute = $this->attributeRepository->find($aid);
@@ -38,21 +38,17 @@ class AttributeValueService  implements AttributeValueServiceInterface
     public function find(int|string $aid,int|string $id){
         $attribute = $this->attributeRepository->find($aid);
         if(!$attribute) throw new ModelNotFoundException('Attribute not found');
-        $value = $this->repository->find($id);
-        if(!$value) throw new ModelNotFoundException('Attribute not found');
-        return $this->loadRelationships($value);
+        $value = $attribute->values()->find($id);
+        if(!$value) throw new ModelNotFoundException('Attribute value not found');
+        return $value;
     }
-    public function update(int|string $id, array $data){
-        $attribute = $this->attributeRepository->find($aid);
-        if(!$attribute) throw new ModelNotFoundException('Attribute not found');
-        $value = $this->repository->find($id);
-        if(!$value) throw new ModelNotFoundException('Attribute not found');
+    public function update(int|string $aid,int|string $id, array $data){
+        $value = $this->find($aid,$id);
         $value->update($data);
         return $this->loadRelationships($value);
     }
-    public function delete(int|string $id){
-        $value = $this->repository->find($id);
-        if(!$value) throw new ModelNotFoundException('Attribute not found');
+    public function delete(int|string $aid,int|string $id){
+        $value = $this->find($aid,$id);
         $value->delete();
         return true;
     }

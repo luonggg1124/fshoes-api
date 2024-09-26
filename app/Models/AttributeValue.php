@@ -12,7 +12,7 @@ class AttributeValue extends Model
 {
     protected $fillable = ['value','attribute_id'];
     use HasFactory, SoftDeletes;
-    public function attributes():BelongsTo
+    public function attribute():BelongsTo
     {
         return $this->belongsTo(AttributeValue::class,'attribute_id');
     }
