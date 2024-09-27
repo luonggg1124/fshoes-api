@@ -21,6 +21,13 @@ return new class extends Migration
             $table->string('shipping_cost')->default(0);
             $table->decimal('tax_amount')->nullable();
             $table->integer('amount_collected');
+            $table->string('receiver_full_name');
+            $table->string('address');
+            $table->string('phone');
+            $table->string('city');
+            $table->string('country');
+            $table->string('postal_code')->nullable();
+            $table->foreignId('voucher_id')->constrained('vouchers');
             $table->enum("status" , ["Waiting Confirm" , "Confirmed" , "Pending" , "Cancelled" , "Transporting" , "Done"]);
             $table->text('note')->nullable();
             $table->timestamps();
