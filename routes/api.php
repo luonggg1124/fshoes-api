@@ -33,13 +33,14 @@ Route::group(['middleware' => ['auth:sanctum','is_admin']], function(){
 
 Route::get('user',[UserController::class,'index']);
 // Auth
-Route::group(['middleware' => ['auth:sanctum']],function(){
+Route::group(['middleware' => ['auth:api']],function(){
     Route::apiResource('user',UserController::class)->parameter('user','nickname')->except(['index','destroy']);
-    Route::post('logout',[UserController::class,'logout']);
+    Route::post('logout',[\App\Http\Controllers\Api\User\AuthController::class,'logout']);
+    Route::get('auth/me',[\App\Http\Controllers\Api\User\AuthController::class,'me']);
 });
 
 
-Route::post('login',[UserController::class,'login']);
+Route::post('login',[\App\Http\Controllers\Api\User\AuthController::class,'login']);
 // End Auth
 
 // Category Start

@@ -26,14 +26,14 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     }
     public function updateProfile(int|string $userId, array $data){
         $profile = $this->profile->query()->where('user_id',$userId)->first();
-        if(!$profile) throw new ModelNotFoundException('Could not find the user profile');
+        if(!$profile) return null;
         $profile->update($data);
         return $profile;
     }
 
     public function findByNickname(string $nickname){
         $user = $this->model->where('nickname',$nickname)->first();
-        if(!$user) throw new ModelNotFoundException('Could not find the user');
+        if(!$user) return null;
         return $user;
     }
     public function findByColumnOrEmail(string $data,string $column = ''){
@@ -46,7 +46,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
           $column = 'email';
         }
         $user = $this->model->where($column,$data)->first();
-        if(!$user) throw new ModelNotFoundException("Could not find the user whose $column is $data");
+        if(!$user) return null;
         return $user;
     }
     public function createAvatar(array $data){

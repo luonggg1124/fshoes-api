@@ -34,21 +34,7 @@ class UserService implements UserServiceInterface
         public UserRepositoryInterface $userRepository
     ) {
     }
-    public function login(string $email, string $password) {
-        $user = $this->userRepository->findByColumnOrEmail($email);
-        if(!$user){
-            throw ValidationException::withMessages([
-                'email' => 'The provided email are incorrect'
-            ]);
-        }
-        if(!Hash::check($password,$user->password)){
-            throw ValidationException::withMessages([
-               'password' => 'The provided password are incorrect'
-           ]);
-       }
-       $token = $user->createToken('api-token')->plainTextToken;
-       return $token;
-    }
+
     public function all()
     {
         $column = request()->query('column') ?? 'id';
