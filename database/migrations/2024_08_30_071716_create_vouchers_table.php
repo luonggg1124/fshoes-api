@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('discount');
             $table->timestamp('date_start');
-            $table->timestamps('date_end');
+            $table->timestamp('date_end');
             $table->integer('quantity');
             $table->boolean('status');
             $table->softDeletes();
