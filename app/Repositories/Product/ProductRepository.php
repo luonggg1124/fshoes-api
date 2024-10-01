@@ -2,8 +2,9 @@
 
 namespace App\Repositories\Product;
 
+use App\Models\Image;
 use App\Models\Product;
-use App\Models\ProductImage;
+
 use App\Models\ProductVariations;
 use App\Repositories\BaseRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -13,12 +14,11 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
     public function __construct(
         Product                  $model,
         public ProductVariations $variations,
-        public ProductImage      $image
+        public Image      $image
 
     )
     {
         parent::__construct($model);
-
     }
 
     public function findBySlugOrId(string $column, string $value)
@@ -32,19 +32,12 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
                 $query->where('slug', $value);
             }
         )->first();
-        if (!$product) {
-            throw new ModelNotFoundException('Product not found');
-        }
         return $product;
     }
 
     public function createVariations(array $data = [])
     {
-        $variation = $this->variations->create($data);
-        if (!$variation)
-            throw new \Exception('Cannot create variation');
-
-        return $variation;
+        return $this->variations->create($data);
     }
 
     public function updateVariations(int|string $id, array $data = [])
@@ -56,9 +49,7 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
 
     public function createImage(array $data = [])
     {
-        $image = $this->image->create($data);
-        if (!$image) throw new \Exception('Cannot create product image');
-        return $image;
+        return $this->image->create($data);
     }
 
     public function updateImage(int|string $id, array $data = [])
@@ -66,7 +57,6 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         $image = $this->image->query()->findOrFail($id);
         if ($image) return $image;
         return false;
-
     }
 
 

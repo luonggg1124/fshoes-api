@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Image;
 use App\Models\Product;
 use App\Models\Attribute;
 use Illuminate\Support\Str;
@@ -53,12 +54,20 @@ class VariationSeeder extends Seeder
                     'stock_qty' => random_int(20,70),
                     'qty_sold' => random_int(20,70),
                 ]);
+                $images = Image::factory(3)->create();
+                foreach ($images as $image) {
+                    DB::table('product_variation_image')->insert([
+                        'product_variation_id' => $variation->id,
+                        'image_id' => $image->id,
+                    ]);
+                }
+
                 DB::table('product_variation_attributes')->insert([
                     'variation_id' => $variation->id,
                     'attribute_value_id' => $a->id
                 ]);
                 foreach(AttributeValue::where('attribute_id',2)->get() as $s){
-                    
+
                     DB::table('product_variation_attributes')->insert([
                         'variation_id' => $variation->id,
                         'attribute_value_id' => $s->id
@@ -69,9 +78,9 @@ class VariationSeeder extends Seeder
                     ]);
                 }
             }
-            
+
         }
-        
+
     }
 
 }

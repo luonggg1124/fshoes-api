@@ -6,10 +6,9 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProductImageResource extends JsonResource
+class ImageResource extends JsonResource
 {
     public static $wrap = false;
-
     /**
      * Transform the resource into an array.
      *
@@ -19,9 +18,9 @@ class ProductImageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'product_id' => $this->product_id,
-            'image_url' => $this->image_url,
+            'url' => $this->url,
             'public_id' => $this->public_id,
+            'alt_text' => $this->alt_text,
             'created_at' => (new Carbon($this->created_at))->format('H:m d-m-Y')
         ];
     }

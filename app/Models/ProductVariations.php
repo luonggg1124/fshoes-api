@@ -5,8 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class ProductVariations extends Model
 {
@@ -30,8 +32,8 @@ class ProductVariations extends Model
         return $this->belongsTo(Product::class);
     }
 
-    public function images():HasMany
+    public function images():BelongsToMany
     {
-        return $this->hasMany(ProductImage::class,'product_variation_id');
+        return $this->belongsToMany(Image::class,'product_variation_image','product_variation_id','image_id');
     }
 }

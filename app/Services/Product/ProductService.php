@@ -18,7 +18,7 @@ class ProductService implements ProductServiceInterface
 {
     use CanLoadRelationships, Cloudinary, Paginate;
 
-    private array $relations = ['categories', 'productImages', 'variations'];
+    private array $relations = ['categories', 'images', 'variations'];
     private array $columns = [
         'name',
         'slug',
