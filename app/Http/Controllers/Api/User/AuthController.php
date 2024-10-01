@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
 use App\Services\User\AuthService;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,24 +14,24 @@ class AuthController extends Controller
 {
     public function __construct(protected AuthService $service){}
 
-//    public function register(Request $request){
-//        try {
-//            $credentials = $request->only('email', 'password');
-//            $token = $this->service->login($credentials);
-//            return $this->respondWithToken($token);
-//        }catch (\Throwable $throwable){
-//            if($throwable instanceof JWTException){
-//                return response()->json([
-//                    'status' => false,
-//                    'message' => 'Something went wrong',
-//                ],500);
-//            }
-//            return response()->json([
-//                'status' => false,
-//                'message' => $throwable->getMessage(),
-//            ],422);
-//        }
-//    }
+    public function getCode(Request $request){
+        try {
+            $email = $request->get('email');
+            $code = $this->service->register()
+            return $this->respondWithToken($token);
+        }catch (\Throwable $throwable){
+            if($throwable instanceof JWTException){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Something went wrong',
+                ],500);
+            }
+            return response()->json([
+                'status' => false,
+                'message' => $throwable->getMessage(),
+            ],422);
+        }
+    }
     public function login(Request $request)
     {
         try {
@@ -43,6 +44,12 @@ class AuthController extends Controller
                     'status' => false,
                     'message' => 'Something went wrong',
                 ],500);
+            }
+            if($throwable instanceof AuthenticationException){
+                return response()->json([
+                    'status' => false,
+                    'message' => $throwable->getMessage(),
+                ],401);
             }
             return response()->json([
                 'status' => false,
