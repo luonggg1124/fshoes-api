@@ -68,8 +68,6 @@ class ImageService implements ImageServiceInterface
         if(!$image) throw new ModelNotFoundException('Image not found');
         $exists = Storage::disk('cloudinary')->exists($image->public_id);
         if($exists) $this->deleteImageCloudinary($image->public_id);
-        $image->products()->detach();
-        $image->variations()->detach();
         $image->delete();
         return true;
     }
