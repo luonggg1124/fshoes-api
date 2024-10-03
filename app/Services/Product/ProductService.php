@@ -27,8 +27,6 @@ class ProductService implements ProductServiceInterface
         'description',
         'sku',
         'status',
-        'qty_sold',
-        'stock_qty',
         'created_at',
         'updated_at',
     ];
@@ -45,7 +43,7 @@ class ProductService implements ProductServiceInterface
         if(!in_array($column,$this->columns)) $column = 'id';
         $sort = request()->query('sort') ?? 'desc';
         if($sort !== 'desc' && $sort !== 'asc') $sort = 'asc';
-        $products = $this->loadRelationships($this->productRepository->query()->orderBy($column,$sort)->latest())->paginate($perPage);
+        $products = $this->loadRelationships($this->productRepository->query()->orderBy('qty_sold','desc')->orderBy('stock_qty','desc')->orderBy($column,$sort)->latest())->paginate($perPage);
         return [
             'paginator' => $this->paginate($products),
             'data' => ProductResource::collection(
@@ -55,6 +53,7 @@ class ProductService implements ProductServiceInterface
 
 
     }
+
     public function findById(int|string $id)
     {
         $product = $this->productRepository->find($id);
@@ -73,20 +72,14 @@ class ProductService implements ProductServiceInterface
         ]
     )
     {
+
         return DB::transaction(function () use ($data, $options) {
             $product = $this->productRepository->create($data);
             if(!$product) throw new \Exception('Cannot create product');
             $product->slug = $this->slug($product->name,$product->id);
             $product->save();
             if(count($options['images']) > 0){
-                foreach ($options['images'] as $image) {
-                    if($image instanceof UploadedFile){
-                        $image = $this->imageService->create($image,'product');
-                        $product->images()->attach($image->id);
-                    }elseif (is_int($image)){
-                        $product->images()->attach($image);
-                    }
-                }
+                $product->images()->attach($options['images']);
             }
             return new ProductResource($this->loadRelationships($product));
         });
@@ -109,7 +102,13 @@ class ProductService implements ProductServiceInterface
         });
     }
 
-
+    public function updateStatus(string|int|bool $status,int|string $id){
+        $product = $this->productRepository->find($id);
+        if(!$product) throw new ModelNotFoundException('Product not found');
+        $product->status = $status;
+        $product->save();
+        return new ProductResource($this->loadRelationships($product));
+    }
     protected function slug(string $name, int|string $id){
         $slug = Str::slug($name).'.'.$id;
         $exists = $this->productRepository->query()->where('slug',$slug)->exists();
@@ -117,6 +116,67 @@ class ProductService implements ProductServiceInterface
             return Str::slug($name).'-'.Str::random(2).'.'.$id;
         }
         return $slug;
+    }
+    public function destroy(int|string $id){
+        $product = $this->productRepository->find($id);
+        if(!$product) throw new ModelNotFoundException('Product not found');
+        $product->variations()->delete();
+        $product->delete();
+        return true;
+    }
+    public function productWithTrashed()
+    {
+        $perPage = request()->query('per_page');
+        $column = request()->query('column') ?? 'id';
+        if(!in_array($column,$this->columns)) $column = 'id';
+        $sort = request()->query('sort') ?? 'desc';
+        if($sort !== 'desc' && $sort !== 'asc') $sort = 'asc';
+        $products = $this->loadRelationships($this->productRepository->query()->withTrashed()->orderBy('deleted_at','desc')->orderBy('qty_sold','desc')->orderBy('stock_qty','desc')->orderBy($column,$sort)->latest())->paginate($perPage);
+        return [
+            'paginator' => $this->paginate($products),
+            'data' => ProductResource::collection(
+                $products->items()
+            ),
+        ];
+    }
+    public function productTrashed(){
+        $perPage = request()->query('per_page');
+        $column = request()->query('column') ?? 'id';
+        if(!in_array($column,$this->columns)) $column = 'id';
+        $sort = request()->query('sort') ?? 'desc';
+        if($sort !== 'desc' && $sort !== 'asc') $sort = 'asc';
+        $products = $this->loadRelationships($this->productRepository->query()->onlyTrashed()->orderBy('deleted_at','desc')->orderBy($column,$sort)->latest())->paginate($perPage);
+        return [
+            'paginator' => $this->paginate($products),
+            'data' => ProductResource::collection(
+                $products->items()
+            ),
+        ];
+    }
+    public function restore(int|string $id)
+    {
+        $product = $this->productRepository->query()->withTrashed()->find($id);
+        if (!$product) {
+            throw new ModelNotFoundException('Product not found');
+        }
+        $product->restore();
+        return new ProductResource($this->loadRelationships($product));
+    }
+    public function findProductTrashed(int|string $id){
+        $product = $this->productRepository->query()->withTrashed()->find($id);
+        if (!$product) {
+            throw new ModelNotFoundException('Product not found');
+        }
+        $product = $this->loadRelationships($product);
+        return new ProductResource($product);
+    }
+    public function forceDestroy(int|string $id){
+        $product = $this->productRepository->query()->withTrashed()->find($id);
+        if (!$product) {
+            throw new ModelNotFoundException('Product not found');
+        }
+        $product->forceDelete();
+        return true;
     }
 }
 

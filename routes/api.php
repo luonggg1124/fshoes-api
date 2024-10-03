@@ -72,12 +72,19 @@ Route::post('paypal' , [PaymentOnline::class , 'paypal']);
         Route::get('error-paypal' , [PaymentOnline::class , 'errorPaypal'])->name('errorPaypal');
 
 //Product Start
+Route::get('product/with/trashed',[ProductController::class,'productWithTrashed'])->name('product.with.trashed');
+Route::get('product/trashed',[ProductController::class,'productTrashed'])->name('product.list.trashed');
+Route::get('product/trashed/{id}',[ProductController::class,'getOneTrashed'])->name('product.one.trashed');
+Route::post('product/restore/{id}',[ProductController::class,'restore'])->name('product.restore');
+Route::delete('product/force-delete/{id}',[ProductController::class,'forceDestroy'])->name('product.force.delete');
 Route::apiResource('product',ProductController::class)->parameter('product','id');
+
+Route::put('status/product/{id}',[ProductController::class,'updateProductStatus'])->name('product.update.status');
 Route::apiResource('product.variation',VariationController::class)->parameters(['product' => 'pid', 'variation'=>'id']);
 //Product End
 
 //Image
-Route::apiResource('image',ImageController::class)->parameter('image','id')->only(['index','create','destroy']);
+Route::apiResource('image',ImageController::class)->parameter('image','id')->only(['index','store','destroy']);
 
 //End Image
 
@@ -92,6 +99,7 @@ Route::apiResource('review',ReviewController::class)->parameter('review','id');
 Route::apiResource('attribute',\App\Http\Controllers\Api\Attribute\AttributeController::class)->parameter('attribute','id');
 Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\AttributeValueController::class)->parameters(['attribute'=>'aid','value' => 'id']);
 //Attribute - Attribute Value End
+
 //Route::get('api/auth/google/redirect', [SocialiteController::class, 'googleRedirect']);
 //Route::post('auth/google/callback', [SocialiteController::class, 'googleCallback']);
 

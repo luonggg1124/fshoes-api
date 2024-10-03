@@ -7,6 +7,7 @@ use Illuminate\Http\UploadedFile;
 interface ImageServiceInterface
 {
     public function all();
-    public function create(UploadedFile $file,$folder = '');
+    public function createMany(array $images,string $folder = '');
+    public function create(UploadedFile $file,string $folder = '');
     public function destroy(int|string $id);
 }

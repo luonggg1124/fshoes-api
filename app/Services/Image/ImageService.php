@@ -40,13 +40,27 @@ class ImageService implements ImageServiceInterface
             ),
         ];
     }
-    public function create(UploadedFile $file,$folder = ''){
+    public function createMany(array $images,string $folder = ''){
+        $list = [];
+        foreach ($images as $image){
+            if($image instanceof UploadedFile){
+                $img = $this->create($image,'assets');
+                $list[] = $img;
+            }
+        }
+        return ImageResource::collection($list);
+    }
+    public function create(UploadedFile $file,string $folder = ''){
         $upload = $this->uploadImageCloudinary($file,$folder);
         $image = $this->repository->create([
             'url' => $upload['path'],
             'public_id' => $upload['public_id'],
             'alt_text' => $folder
         ]);
+        if(!$image){
+            throw new \Exception('Cannot create image');
+        }
+
         return $image;
     }
     public function destroy(int|string $id){

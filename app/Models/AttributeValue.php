@@ -16,7 +16,7 @@ class AttributeValue extends Model
     {
         return $this->belongsTo(AttributeValue::class,'attribute_id');
     }
-    public function productVariation():BelongsToMany
+    public function variations():BelongsToMany
     {
         return $this->belongsToMany(ProductVariations::class,'product_variation_attributes','attribute_value_id','variation_id');
     }

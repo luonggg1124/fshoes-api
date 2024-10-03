@@ -28,14 +28,12 @@ class ProductResource extends JsonResource
             'price' => $this->price,
             'description' => $this->description,
             'short_description' => $this->short_description,
-            'sku' => $this->sku,
             'status' => $this->status,
             'stock_qty' => $this->stock_qty,
             'qty_sold' => $this->qty_sold,
-            'image_url' => $this->image_url,
-            'image_public_id' => $this->image_public_id,
             'created_at' => (new Carbon($this->created_at))->format('H:m d-m-Y'),
-            'updated_at' => (new Carbon($this->updated_at))->format('H:m d-m-Y')
+            'updated_at' => (new Carbon($this->updated_at))->format('H:m d-m-Y'),
+            'deleted_at' => (new Carbon($this->deleted_at))->format('H:m d-m-Y')
         ];
     }
 }

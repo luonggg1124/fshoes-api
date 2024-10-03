@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ProductController extends Controller
@@ -39,11 +41,25 @@ class ProductController extends Controller
              $images = [];
              if($request->has('images')) $images = $request->images;
              $data['qty_sold'] = 0;
-             return $this->productService->create($data,[
+             $product = $this->productService->create($data,[
                  'images' => $images
              ]);
-         }catch(\Exception $e){
-             return response()->json(['message' => $e->getMessage()],500);
+             return response()->json([
+                 'message' => 'Product created successfully',
+                 'status' => true,
+                 'product' => $product
+             ],201);
+         }catch(\Throwable $throwable){
+             Log::error(
+                 message: __CLASS__.'@'.__FUNCTION__,context: [
+                 'line' => $throwable->getLine(),
+                 'message' => $throwable->getMessage()
+             ]
+             );
+             return response()->json([
+                 'message' => "Something went wrong!",
+                 'status' => false,
+             ],500);
          }
 
     }
@@ -56,7 +72,10 @@ class ProductController extends Controller
         try {
             return response()->json($this->productService->findById($id));
         }catch (ModelNotFoundException $e){
-            return response()->json(['error' => $e->getMessage()], 404);
+            return response()->json([
+                'error' => $e->getMessage(),
+                'status' => false
+            ], 404);
         }
     }
 
@@ -65,17 +84,146 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, string|int $id)
     {
-
+        try{
+            $data = $request->all();
+            $images = [];
+            if($request->has('images')) $images = $request->images;
+            $product = $this->productService->update($id,$data,[
+                'images' => $images
+            ]);
+            return response()->json([
+                'message' => 'Update product successfully',
+                'status' => true,
+                'product' => $product
+            ],201);
+        }catch(\Throwable $throwable){
+            Log::error(
+                message: __CLASS__.'@'.__FUNCTION__,context: [
+                'line' => $throwable->getLine(),
+                'message' => $throwable->getMessage()
+            ]
+            );
+            return response()->json([
+                'message' => 'Something went wrong!',
+                'status' => false,
+            ],500);
+        }
+    }
+    public function updateProductStatus(Request $request, string|int $id){
+        try {
+            $status = $request->status;
+            $product = $this->productService->updateStatus($status,$id);
+        }catch (\Throwable $throwable){
+            Log::error(
+                message: __CLASS__.'@'.__FUNCTION__,context: [
+                'line' => $throwable->getLine(),
+                'message' => $throwable->getMessage()
+            ]
+            );
+            return response()->json([
+                'message' => 'Some thing went wrong',
+                'status' => false
+            ],500);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int|string $id)
     {
-        //
+        try {
+            DB::transaction(function () use ($id){
+                $this->productService->destroy($id);
+            });
+            return \response()->json([
+                'status' => true,
+                'message' => 'Deleted successfully'
+            ],201);
+        }catch (\Throwable $throw){
+            Log::error(
+                message: __CLASS__.'@'.__FUNCTION__,context: [
+                'line' => $throw->getLine(),
+                'message' => $throw->getMessage()
+            ]
+            );
+            if($throw instanceof ModelNotFoundException){
+                return \response()->json([
+                    'status' => false,
+                    'error' => $throw->getMessage()
+                ],404);
+            }
+            return \response()->json([
+                'status' => false,
+                'error' => 'Something went wrong.Please try later!'
+            ],500);
+        }
     }
 
+    public function productWithTrashed(){
+        return \response()->json([
+            'status' => true,
+            'products' => $this->productService->productWithTrashed()
+        ],200);
+    }
+    public function productTrashed(){
+        return \response()->json([
+            'status' => true,
+            'products' => $this->productService->productTrashed()
+        ],200);
+    }
+    public function getOneTrashed(int|string $id){
+        try {
+            return response()->json($this->productService->findProductTrashed($id));
+        }catch (ModelNotFoundException $e){
+            return response()->json([
+                'error' => $e->getMessage(),
+                'status' => false
+            ], 404);
+        }
+    }
+    public function restore(int|string $id){
+        try {
+            $product = $this->productService->restore($id);
+            return \response()->json([
+                'status' => true,
+                'product' => $product,
+                'message' => 'Restore successfully'
+            ],201);
+        }catch (ModelNotFoundException $e){
+            return response()->json([
+                'error' => $e->getMessage(),
+                'status' => false
+            ], 404);
+        }
+    }
+    public function forceDestroy(int|string $id){
+        try {
+            $sucess = $this->productService->forceDestroy($id);
+            return \response()->json([
+                'status' => $sucess,
+                'message' => 'Deleted successfully',
+
+            ],201);
+        }catch (\Throwable $throwable){
+            Log::error(
+                message: __CLASS__.'@'.__FUNCTION__,context: [
+                'line' => $throwable->getLine(),
+                'message' => $throwable->getMessage()
+            ]
+            );
+            if($throwable instanceof ModelNotFoundException){
+                return \response()->json([
+                    'status' => false,
+                    'error' => $throwable->getMessage()
+                ],404);
+            }
+            return response()->json([
+                'status' => false,
+                'error' => 'Something went wrong.Please try later!'
+            ],500);
+        }
+    }
     public function generateQRProduct(string|int $id)
     {
         $product = $this->productService->findById($id);

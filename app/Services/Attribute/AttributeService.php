@@ -1,6 +1,7 @@
 <?php
 namespace App\Services\Attribute;
 
+use App\Http\Resources\Attribute\AttributeResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Http\Traits\Paginate;
 use App\Repositories\Attribute\AttributeRepositoryInterface;
@@ -15,6 +16,7 @@ class AttributeService implements AttributeServiceInterface
     private array $columns = ['value','attribute_id','created_at','updated_at'];
     public function __construct(
         protected AttributeRepositoryInterface $attributeRepository,
+
     )
     {
     }
@@ -28,24 +30,24 @@ class AttributeService implements AttributeServiceInterface
         $attributes = $this->loadRelationships($this->attributeRepository->query()->orderBy($column, $sort))->paginate($perPage);
         return [
             'paginator' => $this->paginate($attributes),
-            'data' => $attributes->items(),
+            'data' => AttributeResource::collection($attributes->items()),
         ];
     }
     public function create(array $data)
     {
         $attribute = $this->attributeRepository->create($data);
-        return $this->loadRelationships($attribute);
+        return new AttributeResource($this->loadRelationships($attribute));
     }
     public function find(int|string $id){
         $attribute = $this->attributeRepository->find($id);
         if(!$attribute) throw new ModelNotFoundException('Attribute not found');
-        return $this->loadRelationships($attribute);
+        return new AttributeResource($this->loadRelationships($attribute));
     }
     public function update(int|string $id, array $data){
         $attribute = $this->attributeRepository->find($id);
         if(!$attribute) throw new ModelNotFoundException('Attribute not found');
         $attribute->update($data);
-        return $this->loadRelationships($attribute);
+        return new AttributeResource($this->loadRelationships($attribute));
     }
     public function delete(int|string $id){
         $attribute = $this->attributeRepository->find($id);

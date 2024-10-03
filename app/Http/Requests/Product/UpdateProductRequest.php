@@ -24,7 +24,12 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|string|max:255',
+            'price' => 'required',
+            'description' => 'nullable',
+            'short_description' => 'nullable',
+            'stock_qty' => 'required|numeric',
+            'images' => 'nullable|array',
         ];
     }
     protected function failedValidation(Validator $validator)
@@ -42,7 +47,6 @@ class UpdateProductRequest extends FormRequest
             'name.string' => 'Product name must be a type of string',
             'name.max' => 'Product name is too long,255 characters is maximum',
 
-            'sku.string' => 'Product sku must be a type of string',
 
             'price.required' => 'Product price is required',
             'sale_price.required' => 'Product price is required',

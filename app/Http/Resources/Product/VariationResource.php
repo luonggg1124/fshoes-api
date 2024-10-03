@@ -10,6 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class VariationResource extends JsonResource
 {
+    public static $wrap = false;
     /**
      * Transform the resource into an array.
      *
@@ -21,6 +22,7 @@ class VariationResource extends JsonResource
             'id' => $this->id,
             'product' => new ProductResource($this->whenLoaded('product')),
             'images' => ImageResource::collection($this->images),
+            'values' => $this->whenLoaded('values'),
             'price' => $this->price,
             'sku' => $this->sku,
             'description' => $this->description,

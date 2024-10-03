@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Services\Image\ImageServiceInterface;
 use Illuminate\Http\Request;
 
+
 class ImageController extends Controller
 {
     public function __construct(
@@ -21,9 +22,34 @@ class ImageController extends Controller
     public function store(Request $request){
         try {
             $images = $request->images;
+            $list = [];
+            if(is_array($images)){
+                $list = $this->service->createMany($images);
+            }
+            return response()->json([
+                'status' => true,
+                'images' => $list
+            ],201);
 
         }catch (\Throwable $throwable){
-
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+            ],500);
+        }
+    }
+    public function destroy(int|string $id){
+        try {
+            $success = $this->service->destroy( $id);
+            return \response()->json([
+                'status' => $success,
+                'message' => 'Deleted successfully!'
+            ],201);
+        }catch (\Throwable $throwable) {
+            return \response()->json([
+                'status' => false,
+                'error' => $throwable->getMessage()
+            ],404);
         }
     }
 }

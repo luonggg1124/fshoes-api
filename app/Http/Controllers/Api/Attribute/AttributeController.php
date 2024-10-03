@@ -65,7 +65,8 @@ class AttributeController extends Controller
             ]);
         }catch (\Throwable $throw){
             return \response()->json([
-                'error' => $throw->getMessage()
+                'error' => $throw->getMessage(),
+                'status' => false
             ],400);
         }
     }
@@ -77,7 +78,7 @@ class AttributeController extends Controller
         try {
             if(empty($request->name)){
                 return \response()->json([
-                    'status' => true,
+                    'status' => false,
                     'error' => 'The name is required'
                 ],422);
             }
@@ -86,6 +87,7 @@ class AttributeController extends Controller
             ];
             $attribute = $this->attributeService->update($id,$data);
             return \response()->json([
+                'status' => true,
                 'attribute' => $attribute
             ]);
 

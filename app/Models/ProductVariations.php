@@ -34,4 +34,8 @@ class ProductVariations extends Model
     {
         return $this->belongsToMany(Image::class,'product_variation_image','product_variation_id','image_id');
     }
+    public function values():BelongsToMany
+    {
+        return $this->belongsToMany(AttributeValue::class,'product_variation_attributes','variation_id','attribute_value_id');
+    }
 }

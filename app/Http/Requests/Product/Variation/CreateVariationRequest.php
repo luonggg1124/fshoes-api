@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Product;
-use Illuminate\Foundation\Http\FormRequest;
+namespace App\Http\Requests\Product\Variation;
+
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CreateProductRequest extends FormRequest
+class CreateVariationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,7 +28,7 @@ class CreateProductRequest extends FormRequest
             'price' => 'required',
             'description' => 'nullable',
             'short_description' => 'nullable',
-
+            'status' => 'nullable',
             'stock_qty' => 'required|numeric',
             'images' => 'nullable|array',
         ];
@@ -52,9 +53,6 @@ class CreateProductRequest extends FormRequest
 
             'stock_qty.required' => 'Product stock quantity is required',
             'stock_qty.numeric' =>  'Product stock quantity  must be a type of number',
-
-
-
 
         ];
     }

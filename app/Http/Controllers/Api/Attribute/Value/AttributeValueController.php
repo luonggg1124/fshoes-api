@@ -19,7 +19,8 @@ class AttributeValueController extends Controller
     public function index(int|string $aid)
     {
         return \response()->json([
-            'data' => $this->service->index($aid)
+            'status' => true,
+            'values' => $this->service->index($aid)
         ]);
     }
 
@@ -41,7 +42,7 @@ class AttributeValueController extends Controller
             $value = $this->service->create($aid, $data);
             return \response()->json([
                 'status' => true,
-                'data' => $value,
+                'value' => $value,
             ], 201);
 
         } catch (\Throwable $throw) {
@@ -67,7 +68,7 @@ class AttributeValueController extends Controller
             $value = $this->service->find($aid, $id);
             return \response()->json([
                 'status' => true,
-                'data' => $value
+                'value' => $value
             ]);
         } catch (\Throwable $throwable) {
             return \response()->json([
@@ -95,7 +96,7 @@ class AttributeValueController extends Controller
             $value = $this->service->update($aid, $id, $data);
             return \response()->json([
                 'status' => true,
-                'data' => $value,
+                'value' => $value,
             ], 201);
 
         } catch (\Throwable $throw) {
