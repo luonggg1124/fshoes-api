@@ -24,8 +24,20 @@ class ImageController extends Controller
         try {
             $images = $request->images;
             $list = [];
+            if(empty($images)){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot find any images',
+                ],500);
+            }
             if(is_array($images)){
                 $list = $this->service->createMany($images);
+            }
+            if(empty($list) || count($list) <1){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No images uploaded'
+                ],500);
             }
             return response()->json([
                 'status' => true,
