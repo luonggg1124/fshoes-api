@@ -21,6 +21,15 @@ class AppServiceProvider extends ServiceProvider
                 \App\Services\Product\ProductServiceInterface::class,
                 \App\Services\Product\ProductService::class
             ],
+            'variation' => [
+                \App\Services\Product\Variation\VariationServiceInterface::class,
+                \App\Services\Product\Variation\VariationService::class
+            ],
+            'image' => [
+                \App\Services\Image\ImageServiceInterface::class,
+                \App\Services\Image\ImageService::class
+            ]
+            ,
             'user' => [
                 \App\Services\User\UserServiceInterface::class,
                 \App\Services\User\UserService::class

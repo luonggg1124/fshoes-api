@@ -1,16 +1,17 @@
 <?php
 
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\Image\ImageController;
 use App\Http\Controllers\Api\OrderDetailsController;
 use App\Http\Controllers\Api\OrdersController;
 use App\Http\Controllers\Api\PaymentOnline;
+use App\Http\Controllers\Api\Product\ProductController;
+use App\Http\Controllers\Api\Product\Variation\VariationController;
+use App\Http\Controllers\Api\Review\ReviewController;
+use App\Http\Controllers\Api\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\User\UserController;
-use App\Http\Controllers\Api\Review\ReviewController;
-use App\Http\Controllers\Api\User\SocialiteController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -72,8 +73,14 @@ Route::post('paypal' , [PaymentOnline::class , 'paypal']);
 
 //Product Start
 Route::apiResource('product',ProductController::class)->parameter('product','id');
-
+Route::apiResource('product.variation',VariationController::class)->parameters(['product' => 'pid', 'variation'=>'id']);
 //Product End
+
+//Image
+Route::apiResource('image',ImageController::class)->parameter('image','id')->only(['index','create','destroy']);
+
+//End Image
+
 
 // Review
 Route::apiResource('review',ReviewController::class)->parameter('review','id');

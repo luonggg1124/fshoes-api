@@ -32,6 +32,14 @@ class RepositoryServiceProvider extends ServiceProvider
                 \App\Repositories\Product\ProductRepositoryInterface::class,
                 \App\Repositories\Product\ProductRepository::class
             ],
+            'variation' => [
+                \App\Repositories\Product\Variation\VariationRepositoryInterface::class,
+                \App\Repositories\Product\Variation\VariationRepository::class
+            ],
+            'image' => [
+                \App\Repositories\Image\ImageRepositoryInterface::class,
+                \App\Repositories\Image\ImageRepository::class
+            ],
             'attribute' => [
                 \App\Repositories\Attribute\AttributeRepositoryInterface::class,
                 \App\Repositories\Attribute\AttributeRepository::class

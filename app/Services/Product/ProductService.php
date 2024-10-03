@@ -2,17 +2,17 @@
 
 namespace App\Services\Product;
 
-use App\Models\Product;
 use App\Http\Traits\Paginate;
 use App\Http\Traits\Cloudinary;
 
+use App\Services\Image\ImageServiceInterface;
 use Illuminate\Http\UploadedFile;
 use App\Http\Resources\ProductResource;
 use App\Http\Traits\CanLoadRelationships;
-use App\Models\ProductVariations;
 use App\Repositories\Product\ProductRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProductService implements ProductServiceInterface
 {
@@ -23,8 +23,6 @@ class ProductService implements ProductServiceInterface
         'name',
         'slug',
         'price',
-        'sale_price',
-        'is_sale',
         'short_description',
         'description',
         'sku',
@@ -36,6 +34,7 @@ class ProductService implements ProductServiceInterface
     ];
     public function __construct(
         protected ProductRepositoryInterface $productRepository,
+        protected ImageServiceInterface $imageService,
     ) {
     }
 
@@ -76,82 +75,50 @@ class ProductService implements ProductServiceInterface
     {
         return DB::transaction(function () use ($data, $options) {
             $product = $this->productRepository->create($data);
-            if(!$product) throw new \Exception('Product not created');
+            if(!$product) throw new \Exception('Cannot create product');
+            $product->slug = $this->slug($product->name,$product->id);
+            $product->save();
             if(count($options['images']) > 0){
-                $this->createProductImages($options['images'],$product);
+                foreach ($options['images'] as $image) {
+                    if($image instanceof UploadedFile){
+                        $image = $this->imageService->create($image,'product');
+                        $product->images()->attach($image->id);
+                    }elseif (is_int($image)){
+                        $product->images()->attach($image);
+                    }
+                }
             }
-            return $this->loadRelationships($product);
+            return new ProductResource($this->loadRelationships($product));
         });
     }
-    public function update(int $id, array $data,array $options=[
+    public function update(int|string $id, array $data,array $options=[
         'images' => []
     ])
     {
         return DB::transaction(function () use ($id,$data, $options) {
+            $product = $this->productRepository->find($id);
 
-            $product = $this->productRepository->find($data);
             if(!$product) throw new \Exception('Product not found');
+            $product->update($data);
+            $product->slug = $this->slug($product->name,$product->id);
+            $product->save();
             if(count($options['images']) > 0){
-                $this->createProductImages($options['images'],$product);
+               $product->images()->sync($options['images']);
             }
-            return $this->loadRelationships($product);
+            return new ProductResource($this->loadRelationships($product));
         });
     }
-    public function createVariation(
-        array $data = [],
-        array $options = [
-            'images' => []
-        ]
-    )
-    {
-        $variation = $this->productRepository->createVariations($data);
 
-        return $variation;
-    }
-    public function updateVariation(int|string $id, array $data = [], array $options = [])
-    {
 
-    }
-    protected function createProductImages(array $data ,Product $model)
-    {
-        if ($data && count($data) > 0) {
-            foreach ($data as $image) {
-                if ($image instanceof UploadedFile) {
-                    $upload = $this->uploadImageCloudinary($image);
-                    $model->id;
-                    $img = [
-                        'product_id' => $model->id,
-                        'image_url' => $upload['path'],
-                        'public_id' => $upload['public_id'],
-                        'alt_text' => 'image '.$model->name ?? '',
-                    ];
-                    $this->productRepository->createImage($img);
-                }
-            }
-            return $model->productImages();
+    protected function slug(string $name, int|string $id){
+        $slug = Str::slug($name).'.'.$id;
+        $exists = $this->productRepository->query()->where('slug',$slug)->exists();
+        if($exists){
+            return Str::slug($name).'-'.Str::random(2).'.'.$id;
         }
-        throw new \Exception('Failed to create product images');
+        return $slug;
     }
-     protected function updateProductImage(array $data ,Product $model)
-     {
-         if ($data && count($data) > 0) {
-             foreach ($data as $image) {
-                 if ($image instanceof UploadedFile) {
-                     $upload = $this->uploadImageCloudinary($image);
-                     $model->id;
-                     $img = [
-                         'product_id' => $model->id,
-                         'image_url' => $upload['path'],
-                         'public_id' => $upload['public_id'],
-                         'alt_text' => 'image '.$model->name ?? '',
-                     ];
-                     $this->productRepository->createImage($img);
-                 }
-             }
-             return $model;
-
-         }
-         throw new \Exception('Failed to update product images');
-     }
-
 }
+
+
+

@@ -18,8 +18,6 @@ class ProductVariations extends Model
         'product_id',
         'slug',
         'price',
-        'sale_price',
-        'is_sale',
         'short_description',
         'description',
         'sku',

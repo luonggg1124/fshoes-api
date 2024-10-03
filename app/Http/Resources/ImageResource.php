@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Product\VariationResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -18,6 +19,8 @@ class ImageResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'products' => ProductResource::collection($this->whenLoaded('products')),
+            'variations' => VariationResource::collection($this->whenLoaded('variations')),
             'url' => $this->url,
             'public_id' => $this->public_id,
             'alt_text' => $this->alt_text,

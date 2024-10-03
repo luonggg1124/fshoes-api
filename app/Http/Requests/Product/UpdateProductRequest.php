@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Requests\Product;
-use Illuminate\Foundation\Http\FormRequest;
+
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CreateProductRequest extends FormRequest
+class UpdateProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,14 +24,7 @@ class CreateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'price' => 'required',
-            'description' => 'nullable',
-            'sku' => 'nullable|string',
-            'short_description' => 'nullable',
-            'status' => 'nullable',
-            'stock_qty' => 'required|numeric',
-            'images' => 'nullable|array',
+            //
         ];
     }
     protected function failedValidation(Validator $validator)

@@ -21,13 +21,11 @@ class ProductResource extends JsonResource
         return [
             'id' => $this->id,
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
-            'image' => ImageResource::collection($this->whenLoaded('images')),
+            'images' => ImageResource::collection($this->whenLoaded('images')),
             'variations' => VariationResource::collection($this->whenLoaded('variations')),
             'name' => $this->name,
             'slug' => $this->slug,
             'price' => $this->price,
-            'sale_price' => $this->sale_price,
-            'is_sale' => $this->is_sale,
             'description' => $this->description,
             'short_description' => $this->short_description,
             'sku' => $this->sku,
@@ -36,7 +34,8 @@ class ProductResource extends JsonResource
             'qty_sold' => $this->qty_sold,
             'image_url' => $this->image_url,
             'image_public_id' => $this->image_public_id,
-            'created_at' => (new Carbon($this->created_at))->format('H:m d-m-Y')
+            'created_at' => (new Carbon($this->created_at))->format('H:m d-m-Y'),
+            'updated_at' => (new Carbon($this->updated_at))->format('H:m d-m-Y')
         ];
     }
 }

@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Product;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\CreateProductRequest;
+use App\Http\Requests\Product\UpdateProductRequest;
 use App\Services\Product\ProductServiceInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ProductController extends Controller
@@ -32,7 +33,6 @@ class ProductController extends Controller
      */
     public function store(CreateProductRequest $request)
     {
-
 
          try{
              $data = $request->all();
@@ -63,9 +63,9 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateProductRequest $request, string|int $id)
     {
-        //
+
     }
 
     /**
