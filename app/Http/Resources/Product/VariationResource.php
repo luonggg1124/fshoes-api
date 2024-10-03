@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Product;
 
+
 use App\Http\Resources\ImageResource;
 use App\Http\Resources\ProductResource;
 use Carbon\Carbon;
@@ -19,6 +20,7 @@ class VariationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+
             'id' => $this->id,
             'product' => new ProductResource($this->whenLoaded('product')),
             'images' => ImageResource::collection($this->images),
@@ -31,6 +33,7 @@ class VariationResource extends JsonResource
             'stock_qty' => $this->stock_qty,
             'qty_sold' => $this->qty_sold,
             'created_at' => (new Carbon($this->created_at))->format('H:m d-m-Y')
+
         ];
     }
 }
