@@ -11,6 +11,7 @@ use App\Repositories\Image\ImageRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Mockery\Exception;
 
 class ImageService implements ImageServiceInterface
 {
@@ -48,6 +49,7 @@ class ImageService implements ImageServiceInterface
                 $list[] = $img;
             }
         }
+        if(count($list) < 1)throw new Exception('Cannot create images.Maybe the image is in the wrong format!');
         return ImageResource::collection($list);
     }
     public function create(UploadedFile $file,string $folder = ''){

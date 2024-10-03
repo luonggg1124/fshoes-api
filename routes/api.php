@@ -103,5 +103,5 @@ Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\A
 //Route::get('api/auth/google/redirect', [SocialiteController::class, 'googleRedirect']);
 //Route::post('auth/google/callback', [SocialiteController::class, 'googleCallback']);
 
-Route::get('test',[UserController::class,'test']);
+Route::get('test',[\App\Http\Controllers\TestController::class,'test']);
 

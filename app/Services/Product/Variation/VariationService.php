@@ -39,4 +39,7 @@ class VariationService implements VariationServiceInterface
         $variations = $product->variations()->orderBy($column, $sort);
         return VariationResource::collection($this->loadRelationships($variations)->get());
     }
+    public function create(int|string $pid,array $data,){
+
+    }
 }

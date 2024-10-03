@@ -8,13 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Image extends Model
 {
-
-
-
-
-
     use HasFactory;
-    protected $fillable = ['image_url','public_id','alt_text'];
+    protected $fillable = ['url','public_id','alt_text'];
 
     public function products():BelongsToMany
     {

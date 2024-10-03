@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\Services\Image\ImageServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 
 class ImageController extends Controller
@@ -32,6 +33,12 @@ class ImageController extends Controller
             ],201);
 
         }catch (\Throwable $throwable){
+            Log::error(
+                message: __CLASS__.'@'.__FUNCTION__,context: [
+                'line' => $throwable->getLine(),
+                'message' => $throwable->getMessage()
+            ]
+            );
             return response()->json([
                 'status' => false,
                 'message' => 'Something went wrong',
