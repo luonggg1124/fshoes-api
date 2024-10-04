@@ -59,8 +59,11 @@ class AppServiceProvider extends ServiceProvider
             'order-history'=>[
                 \App\Services\OrderHistory\OrderHistoryServiceInterface::class,
                 \App\Services\OrderHistory\OrderHistoryService::class
+            ],
+            'wishlist'=>[
+                \App\Services\Wishlist\WishlistServiceInterface::class,
+                \App\Services\Wishlist\WishlistService::class
             ]
-
         ];
 
         foreach ($services as $service) {
