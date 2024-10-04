@@ -59,6 +59,10 @@ class RepositoryServiceProvider extends ServiceProvider
             'order-history'=>[
                 \App\Repositories\OrderHistory\OrderHistoryRepositoryInterface::class,
                 \App\Repositories\OrderHistory\OrderHistoryRepository::class
+            ],
+            'wishlist'=>[
+                \App\Repositories\Wishlist\WishlistRepositoryInterface::class,
+                \App\Repositories\Wishlist\WishlistRepository::class
             ]
 
         ];

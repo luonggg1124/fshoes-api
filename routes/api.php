@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\Product\ProductController;
 use App\Http\Controllers\Api\Product\Variation\VariationController;
 use App\Http\Controllers\Api\Review\ReviewController;
 use App\Http\Controllers\Api\User\UserController;
+use App\Http\Controllers\Api\WishlistController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -104,3 +105,6 @@ Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\A
 //Route::post('auth/google/callback', [SocialiteController::class, 'googleCallback']);
 
 
+
+//WishList
+Route::apiResource('wishlist' , WishlistController::class);
