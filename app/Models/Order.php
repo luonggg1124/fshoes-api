@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Order extends Model
 {
 
-    use HasFactory,softDeletes;
+    use HasFactory;
     protected $table='orders';
     protected $fillable=[
         "user_id",
@@ -22,6 +22,13 @@ class Order extends Model
         "tax_amount",
         "amount_collected",
         "note",
+        "receiver_full_name",
+        "phone",
+        "city",
+        "country",
+        "postal_code",
+        "voucher_id",
+        "address",
         "status"
     ];
 
@@ -31,5 +38,9 @@ class Order extends Model
     public function orderDetails():HasMany
     {
         return $this->hasMany(OrderDetails::class);
+    }
+    public function orderHistory() : HasMany
+    {
+            return $this->hasMany(OrderHistory::class );
     }
 }
