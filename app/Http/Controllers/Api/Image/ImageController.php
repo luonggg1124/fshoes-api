@@ -28,7 +28,7 @@ class ImageController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Cannot find any images',
-                ],500);
+                ],404);
             }
             if(is_array($images)){
                 $list = $this->service->createMany($images);
@@ -37,7 +37,7 @@ class ImageController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'No images uploaded'
-                ],500);
+                ],404);
             }
             return response()->json([
                 'status' => true,
