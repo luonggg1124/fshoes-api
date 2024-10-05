@@ -55,6 +55,14 @@ class RepositoryServiceProvider extends ServiceProvider
             'review' => [
                 \App\Repositories\Review\ReviewRepositoryInterface::class,
                 \App\Repositories\Review\ReviewRepository::class
+            ],
+            'order-history'=>[
+                \App\Repositories\OrderHistory\OrderHistoryRepositoryInterface::class,
+                \App\Repositories\OrderHistory\OrderHistoryRepository::class
+            ],
+            'wishlist'=>[
+                \App\Repositories\Wishlist\WishlistRepositoryInterface::class,
+                \App\Repositories\Wishlist\WishlistRepository::class
             ]
 
         ];

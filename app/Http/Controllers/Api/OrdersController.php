@@ -17,7 +17,7 @@ class OrdersController extends Controller
     {}
     public function index(Request $request)
     {
-        
+
         return response()->json(
             $this->orderService->getAll($request) ,200
          );
@@ -64,7 +64,7 @@ class OrdersController extends Controller
             ],200);
         }catch (\Exception $e){
             return response()->json(['error' => $e->getMessage()], 500);
-        }  
+        }
     }
 
     /**

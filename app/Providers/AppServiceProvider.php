@@ -55,8 +55,15 @@ class AppServiceProvider extends ServiceProvider
             'review' => [
                 \App\Services\Review\ReviewServiceInterface::class,
                 \App\Services\Review\ReviewService::class,
+            ],
+            'order-history'=>[
+                \App\Services\OrderHistory\OrderHistoryServiceInterface::class,
+                \App\Services\OrderHistory\OrderHistoryService::class
+            ],
+            'wishlist'=>[
+                \App\Services\Wishlist\WishlistServiceInterface::class,
+                \App\Services\Wishlist\WishlistService::class
             ]
-
         ];
 
         foreach ($services as $service) {
