@@ -60,7 +60,7 @@ class ProductService implements ProductServiceInterface
             throw new ModelNotFoundException('Product not found');
         }
 
-        //$product->variations->values->load(['attribute']);
+
         $product = $this->loadRelationships($product);
         return new ProductResource($product);
     }
