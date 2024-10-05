@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Image;
 use App\Models\Product;
 use App\Models\Attribute;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
 use App\Models\AttributeValue;
 use Illuminate\Database\Seeder;
@@ -68,6 +69,19 @@ class VariationSeeder extends Seeder
                     'stock_qty' => random_int(20, 70),
                     'qty_sold' => random_int(20, 70),
                 ]);
+
+
+                $variation->values()->attach($var);
+                $values = $variation->values()->pluck('value');
+                $valueArr = [];
+                foreach ($values as $value) {
+                    $v = Str::slug($value);
+                    $valueArr[] = $v;
+                }
+                $valueStr = implode('-', $valueArr);
+                $slug = $valueStr . '.' . $variation->id;
+                $variation->slug = $slug;
+                $variation->save();
                 $images = Image::factory(3)->create();
                 foreach ($images as $image) {
                     DB::table('product_variation_image')->insert([
@@ -75,7 +89,7 @@ class VariationSeeder extends Seeder
                         'image_id' => $image->id,
                     ]);
                 }
-                $variation->values()->attach($var);
+
             }
 
 

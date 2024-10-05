@@ -47,11 +47,9 @@ class CreateVariationRequest extends FormRequest
     public function messages()
     {
         return [
-
             'variations.*.price.required' => 'Product price is required',
             'variations.*.stock_qty.required' => 'Product stock quantity is required',
             'variations.*.stock_qty.numeric' =>  'Product stock quantity  must be a type of number',
-
         ];
     }
 }

@@ -41,11 +41,7 @@ class ProductService implements ProductServiceInterface
     public function all()
     {
         $perPage = request()->query('per_page');
-        $column = request()->query('column') ?? 'id';
-        if(!in_array($column,$this->columns)) $column = 'id';
-        $sort = request()->query('sort') ?? 'desc';
-        if($sort !== 'desc' && $sort !== 'asc') $sort = 'asc';
-        $products = $this->loadRelationships($this->productRepository->query()->orderBy('qty_sold','desc')->orderBy('stock_qty','desc')->orderBy($column,$sort)->latest())->paginate($perPage);
+        $products = $this->loadRelationships($this->productRepository->query()->orderBy('updated_at','desc'))->paginate($perPage);
         return [
             'paginator' => $this->paginate($products),
             'data' => ProductResource::collection(
@@ -64,7 +60,7 @@ class ProductService implements ProductServiceInterface
             throw new ModelNotFoundException('Product not found');
         }
 
-        //$product->variations->values->load(['attribute']);
+
         $product = $this->loadRelationships($product);
         return new ProductResource($product);
     }
@@ -173,11 +169,7 @@ class ProductService implements ProductServiceInterface
     public function productWithTrashed()
     {
         $perPage = request()->query('per_page');
-        $column = request()->query('column') ?? 'id';
-        if(!in_array($column,$this->columns)) $column = 'id';
-        $sort = request()->query('sort') ?? 'desc';
-        if($sort !== 'desc' && $sort !== 'asc') $sort = 'asc';
-        $products = $this->loadRelationships($this->productRepository->query()->withTrashed()->orderBy('deleted_at','desc')->orderBy('qty_sold','desc')->orderBy('stock_qty','desc')->orderBy($column,$sort)->latest())->paginate($perPage);
+        $products = $this->loadRelationships($this->productRepository->query()->withTrashed()->latest())->paginate($perPage);
         return [
             'paginator' => $this->paginate($products),
             'data' => ProductResource::collection(
@@ -187,11 +179,8 @@ class ProductService implements ProductServiceInterface
     }
     public function productTrashed(){
         $perPage = request()->query('per_page');
-        $column = request()->query('column') ?? 'id';
-        if(!in_array($column,$this->columns)) $column = 'id';
-        $sort = request()->query('sort') ?? 'desc';
-        if($sort !== 'desc' && $sort !== 'asc') $sort = 'asc';
-        $products = $this->loadRelationships($this->productRepository->query()->onlyTrashed()->orderBy('deleted_at','desc')->orderBy($column,$sort)->latest())->paginate($perPage);
+
+        $products = $this->loadRelationships($this->productRepository->query()->onlyTrashed()->orderBy('deleted_at','desc'))->paginate($perPage);
         return [
             'paginator' => $this->paginate($products),
             'data' => ProductResource::collection(

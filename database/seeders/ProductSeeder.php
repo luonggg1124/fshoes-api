@@ -18,8 +18,11 @@ class ProductSeeder extends Seeder
     {
         // php artisan db:seed --class=ProductSeeder
 
+
         Product::factory(20)->create();
         foreach (Product::all() as $product) {
+            $product->slug .= $product->slug.'.'.$product->id;
+            $product->save();
             DB::table('category_product')->insert([
                'product_id' => $product->id,
                'category_id' => rand(1, 4)

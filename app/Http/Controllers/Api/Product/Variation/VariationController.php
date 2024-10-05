@@ -21,6 +21,23 @@ class VariationController extends Controller
            'variations' => $this->service->index($pid)
         ]);
     }
+    public function show(int|string $pid,int|string $id){
+        try {
+            $variation = $this->service->show($pid,$id);
+            return \response()->json([
+                'status' => true,
+                'variation' => $variation
+            ]);
+        }catch (\Throwable $throw){
+            return \response()->json([
+                'error' => $throw->getMessage(),
+                'status' => false
+            ],400);
+        }
+    }
+
+
+
     public function store(string|int $pid, CreateVariationRequest $request){
         try {
             $variations = $request->variations;
@@ -56,7 +73,41 @@ class VariationController extends Controller
         }
     }
 
-    public function update(string|int $pid, int|string $id,UpdateVariationRequest $request){
-
+    public function update(string|int $pid, int|string $id,Request $request){
+        try {
+            $data = $request->all();
+            $images = $request->images ?? [];
+            $values = $request->values ?? [];
+            $variation = $this->service->update($pid,$id, $data,[
+                'images' => $images,
+                'values' => $values
+            ]);
+            return response()->json([
+                'status' => true,
+                'message' => 'Variation updated successfully.',
+                'variation' => $variation
+            ],201);
+        }catch (\Throwable $throw){
+            Log::error(
+                message: __CLASS__.'@'.__FUNCTION__,context: [
+                'line' => $throw->getLine(),
+                'message' => $throw->getMessage()
+            ]
+            );
+        }
+    }
+    public function destroy(string|int $pid,int|string $id){
+        try {
+            $success = $this->service->destroy($pid, $id);
+            return \response()->json([
+                'status' => $success,
+                'message' => 'Deleted successfully!'
+            ],201);
+        }catch (\Throwable $throwable) {
+            return \response()->json([
+                'status' => false,
+                'error' => $throwable->getMessage()
+            ],404);
+        }
     }
 }
