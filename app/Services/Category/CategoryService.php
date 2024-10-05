@@ -79,6 +79,8 @@ class CategoryService implements CategoryServiceInterface
     {
         $category = $this->categoryRepository->find($id);
         if (!$category) throw new ModelNotFoundException('Category not found');
+        $category->slug = $this->slug($category->name,$category->id);
+        $category->save();
         $category->update($data);
         return new CategoryResource($this->loadRelationships($category));
     }
