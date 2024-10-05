@@ -46,16 +46,24 @@ class CategoryController extends Controller
                 'message' => 'Category created successfully',
                 'category' => $category
             ],201);
-        }catch (\Exception $e){
+        }catch (\Throwable $throw){
 
             Log::error('Some thing went wrong!', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
+                'message' => $throw->getMessage(),
+                'file' => $throw->getFile(),
+                'line' => $throw->getLine(),
+                'trace' => $throw->getTraceAsString(),
             ]);
-
-            return response()->json(['error' => $e->getMessage()], 500);
+            if($throw instanceof ModelNotFoundException){
+                return response()->json([
+                    'status' => false,
+                    'error' => $throw->getMessage()
+                ], 404);
+            }
+            return response()->json([
+                'status' => false,
+                'error' => 'Something went wrong'
+            ], 500);
         }
     }
 
@@ -83,16 +91,24 @@ class CategoryController extends Controller
                 'message' => 'Category updated successfully',
                 'category' => $category
             ],201);
-        }catch (\Exception $e){
+        }catch (\Throwable $throw){
 
             Log::error('Some thing went wrong!', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
+                'message' => $throw->getMessage(),
+                'file' => $throw->getFile(),
+                'line' => $throw->getLine(),
+                'trace' => $throw->getTraceAsString(),
             ]);
-
-            return response()->json(['error' => $e->getMessage()], 500);
+            if($throw instanceof ModelNotFoundException){
+                return response()->json([
+                    'status' => false,
+                    'error' => $throw->getMessage()
+                ], 404);
+            }
+            return response()->json([
+                'status' => false,
+                'error' => 'Something went wrong'
+            ], 500);
         }
     }
 
