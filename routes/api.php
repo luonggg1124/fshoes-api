@@ -99,7 +99,8 @@ Route::apiResource('review',ReviewController::class)->parameter('review','id');
 
 // Attribute - Attribute Value Start
 Route::apiResource('attribute',\App\Http\Controllers\Api\Attribute\AttributeController::class)->parameter('attribute','id');
-Route::post('add/attribute/values/product/{id}',[ProductController::class,'attributeValues'])->name('add.attribute.values');
+Route::get('get/attribute/values/product/{id}',[ProductController::class,'getAttributeValues'])->name('get.attribute.values');
+Route::post('add/attribute/values/product/{id}',[ProductController::class,'createAttributeValues'])->name('add.attribute.values');
 Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\AttributeValueController::class)->parameters(['attribute'=>'aid','value' => 'id']);
 //Attribute - Attribute Value End
 

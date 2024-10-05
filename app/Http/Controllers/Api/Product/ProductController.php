@@ -65,7 +65,7 @@ class ProductController extends Controller
          }
 
     }
-    public function attributeValues(int $id,Request $request):Response|JsonResponse
+    public function createAttributeValues(int $id,Request $request):Response|JsonResponse
     {
         try {
             if(empty($request->attribute)){
@@ -88,10 +88,9 @@ class ProductController extends Controller
             $attribute = $request->attribute;
             $values = $request->values;
             $data = $this->productService->createAttributeValues($id,$attribute,$values);
-            return \response()->json([
-                'status' => true,
-                'data' => $data
-            ],201);
+            return \response()->json(
+                $data
+            ,201);
         }catch (\Throwable $throw){
             Log::error(
                 message: __CLASS__.'@'.__FUNCTION__,context: [
@@ -111,6 +110,22 @@ class ProductController extends Controller
             ],500);
         }
     }
+    public function getAttributeValues(int|string $id){
+        try {
+            return response()->json($this->productService->productAttribute($id));
+        }catch (\Throwable $throw){
+            Log::error(
+                message: __CLASS__.'@'.__FUNCTION__,context: [
+                'line' => $throw->getLine(),
+                'message' => $throw->getMessage()
+            ]
+            );
+            return response()->json([
+                'error' => $throw->getMessage(),
+                'status' => false
+            ], 404);
+        }
+    }
     /**
      * Display the specified resource.
      */
@@ -128,9 +143,15 @@ class ProductController extends Controller
     public function productDetail(string|int $id){
         try {
             return response()->json($this->productService->productDetail($id));
-        }catch (ModelNotFoundException $e){
+        }catch (\Throwable $throw){
+            Log::error(
+                message: __CLASS__.'@'.__FUNCTION__,context: [
+                'line' => $throw->getLine(),
+                'message' => $throw->getMessage()
+            ]
+            );
             return response()->json([
-                'error' => $e->getMessage(),
+                'error' => $throw->getMessage(),
                 'status' => false
             ], 404);
         }
@@ -170,6 +191,10 @@ class ProductController extends Controller
         try {
             $status = $request->status;
             $product = $this->productService->updateStatus($status,$id);
+            return response()->json([
+                'message' => 'Update product status successfully',
+                'status' => true,
+            ],201);
         }catch (\Throwable $throwable){
             Log::error(
                 message: __CLASS__.'@'.__FUNCTION__,context: [

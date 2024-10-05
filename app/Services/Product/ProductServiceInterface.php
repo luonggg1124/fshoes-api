@@ -7,6 +7,7 @@ interface ProductServiceInterface
     function all();
     function findById(int|string $id);
     function productDetail(int|string $id);
+    function productAttribute(int|string $id);
     function createAttributeValues(int $id,string $attributeName,array $values = []);
     function create(array $data,array $options = []);
     public function updateStatus(string|int|bool $status,int|string $id);
