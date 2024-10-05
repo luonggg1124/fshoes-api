@@ -35,6 +35,7 @@ class AttributeService implements AttributeServiceInterface
             'data' => AttributeResource::collection($attributes->items()),
         ];
     }
+
     public function create(array $data)
     {
         $attribute = $this->attributeRepository->create($data);

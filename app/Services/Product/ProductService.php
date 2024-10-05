@@ -3,7 +3,7 @@
 namespace App\Services\Product;
 
 use App\Http\Resources\Attribute\AttributeResource;
-use App\Http\Resources\Attribute\Value\ValueResource;
+use App\Http\Resources\Product\ProductDetailResource;
 use App\Http\Traits\Paginate;
 use App\Http\Traits\Cloudinary;
 
@@ -67,26 +67,45 @@ class ProductService implements ProductServiceInterface
     public function productDetail(int|string $id){
         $product = $this->productRepository->query()->find($id);
         if(!$product) throw new ModelNotFoundException('Product not found');
-
-        $attributes = [];
-        foreach ($product->variations as $variation) {
-
-            foreach ($variation->values as $value){
-                $attributes[$value->attribute->id][] = $value->value;
+        if($product->variations){
+            $attributes = [];
+            foreach ($product->variations as $variation) {
+                foreach ($variation->values as $value){
+                    $attributes[$value->attribute->id][$value->id] = $value->value;
+                }
             }
+            // automatically assign attributes
+            $product->attributes = $attributes;
         }
-        $attr = [];
-        foreach ($attributes as $attribute => $values){
-            $arrUnique = array_unique($values);
-            $newArr = [];
-            foreach ($arrUnique as $value) $newArr[] = $value;
-            $attr[$attribute] = $newArr;
+        $productRelated = [];
+        if($product->categories){
+            foreach ($product->categories as $category){
+                foreach ($category->products()->orderBy('qty_sold','desc')->take(3)->get() as $p)
+                $productRelated[] = $p;
+                if(count($productRelated) === 20)break;
+            }
+
         }
-        return [
-            'attribute' => $attr,
-        ];
+        $uniProductRelated = collect($productRelated)->unique('id');
+        $collectProduct = [];
+        if(count($uniProductRelated) < 20){
+            $topSold = $this->productRepository->query()->orderBy('qty_sold','desc')->take(30)->get();
+            foreach ($topSold as $item){
+                $uniProductRelated[] = $item;
+                if(count(collect($uniProductRelated)->unique('id')) === 20) {
+                    $collectProduct = collect($uniProductRelated)->unique('id');
+                    break;
+                }
+            }
+        }else{
+            $collectProduct = $uniProductRelated;
+        }
+        $suggestedProduct = [...$collectProduct];
+        $product->suggestedProduct = $suggestedProduct;
+        return new ProductDetailResource($product);
 
     }
+
     public function create(
         array $data,
         array $options = [
@@ -127,6 +146,12 @@ class ProductService implements ProductServiceInterface
             return new ProductResource($this->loadRelationships($product));
         });
     }
+    public function productAttribute(int|string $id){
+        $product = $this->productRepository->find($id);
+        if(!$product) throw new ModelNotFoundException('Product not found');
+        $attributes = $product->ownAttributes()->orWhere('product_id',null)->get();
+        return AttributeResource::collection($attributes->load(['values']));
+    }
     public function createAttributeValues(int $id,string|int $attributeName,array $values = []){
         $product = $this->productRepository->find($id);
         if(!$product) throw new ModelNotFoundException('Product not found');
@@ -134,14 +159,12 @@ class ProductService implements ProductServiceInterface
         $attribute = $product->ownAttributes()->create([
             'name' => $attributeName,
         ]);
-        $listValues = [];
+
         foreach ($values as $value){
-            $value = $attribute->values()->create(['value' => $value]);
-            $listValues[] = $value;
+            $attribute->values()->create(['value' => $value]);
         }
         return [
-            'attribute' => new AttributeResource($attribute),
-            'values' => ValueResource::collection($listValues)
+            new AttributeResource($attribute->load(['values'])),
         ];
     }
     public function updateStatus(string|int|bool $status,int|string $id){
