@@ -26,13 +26,13 @@ Route::get('auth/redirect-to/login',function(){
 
 //Admin
 Route::group(['middleware' => ['auth:sanctum','is_admin']], function(){
-    Route::apiResource('category',CategoryController::class)->parameter('category','id')->except(['index','show']);
+
     Route::delete('user/{nickname}',[UserController::class,'destroy']);
 
 });
 
 // End Admin
-
+Route::apiResource('category',CategoryController::class)->parameter('category','id')->except(['index','show']);
 Route::get('user',[UserController::class,'index']);
 // Auth
 Route::group(['middleware' => ['auth:api']],function(){

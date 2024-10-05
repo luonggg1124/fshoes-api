@@ -68,7 +68,6 @@ class ProductController extends Controller
     public function attributeValues(int $id,Request $request):Response|JsonResponse
     {
         try {
-
             if(empty($request->attribute)){
                 return \response()->json([
                     'status' => false,

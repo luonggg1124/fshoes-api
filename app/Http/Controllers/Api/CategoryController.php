@@ -22,7 +22,7 @@ class CategoryController extends Controller
 
         return response()->json([
                 'status' => true,
-                $this->categoryService->getAll()
+                'categories' =>$this->categoryService->getAll()
             ]);
     }
     public function mains():JsonResponse
@@ -78,9 +78,7 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, int $id):Response|JsonResponse
     {
         try {
-            $category = $this->categoryService->update($id,$request->validated(),[
-                'image' => $request->file('image'),
-            ]);
+            $category = $this->categoryService->update($id,$request->validated());
             return response()->json([
                 'message' => 'Category updated successfully',
                 'category' => $category
@@ -106,6 +104,7 @@ class CategoryController extends Controller
         try {
             $this->categoryService->delete($id);
             return response()->json([
+                'status' => true,
                 'message' => 'Category deleted successfully',
             ]);
         }catch (\Exception $e){

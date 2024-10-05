@@ -26,9 +26,8 @@ class UpdateCategoryRequest extends FormRequest
         $id = $this->route('id');
         return [
             'name' => 'required|string',
-            'slug' => 'required|string|unique:categories,slug,'.$id,
             'parent_id' => 'nullable|integer|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif,svg|max:2048',
+            'image_url' => 'nullable|string',
         ];
     }
     protected function failedValidation(Validator $validator)
@@ -45,15 +44,9 @@ class UpdateCategoryRequest extends FormRequest
             'name.required' => 'The name field is required.',
             'name.string' => 'The name must be a string.',
 
-            'slug.required' => 'The slug field is required.',
-            'slug.string' => 'The slug must be a string.',
-            'slug.unique' => 'The slug has already been taken.',
-
             'parent_id.integer' => 'The parent id must be an integer.',
             'parent_id.exists' => 'The parent id is not found.',
 
-            'image.image' => 'The file must be an type of image.',
-            'image.mimes' => 'The image must be a file of type: jpg, jpeg, png.',
         ];
     }
 }

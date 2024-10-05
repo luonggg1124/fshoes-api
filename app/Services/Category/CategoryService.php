@@ -66,41 +66,21 @@ class CategoryService implements CategoryServiceInterface
     /**
      * @throws \Exception
      */
-    public function create(array $data, array $option = ['image' => null])
+    public function create(array $data, array $option = [])
     {
-        try {
-            $category = $this->categoryRepository->create($data);
-            if ($option['image']) {
-                $upload = $this->uploadImageCloudinary($option['image']);
-                $category->image_url = $upload['path'];
-                $category->public_id = $upload['public_id'];
-                $category->save();
-            }
-            $category->slug = $this->slug($category->name,$category->id);
-            $category->save();
-            $category = $this->loadRelationships($category);
-            return new CategoryResource($category);
-        } catch (\Exception $e) {
-            throw new \Exception('Cannot create category');
-        }
+        $category = $this->categoryRepository->create($data);
+        if(!$category) throw new \Exception('Category not found');
+        $category->slug = $this->slug($category->name,$category->id);
+        $category->save();
+        $category = $this->loadRelationships($category);
+        return new CategoryResource($category);
     }
-    public function update(int|string $id, array $data, array $option = ['image' => null])
+    public function update(int|string $id, array $data, array $option = [])
     {
-        try {
-            $category = $this->categoryRepository->update($id, $data);
-            if ($option['image']) {
-                if ($category->image_url) {
-                    $this->deleteImageCloudinary($category->public_id);
-                }
-                $upload = $this->uploadImageCloudinary($option['image']);
-                $category->image_url = $upload['path'];
-                $category->public_id = $upload['public_id'];
-                $category->save();
-            }
-            return new CategoryResource($this->loadRelationships($category));
-        } catch (\Exception $e) {
-            throw new \Exception('Cannot update category');
-        }
+        $category = $this->categoryRepository->find($id);
+        if (!$category) throw new ModelNotFoundException('Category not found');
+        $category->update($data);
+        return new CategoryResource($this->loadRelationships($category));
     }
     public function delete(int|string $id)
     {
