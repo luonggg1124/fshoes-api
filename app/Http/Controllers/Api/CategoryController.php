@@ -20,11 +20,18 @@ class CategoryController extends Controller
     public function index():Response|JsonResponse
     {
 
-        return response()->json(
-           $this->categoryService->getAll()
-        );
+        return response()->json([
+                'status' => true,
+                $this->categoryService->getAll()
+            ]);
     }
-
+    public function mains():JsonResponse
+    {
+        return response()->json([
+            'status' => true,
+           'categories' => $this->categoryService->mains()
+        ]);
+    }
     /**
      * Store a newly created resource in storage.
      */

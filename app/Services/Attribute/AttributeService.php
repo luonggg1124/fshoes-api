@@ -2,17 +2,19 @@
 namespace App\Services\Attribute;
 
 use App\Http\Resources\Attribute\AttributeResource;
+use App\Http\Resources\Attribute\Value\ValueResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Http\Traits\Paginate;
 use App\Repositories\Attribute\AttributeRepositoryInterface;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Mockery\Exception;
 
 
 class AttributeService implements AttributeServiceInterface
 {
     use CanLoadRelationships,Paginate;
-    private array $relations = ['values'];
+    private array $relations = ['values','product'];
     private array $columns = ['value','attribute_id','created_at','updated_at'];
     public function __construct(
         protected AttributeRepositoryInterface $attributeRepository,
@@ -38,6 +40,7 @@ class AttributeService implements AttributeServiceInterface
         $attribute = $this->attributeRepository->create($data);
         return new AttributeResource($this->loadRelationships($attribute));
     }
+
     public function find(int|string $id){
         $attribute = $this->attributeRepository->find($id);
         if(!$attribute) throw new ModelNotFoundException('Attribute not found');

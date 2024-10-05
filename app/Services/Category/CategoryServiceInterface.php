@@ -2,11 +2,11 @@
 
 namespace App\Services\Category;
 
-use Illuminate\Http\UploadedFile;
 
 interface CategoryServiceInterface
 {
     function getAll();
+    function mains();
     function findById(int|string $id);
 
     function create(array $data, array $option = []);

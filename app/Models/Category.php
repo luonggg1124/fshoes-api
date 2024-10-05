@@ -30,4 +30,5 @@ class Category extends Model
     {
         return $this->belongsToMany(User::class, 'user_interests', 'category_id', 'user_id');
     }
+
 }

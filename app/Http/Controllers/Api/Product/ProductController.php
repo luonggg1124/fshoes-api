@@ -65,7 +65,53 @@ class ProductController extends Controller
          }
 
     }
+    public function attributeValues(int $id,Request $request):Response|JsonResponse
+    {
+        try {
 
+            if(empty($request->attribute)){
+                return \response()->json([
+                    'status' => false,
+                    'error' => 'The attributes is required'
+                ],400);
+            }
+            if(empty($request->values)){
+                return \response()->json([
+                    'status' => false,
+                    'error' => 'The values is required'
+                ],400);
+            }elseif (!is_array($request->values)){
+                return \response()->json([
+                    'status' => false,
+                    'error' => 'The values must be an array'
+                ],400);
+            }
+            $attribute = $request->attribute;
+            $values = $request->values;
+            $data = $this->productService->createAttributeValues($id,$attribute,$values);
+            return \response()->json([
+                'status' => true,
+                'data' => $data
+            ],201);
+        }catch (\Throwable $throw){
+            Log::error(
+                message: __CLASS__.'@'.__FUNCTION__,context: [
+                'line' => $throw->getLine(),
+                'message' => $throw->getMessage()
+            ]
+            );
+            if ($throw instanceof ModelNotFoundException){
+                return \response()->json([
+                    'status' => false,
+                    'error' => $throw->getMessage()
+                ],404);
+            }
+            return \response()->json([
+                'status' => false,
+                'error' => $throw->getMessage()
+            ],500);
+        }
+    }
     /**
      * Display the specified resource.
      */

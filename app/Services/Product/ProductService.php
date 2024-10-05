@@ -2,6 +2,8 @@
 
 namespace App\Services\Product;
 
+use App\Http\Resources\Attribute\AttributeResource;
+use App\Http\Resources\Attribute\Value\ValueResource;
 use App\Http\Traits\Paginate;
 use App\Http\Traits\Cloudinary;
 
@@ -12,12 +14,13 @@ use App\Repositories\Product\ProductRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Mockery\Exception;
 
 class ProductService implements ProductServiceInterface
 {
     use CanLoadRelationships, Cloudinary, Paginate;
 
-    private array $relations = ['categories', 'images', 'variations'];
+    private array $relations = ['categories', 'images', 'variations','ownAttributes'];
     private array $columns = [
         'name',
         'slug',
@@ -128,7 +131,23 @@ class ProductService implements ProductServiceInterface
             return new ProductResource($this->loadRelationships($product));
         });
     }
-
+    public function createAttributeValues(int $id,string|int $attributeName,array $values = []){
+        $product = $this->productRepository->find($id);
+        if(!$product) throw new ModelNotFoundException('Product not found');
+        if(!$attributeName) throw new Exception('Attribute name not set');
+        $attribute = $product->ownAttributes()->create([
+            'name' => $attributeName,
+        ]);
+        $listValues = [];
+        foreach ($values as $value){
+            $value = $attribute->values()->create(['value' => $value]);
+            $listValues[] = $value;
+        }
+        return [
+            'attribute' => new AttributeResource($attribute),
+            'values' => ValueResource::collection($listValues)
+        ];
+    }
     public function updateStatus(string|int|bool $status,int|string $id){
         $product = $this->productRepository->find($id);
         if(!$product) throw new ModelNotFoundException('Product not found');

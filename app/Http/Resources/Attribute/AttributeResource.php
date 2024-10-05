@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Attribute;
 
 use App\Http\Resources\Attribute\Value\ValueResource;
+use App\Http\Resources\ProductResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,6 +21,7 @@ class AttributeResource extends JsonResource
         return [
             'id'=> $this->id,
             'values' => ValueResource::collection($this->whenLoaded('values')),
+            'product' => new ProductResource($this->whenLoaded('product')),
             'name' => $this->name,
             'created_at' => (new Carbon($this->created_at))->format('H:m d-m-Y'),
             'updated_at' => (new Carbon($this->updated_at))->format('H:m d-m-Y'),

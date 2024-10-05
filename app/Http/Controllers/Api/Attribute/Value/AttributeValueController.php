@@ -30,19 +30,17 @@ class AttributeValueController extends Controller
     public function store(Request $request, string|int $aid)
     {
         try {
-            if (empty($request->value)) {
+            if (empty($request->values)) {
                 return \response()->json([
                     'status' => false,
-                    'error' => 'The value is required'
+                    'error' => 'The values is required'
                 ], 422);
             }
-            $data = [
-                'value' => $request->get('value')
-            ];
-            $value = $this->service->create($aid, $data);
+            $data = $request->values;
+            $values = $this->service->createMany($aid, $data);
             return \response()->json([
                 'status' => true,
-                'value' => $value,
+                'values' => $values,
             ], 201);
 
         } catch (\Throwable $throw) {

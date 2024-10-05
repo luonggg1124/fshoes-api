@@ -49,7 +49,7 @@ Route::post('login',[\App\Http\Controllers\Api\User\AuthController::class,'login
 
 Route::apiResource('category', CategoryController::class)
     ->parameter('category', 'id')->only(['index','show']);
-
+Route::get('main/categories',[CategoryController::class,'mains'])->name('main.categories');
 
 // Category End
 
@@ -99,6 +99,7 @@ Route::apiResource('review',ReviewController::class)->parameter('review','id');
 
 // Attribute - Attribute Value Start
 Route::apiResource('attribute',\App\Http\Controllers\Api\Attribute\AttributeController::class)->parameter('attribute','id');
+Route::post('add/attribute/values/product/{id}',[ProductController::class,'attributeValues'])->name('add.attribute.values');
 Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\AttributeValueController::class)->parameters(['attribute'=>'aid','value' => 'id']);
 //Attribute - Attribute Value End
 

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class AttributeValueService  implements AttributeValueServiceInterface
 {
     use CanLoadRelationships,Paginate;
-    private array $relations = ['attribute','productVariation'];
+    private array $relations = ['attribute','variations'];
     private array $columns = ['attribute_id','value','created_at','updated_at'];
     public function __construct(
         protected AttributeValueRepositoryInterface $repository,
@@ -32,11 +32,22 @@ class AttributeValueService  implements AttributeValueServiceInterface
         $values = $attribute->values()->orderBy($column, $sort);
         return ValueResource::collection($this->loadRelationships($values)->get());
     }
-    public function create(int|string $aid,array $data){
+    public function create(int|string $aid,string|array $data){
         $attribute = $this->attributeRepository->find($aid);
         if(!$attribute) throw new ModelNotFoundException('Attribute not found');
         $value = $attribute->values()->create($data);
         return new ValueResource($this->loadRelationships($value));
+    }
+
+    public function createMany(int|string $aid,array $data){
+        $attribute = $this->attributeRepository->find($aid);
+        if(!$attribute) throw new ModelNotFoundException('Attribute not found');
+        $list = [];
+        foreach($data as $value){
+            $value = $this->create($aid,['value' => $value]);
+            $list[] = $value;
+        }
+        return ValueResource::collection($list);
     }
     public function find(int|string $aid,int|string $id){
         $attribute = $this->attributeRepository->find($aid);

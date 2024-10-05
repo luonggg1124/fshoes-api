@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('attributes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('product_id')->nullable()->constrained('products');
             $table->string('name');
             $table->softDeletes();
             $table->timestamps();

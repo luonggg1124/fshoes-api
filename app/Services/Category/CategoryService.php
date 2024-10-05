@@ -38,7 +38,20 @@ class CategoryService implements CategoryServiceInterface
 
         ];
     }
-
+    public function mains(){
+        $perPage = request()->query('per_page');
+        $column = request()->query('column') ?? 'id';
+        if(!in_array($column,$this->columns)) $column = 'id';
+        $sort = request()->query('sort') ?? 'asc';
+        if($sort !== 'desc' && $sort !== 'asc') $sort = 'asc';
+        $categories = $this->loadRelationships($this->categoryRepository->query()->where('parent_id',null)->orderBy($column,$sort))->paginate($perPage);
+        return [
+            'paginator' => $this->paginate($categories),
+            'data' => CategoryResource::collection(
+                $categories->items()
+            ),
+        ];
+    }
     public function findById(int|string $id)
     {
         $category = $this->categoryRepository->find($id);
