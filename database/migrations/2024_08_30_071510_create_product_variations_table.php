@@ -17,10 +17,9 @@ return new class extends Migration
             $table->string('sku')->nullable();
             $table->string('slug')->unique()->nullable();
             $table->decimal('price',10,2);
-            $table->boolean('status')->default(1);
+            $table->boolean('status')->default(1)->nullable();
             $table->integer('stock_qty');
             $table->integer('qty_sold');
-            $table->softDeletes();
             $table->timestamps();
         });
     }

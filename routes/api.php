@@ -77,6 +77,7 @@ Route::get('product/trashed',[ProductController::class,'productTrashed'])->name(
 Route::get('product/trashed/{id}',[ProductController::class,'getOneTrashed'])->name('product.one.trashed');
 Route::post('product/restore/{id}',[ProductController::class,'restore'])->name('product.restore');
 Route::delete('product/force-delete/{id}',[ProductController::class,'forceDestroy'])->name('product.force.delete');
+Route::get('product/detail/{id}',[ProductController::class,'productDetail'])->name('product.detail');
 Route::apiResource('product',ProductController::class)->parameter('product','id');
 
 Route::put('status/product/{id}',[ProductController::class,'updateProductStatus'])->name('product.update.status');
@@ -85,7 +86,7 @@ Route::apiResource('product.variation',VariationController::class)->parameters([
 
 //Image
 Route::apiResource('image',ImageController::class)->parameter('image','id')->only(['index','store','destroy']);
-
+Route::delete('image/delete-many',[ImageController::class,'deleteMany'])->name('image.delete.many');
 //End Image
 
 

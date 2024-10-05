@@ -6,7 +6,6 @@ use App\Http\Traits\Paginate;
 use App\Http\Traits\Cloudinary;
 
 use App\Services\Image\ImageServiceInterface;
-use Illuminate\Http\UploadedFile;
 use App\Http\Resources\ProductResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Repositories\Product\ProductRepositoryInterface;
@@ -61,14 +60,39 @@ class ProductService implements ProductServiceInterface
         if (!$product) {
             throw new ModelNotFoundException('Product not found');
         }
+
+        //$product->variations->values->load(['attribute']);
         $product = $this->loadRelationships($product);
         return new ProductResource($product);
     }
+    public function productDetail(int|string $id){
+        $product = $this->productRepository->query()->find($id);
+        if(!$product) throw new ModelNotFoundException('Product not found');
 
+        $attributes = [];
+        foreach ($product->variations as $variation) {
+
+            foreach ($variation->values as $value){
+                $attributes[$value->attribute->id][] = $value->value;
+            }
+        }
+        $attr = [];
+        foreach ($attributes as $attribute => $values){
+            $arrUnique = array_unique($values);
+            $newArr = [];
+            foreach ($arrUnique as $value) $newArr[] = $value;
+            $attr[$attribute] = $newArr;
+        }
+        return [
+            'attribute' => $attr,
+        ];
+
+    }
     public function create(
         array $data,
         array $options = [
-            'images' => []
+            'images' => [],
+            'categories' => []
         ]
     )
     {
@@ -81,11 +105,13 @@ class ProductService implements ProductServiceInterface
             if(count($options['images']) > 0){
                 $product->images()->attach($options['images']);
             }
+            if(count($options['categories']) > 0) $product->categories()->attach($options['categories']);
             return new ProductResource($this->loadRelationships($product));
         });
     }
     public function update(int|string $id, array $data,array $options=[
-        'images' => []
+        'images' => [],
+        'categories' => []
     ])
     {
         return DB::transaction(function () use ($id,$data, $options) {
@@ -98,6 +124,7 @@ class ProductService implements ProductServiceInterface
             if(count($options['images']) > 0){
                $product->images()->sync($options['images']);
             }
+            if(count($options['categories']) > 0) $product->categories()->sync($options['categories']);
             return new ProductResource($this->loadRelationships($product));
         });
     }

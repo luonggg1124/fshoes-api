@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique()->nullable();
             $table->string('image_url')->nullable();
-            $table->string('public_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

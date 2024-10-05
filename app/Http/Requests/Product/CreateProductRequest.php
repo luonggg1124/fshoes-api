@@ -27,9 +27,10 @@ class CreateProductRequest extends FormRequest
             'price' => 'required',
             'description' => 'nullable',
             'short_description' => 'nullable',
-
+            'image_url' => 'required|string',
             'stock_qty' => 'required|numeric',
             'images' => 'nullable|array',
+            'categories' => 'nullable|array',
         ];
     }
     protected function failedValidation(Validator $validator)
@@ -53,7 +54,8 @@ class CreateProductRequest extends FormRequest
             'stock_qty.required' => 'Product stock quantity is required',
             'stock_qty.numeric' =>  'Product stock quantity  must be a type of number',
 
-
+            'image_url.required' => 'Product image is required',
+            'image_url.string' => 'Product image not found.Try again!',
 
 
         ];

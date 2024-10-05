@@ -19,38 +19,54 @@ class VariationSeeder extends Seeder
     public function run(): void
     {
         // php artisan db:seed --class=VariationSeeder
-        $attributes = ['colour','size','nation'];
-        foreach($attributes as $a){
-           Attribute::create([
-            'name' => $a
-           ]);
+        $attributes = ['colour', 'size', 'nation'];
+        foreach ($attributes as $a) {
+            Attribute::create([
+                'name' => $a
+            ]);
         }
 
-        $colourValue = ['red','yellow','white','black'];
-        foreach($colourValue as $c){
+        $colourValue = ['red', 'yellow', 'white', 'black'];
+        foreach ($colourValue as $c) {
             AttributeValue::create([
                 'attribute_id' => 1,
                 'value' => $c
             ]);
         }
-        for($i = 35; $i <= 42; $i+=0.5 ) AttributeValue::create([
+        for ($i = 37; $i <= 40; $i++) AttributeValue::create([
             'attribute_id' => 2,
             'value' => $i
         ]);
-        $nationValues = ['vietnam','china','singapore','thailand'];
-        foreach($nationValues as $n)AttributeValue::create([
+        $nationValues = ['vietnam', 'china'];
+        foreach ($nationValues as $n) AttributeValue::create([
             'attribute_id' => 3,
             'value' => $n
         ]);
 
-        foreach(Product::all() as $p){
-            $attrId = AttributeValue::where('attribute_id',1)->get();
-            foreach($attrId as $a){
+        foreach (Product::all() as $p) {
+            $attributes = [
+                'color' => Attribute::query()->find(1)->values()->pluck('id'),
+                'size' => Attribute::query()->find(2)->values()->pluck('id'),
+                'nations' => Attribute::query()->find(3)->values()->pluck('id'),
+            ];
+            $result = [[]];
+            foreach ($attributes as $attribute => $values) {
+                $new = [];
+                foreach ($result as $variation){
+                    foreach ($values as $value){
+                        $newVariation = $variation;
+                        $newVariation[$attribute] = $value;
+                        $new[] = $newVariation;
+                    }
+                }
+                $result = $new;
+            }
+            foreach ($result as $var){
                 $variation = $p->variations()->create([
-                    'sku' => $p->sku.'-'.Str::random(5),
-                    'price' => $p->price+(1/10 * $p->price),
-                    'stock_qty' => random_int(20,70),
-                    'qty_sold' => random_int(20,70),
+                    'sku' => $p->sku . '-' . Str::random(5),
+                    'price' => $p->price + (1 / 10 * $p->price),
+                    'stock_qty' => random_int(20, 70),
+                    'qty_sold' => random_int(20, 70),
                 ]);
                 $images = Image::factory(3)->create();
                 foreach ($images as $image) {
@@ -59,23 +75,12 @@ class VariationSeeder extends Seeder
                         'image_id' => $image->id,
                     ]);
                 }
-
-                DB::table('product_variation_attributes')->insert([
-                    'variation_id' => $variation->id,
-                    'attribute_value_id' => $a->id
-                ]);
-                foreach(AttributeValue::where('attribute_id',2)->get() as $s){
-
-                    DB::table('product_variation_attributes')->insert([
-                        'variation_id' => $variation->id,
-                        'attribute_value_id' => $s->id
-                    ]);
-                    DB::table('product_variation_attributes')->insert([
-                        'variation_id' => $variation->id,
-                        'attribute_value_id' => random_int(1,4)
-                    ]);
-                }
+                $variation->values()->attach($var);
             }
+
+
+
+
 
         }
 

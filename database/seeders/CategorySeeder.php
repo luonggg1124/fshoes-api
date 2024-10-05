@@ -15,14 +15,13 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         // php artisan db:seed --class=CategorySeeder
-        $categoryItems = ['Men','Women','Kids','Kids Shoes','Sale',"New & Featured"];
+        $categoryItems = ["New & Featured",'Men','Women','Kids'];
         foreach ($categoryItems as $categoryItem) {
-            $slug = Str::slug($categoryItem).'-'.Str::random(5);
-            Category::query()->create([
+            $category = Category::query()->create([
                 'name' => $categoryItem,
-                'slug' => $slug,
-
             ]);
+            $slug = Str::slug($categoryItem).'.'.$category->id;
+
         }
     }
 }

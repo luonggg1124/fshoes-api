@@ -18,10 +18,11 @@ class CategoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'parent_id' => $this->parent_id,
+            'parent' => new CategoryResource($this->whenLoaded('parent')),
+            'children' => CategoryResource::collection($this->whenLoaded('children')),
+            'name' => $this->name,
             'slug' => $this->slug,
             'image_url' => $this->image_url,
-            'public_id' => $this->public_id,
             'created_at' => (new Carbon($this->created_at))->format('H:m d-m-Y'),
             'products' => ProductResource::collection($this->whenLoaded('products')),
         ];

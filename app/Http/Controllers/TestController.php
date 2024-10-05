@@ -7,6 +7,18 @@ use Illuminate\Http\Request;
 class TestController extends Controller
 {
     public function test(){
+        $variant = [
+          'price',
+          'stock_qty',
+          'values' => [1,2,3],
+          'images' => [1,2]
+        ];
+        $a = [
+            'attribute' => 'color',
+            'values' => [
+                1,2
+            ]
+        ];
         $attributes = [
             'color' => ['red1', 'blue2', 'green3'],
             'size' => ['small4', 'medium5', 'large6'],

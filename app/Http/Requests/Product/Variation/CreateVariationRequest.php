@@ -24,13 +24,16 @@ class CreateVariationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'price' => 'required',
-            'description' => 'nullable',
-            'short_description' => 'nullable',
-            'status' => 'nullable',
-            'stock_qty' => 'required|numeric',
-            'images' => 'nullable|array',
+            'variations' => 'array',
+            'variations.*.price' => 'required',
+            'variations.*.sku' => 'nullable|string',
+            'variations.*.description' => 'nullable',
+            'variations.*.short_description' => 'nullable',
+            'variations.*.status' => 'nullable',
+            'variations.*.stock_qty' => 'required|numeric',
+            'variations.*.attributes' => 'array|array',
+            'variations.*.images' => 'nullable|array',
+            'variations.*.values' => 'required|array',
         ];
     }
     protected function failedValidation(Validator $validator)
@@ -44,15 +47,10 @@ class CreateVariationRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'Product name is required',
-            'name.string' => 'Product name must be a type of string',
-            'name.max' => 'Product name is too long,255 characters is maximum',
 
-
-            'price.required' => 'Product price is required',
-
-            'stock_qty.required' => 'Product stock quantity is required',
-            'stock_qty.numeric' =>  'Product stock quantity  must be a type of number',
+            'variations.*.price.required' => 'Product price is required',
+            'variations.*.stock_qty.required' => 'Product stock quantity is required',
+            'variations.*.stock_qty.numeric' =>  'Product stock quantity  must be a type of number',
 
         ];
     }

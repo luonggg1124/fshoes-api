@@ -28,8 +28,10 @@ class UpdateProductRequest extends FormRequest
             'price' => 'required',
             'description' => 'nullable',
             'short_description' => 'nullable',
+            'image_url' => 'required|string',
             'stock_qty' => 'required|numeric',
             'images' => 'nullable|array',
+            'categories' => 'nullable|array',
         ];
     }
     protected function failedValidation(Validator $validator)
@@ -49,13 +51,12 @@ class UpdateProductRequest extends FormRequest
 
 
             'price.required' => 'Product price is required',
-            'sale_price.required' => 'Product price is required',
 
             'stock_qty.required' => 'Product stock quantity is required',
             'stock_qty.numeric' =>  'Product stock quantity  must be a type of number',
 
-
-
+            'image_id.required' => 'Product image is required',
+            'image_id.string' => 'Product image not found.Try again!',
 
         ];
     }

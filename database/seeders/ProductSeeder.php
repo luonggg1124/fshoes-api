@@ -22,7 +22,7 @@ class ProductSeeder extends Seeder
         foreach (Product::all() as $product) {
             DB::table('category_product')->insert([
                'product_id' => $product->id,
-               'category_id' => rand(1, 6)
+               'category_id' => rand(1, 4)
             ]);
             for($i = 0; $i < 3; $i++){
                 $image = Image::factory()->create();

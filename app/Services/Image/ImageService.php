@@ -73,4 +73,14 @@ class ImageService implements ImageServiceInterface
         $image->delete();
         return true;
     }
+    public function destroyMany(array $ids){
+        foreach ($ids as $id){
+            $image = $this->repository->find($id);
+            if(!$image) throw new ModelNotFoundException('Image '.$id.' not found');
+            $exists = Storage::disk('cloudinary')->exists($image->public_id);
+            if($exists) $this->deleteImageCloudinary($image->public_id);
+            $image->delete();
+        }
+        return true;
+    }
 }

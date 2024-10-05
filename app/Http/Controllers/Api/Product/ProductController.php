@@ -37,12 +37,14 @@ class ProductController extends Controller
     {
 
          try{
+
              $data = $request->all();
-             $images = [];
-             if($request->has('images')) $images = $request->images;
+             $images = $request->images ?? [];
+             $categories = $request->categories ?? [];
              $data['qty_sold'] = 0;
              $product = $this->productService->create($data,[
-                 'images' => $images
+                 'images' => $images,
+                 'categories' => $categories
              ]);
              return response()->json([
                  'message' => 'Product created successfully',
@@ -78,7 +80,16 @@ class ProductController extends Controller
             ], 404);
         }
     }
-
+    public function productDetail(string|int $id){
+        try {
+            return response()->json($this->productService->productDetail($id));
+        }catch (ModelNotFoundException $e){
+            return response()->json([
+                'error' => $e->getMessage(),
+                'status' => false
+            ], 404);
+        }
+    }
     /**
      * Update the specified resource in storage.
      */
@@ -86,10 +97,11 @@ class ProductController extends Controller
     {
         try{
             $data = $request->all();
-            $images = [];
-            if($request->has('images')) $images = $request->images;
+            $images = $request->images ?? [];
+            $categories = $request->categories ?? [];
             $product = $this->productService->update($id,$data,[
-                'images' => $images
+                'images' => $images,
+                'categories' => $categories
             ]);
             return response()->json([
                 'message' => 'Update product successfully',

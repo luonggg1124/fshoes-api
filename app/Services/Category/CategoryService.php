@@ -10,7 +10,7 @@ use App\Http\Traits\Cloudinary;
 use App\Http\Traits\Paginate;
 use App\Repositories\Category\CategoryRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-
+use Illuminate\Support\Str;
 
 
 class CategoryService implements CategoryServiceInterface
@@ -63,6 +63,8 @@ class CategoryService implements CategoryServiceInterface
                 $category->public_id = $upload['public_id'];
                 $category->save();
             }
+            $category->slug = $this->slug($category->name,$category->id);
+            $category->save();
             $category = $this->loadRelationships($category);
             return new CategoryResource($category);
         } catch (\Exception $e) {
@@ -110,5 +112,13 @@ class CategoryService implements CategoryServiceInterface
         } catch (\Exception $e) {
             throw new \Exception('Cannot delete category');
         }
+    }
+    protected function slug(string $name, int|string $id){
+        $slug = Str::slug($name).'.'.$id;
+        $exists = $this->categoryRepository->query()->where('slug',$slug)->exists();
+        if($exists){
+            return Str::slug($name).'-'.Str::random(2).'.'.$id;
+        }
+        return $slug;
     }
 }

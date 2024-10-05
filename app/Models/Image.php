@@ -20,4 +20,5 @@ class Image extends Model
         return $this->belongsToMany(ProductVariations::class,'product_variation_image','image_id','product_variation_id');
 
     }
+
 }

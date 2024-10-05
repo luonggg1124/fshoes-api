@@ -17,8 +17,8 @@ class AuthController extends Controller
     public function getCode(Request $request){
         try {
             $email = $request->get('email');
-            $code = $this->service->register()
-            return $this->respondWithToken($token);
+            //$code = $this->service->register();
+            //return $this->respondWithToken($token);
         }catch (\Throwable $throwable){
             if($throwable instanceof JWTException){
                 return response()->json([

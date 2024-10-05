@@ -71,4 +71,25 @@ class ImageController extends Controller
             ],404);
         }
     }
+    public function destroyMany(Request $request){
+        try {
+            $images = $request->images;
+            if(empty($images || count($images) < 1)){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Cannot find any images to delete.'
+                ],400);
+            }
+            $success = $this->service->destroyMany($images);
+            return \response()->json([
+                'status' => $success,
+                'message' => 'Deleted successfully!'
+            ],201);
+        }catch (\Throwable $throwable) {
+            return \response()->json([
+                'status' => false,
+                'error' => $throwable->getMessage()
+            ],404);
+        }
+    }
 }

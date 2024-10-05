@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Product;
 
 
+use App\Http\Resources\Attribute\Value\ValueResource;
 use App\Http\Resources\ImageResource;
 use App\Http\Resources\ProductResource;
 use Carbon\Carbon;
@@ -22,13 +23,12 @@ class VariationResource extends JsonResource
         return [
 
             'id' => $this->id,
+            'slug' => $this->slug,
             'product' => new ProductResource($this->whenLoaded('product')),
-            'images' => ImageResource::collection($this->images),
-            'values' => $this->whenLoaded('values'),
+            'images' => ImageResource::collection($this->whenLoaded('images')),
+            'values' => ValueResource::collection($this->whenLoaded('values')),
             'price' => $this->price,
             'sku' => $this->sku,
-            'description' => $this->description,
-            'short_description' => $this->short_description,
             'status' => $this->status,
             'stock_qty' => $this->stock_qty,
             'qty_sold' => $this->qty_sold,
