@@ -26,7 +26,7 @@ class UpdateCategoryRequest extends FormRequest
         $id = $this->route('id');
         return [
             'name' => 'required|string',
-            'parent_id' => 'nullable|integer|exists:categories,id',
+            'parents' => 'array|nullable',
             'image_url' => 'nullable|string',
         ];
     }
@@ -43,10 +43,6 @@ class UpdateCategoryRequest extends FormRequest
         return [
             'name.required' => 'The name field is required.',
             'name.string' => 'The name must be a string.',
-
-            'parent_id.integer' => 'The parent id must be an integer.',
-            'parent_id.exists' => 'The parent id is not found.',
-
         ];
     }
 }

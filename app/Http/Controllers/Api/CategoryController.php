@@ -40,7 +40,7 @@ class CategoryController extends Controller
 
         try {
             $category = $this->categoryService->create($request->validated(),[
-                'image' => $request->file('image'),
+               'parents' => $request->parents
             ]);
             return response()->json([
                 'message' => 'Category created successfully',
@@ -86,7 +86,9 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, int $id):Response|JsonResponse
     {
         try {
-            $category = $this->categoryService->update($id,$request->validated());
+            $category = $this->categoryService->update($id,$request->validated(),[
+                'parents'=> $request->parents
+            ]);
             return response()->json([
                 'message' => 'Category updated successfully',
                 'category' => $category

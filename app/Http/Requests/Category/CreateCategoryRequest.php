@@ -25,9 +25,7 @@ class CreateCategoryRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'parent_id' => 'nullable|integer|exists:categories,id',
-            'image_url' => 'nullable|string',
-
+            'parents' => 'array|nullable',
         ];
     }
     protected function failedValidation(Validator $validator)
@@ -43,11 +41,6 @@ class CreateCategoryRequest extends FormRequest
         return [
             'name.required' => 'The name field is required.',
             'name.string' => 'The name must be a string.',
-
-            'parent_id.integer' => 'The parent id must be an integer.',
-            'parent_id.exists' => 'The parent id is not found.',
-
-
         ];
     }
 }

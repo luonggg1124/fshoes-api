@@ -18,13 +18,13 @@ class Category extends Model
     {
         return $this->belongsToMany(Product::class, 'category_product', 'category_id', 'product_id');
     }
-    public function parent(): BelongsTo
+    public function parents(): BelongsToMany
     {
-        return $this->belongsTo(Category::class, 'parent_id');
+        return $this->belongsToMany(Category::class, 'categories_relation', 'child_id', 'parent_id');
     }
-    public function children():HasMany
+    public function children():BelongsToMany
     {
-        return $this->hasMany(Category::class, 'parent_id');
+        return $this->belongsToMany(Category::class, 'categories_relation','parent_id','child_id');
     }
     public function interestedBy():BelongsToMany
     {
