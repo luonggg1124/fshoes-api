@@ -19,6 +19,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
+
 Route::get('auth/redirect-to/login',function(){
     return redirect()->to('/login');
 })->name('login');
@@ -73,6 +74,9 @@ Route::post('paypal' , [PaymentOnline::class , 'paypal']);
         Route::get('error-paypal' , [PaymentOnline::class , 'errorPaypal'])->name('errorPaypal');
 
 //Product Start
+Route::get('trend/this-week/products',[ProductController::class,'thisWeekProducts'])->name('this.week.products');
+Route::get('best-selling/products',[ProductController::class,'bestSellingProducts'])->name('best.selling.products');
+Route::get('shop-by-sports/products',[ProductController::class,'shopBySports'])->name('shop.by.sports');
 Route::get('product/with/trashed',[ProductController::class,'productWithTrashed'])->name('product.with.trashed');
 Route::get('product/trashed',[ProductController::class,'productTrashed'])->name('product.list.trashed');
 Route::get('product/trashed/{id}',[ProductController::class,'getOneTrashed'])->name('product.one.trashed');
@@ -107,7 +111,7 @@ Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\A
 //Route::get('api/auth/google/redirect', [SocialiteController::class, 'googleRedirect']);
 //Route::post('auth/google/callback', [SocialiteController::class, 'googleCallback']);
 
-
+Route::get('test',[\App\Http\Controllers\TestController::class,'test']);
 
 //WishList
 Route::apiResource('wishlist' , WishlistController::class);

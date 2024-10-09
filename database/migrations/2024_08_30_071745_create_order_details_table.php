@@ -16,9 +16,10 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained('orders');
             $table->foreignId('product_variation_id')->nullable()->constrained('product_variations');
             $table->foreignId('product_id')->constrained('products');
-            $table->decimal('price');
+            $table->decimal('price',11,2);
             $table->integer('quantity');
-            $table->decimal('total_amount');
+            $table->decimal('total_amount',15,2);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

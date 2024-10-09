@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->decimal('total_amount');
+            $table->decimal('total_amount',15,2);
             $table->string('payment_method');
             $table->string('payment_status');
             $table->string('shipping_method');
@@ -30,6 +30,7 @@ return new class extends Migration
             $table->foreignId('voucher_id')->nullable();
             $table->enum("status" , ["Waiting Confirm" , "Confirmed" , "Pending" , "Cancelled" , "Transporting" , "Done"]);
             $table->text('note')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
 use App\Models\Image;
 use App\Models\Product;
 
@@ -19,8 +20,8 @@ class ProductSeeder extends Seeder
         // php artisan db:seed --class=ProductSeeder
 
 
-        Product::factory(20)->create();
-        foreach (Product::all() as $product) {
+        Product::factory(50)->create();
+        foreach (Product::query()->take(15)->get() as $product) {
             $product->slug .= $product->slug.'.'.$product->id;
             $product->save();
             DB::table('category_product')->insert([
@@ -35,5 +36,15 @@ class ProductSeeder extends Seeder
                 ]);
             }
         }
+        $trendThisWeek = Category::query()->where('name','Trend This Week')->first();
+        $weekProducts = Product::query()->take(15)->get()->pluck('id');
+        $trendThisWeek->products()->attach($weekProducts);
+        $bestProducts = Product::query()->where('id','>=',15)->take(15)->get()->pluck('id');
+        $bestSelling = Category::query()->where('name','Best Selling')->first();
+        $bestSelling->products()->attach($bestProducts);
+
+        $sportProducts = Product::query()->where('id','>=',30)->take(15)->get()->pluck('id');
+        $sportsCat = Category::query()->where('name','Shop By Sport')->first();
+        $sportsCat->products()->attach($sportProducts);
     }
 }

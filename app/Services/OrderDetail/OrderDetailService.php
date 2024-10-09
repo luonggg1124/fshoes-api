@@ -15,23 +15,23 @@ class OrderDetailService implements OrderDetailServiceInterface
 
     public function getAll($params): AnonymousResourceCollection
     {
-       
+
     }
 
     public function findById(int|string $id)
     {
-     
+
     }
 
     /**
      * @throws \Exception
      */
     public function create(array $data, array $option = []){
-     
+
 
     }
     public function update(int|string $id ,array $data,array $option = []){
-      
+
     }
 
 }

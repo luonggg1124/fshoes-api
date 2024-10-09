@@ -15,7 +15,7 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         // php artisan db:seed --class=CategorySeeder
-        $mains = ["New & Featured",'Men','Women','Kids'];
+        $mains = ["New & Featured",'Men','Women','Kids','Trend This Week','Best Selling','Shop By Sport'];
         foreach ($mains as $name) {
             $category = Category::query()->create([
                 'name' => $name,

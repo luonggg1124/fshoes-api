@@ -43,6 +43,21 @@ class Product extends Model
     {
         return $this->hasMany(Attribute::class);
     }
+    public function orderDetails():HasMany
+    {
+        return $this->hasMany(OrderDetails::class);
+    }
+    public function orders():HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Order::class,
+            OrderDetails::class,
+            'product_id',
+            'id',
+            'id',
+            'order_id'
+        );
+    }
     public function reviews():HasMany
     {
         return $this->hasMany(Review::class);

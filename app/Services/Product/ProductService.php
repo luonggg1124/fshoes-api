@@ -11,6 +11,7 @@ use App\Services\Image\ImageServiceInterface;
 use App\Http\Resources\ProductResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Repositories\Product\ProductRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -51,7 +52,29 @@ class ProductService implements ProductServiceInterface
 
 
     }
+    public function thisWeekProducts(){
+        $products = $this->productRepository->query()->with(['categories'])
+            ->whereHas('categories',function ($query){
+                $query->where('categories.name','Trend This Week');
+            });
 
+        return ProductResource::collection($this->loadRelationships($products)->take(15)->get());
+    }
+    public function shopBySports()
+    {
+        $products = $this->productRepository->query()->with(['categories'])
+            ->whereHas('categories',function ($query){
+                $query->where('categories.name','like','Shop By Sport');
+            });
+        return ProductResource::collection($this->loadRelationships($products)->get());
+    }
+    public function bestSellingProducts(){
+        $products = $this->productRepository->query()->with(['categories'])
+            ->whereHas('categories',function ($query){
+                $query->where('categories.name','Best Selling');
+            });
+        return ProductResource::collection($this->loadRelationships($products)->take(5)->get());
+    }
     public function findById(int|string $id)
     {
         $product = $this->productRepository->find($id);

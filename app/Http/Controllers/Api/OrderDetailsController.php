@@ -12,7 +12,7 @@ class OrderDetailsController extends Controller
      */
     public function index()
     {
-        // 
+        //
     }
 
     /**
@@ -46,4 +46,5 @@ class OrderDetailsController extends Controller
     {
         //
     }
+
 }

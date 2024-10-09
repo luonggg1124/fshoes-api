@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Order extends Model
 {
 
-    use HasFactory;
+    use HasFactory,softDeletes;
     protected $table='orders';
     protected $fillable=[
         "user_id",

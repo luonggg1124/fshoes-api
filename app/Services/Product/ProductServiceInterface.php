@@ -7,6 +7,9 @@ interface ProductServiceInterface
     function all();
     function findById(int|string $id);
     function productDetail(int|string $id);
+    function thisWeekProducts();
+    function bestSellingProducts();
+    function shopBySports();
     function productAttribute(int|string $id);
     function createAttributeValues(int $id,string $attributeName,array $values = []);
     function create(array $data,array $options = []);

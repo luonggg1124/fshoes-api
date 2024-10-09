@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'louis@gmail.com',
             'nickname' => 'louis.ng'
         ]);
+        User::factory(20)->create();
         // User::factory(30)->create();
         UserProfile::create([
             'user_id' => 1,
@@ -38,7 +39,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CategorySeeder::class,
             ProductSeeder::class,
-            VariationSeeder::class
+            VariationSeeder::class,
+            OrderSeeder::class
         ]);
     }
 }
