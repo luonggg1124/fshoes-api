@@ -14,7 +14,7 @@ class AttributeValue extends Model
     use HasFactory, SoftDeletes;
     public function attribute():BelongsTo
     {
-        return $this->belongsTo(AttributeValue::class,'attribute_id');
+        return $this->belongsTo(Attribute::class,'attribute_id');
     }
     public function variations():BelongsToMany
     {
