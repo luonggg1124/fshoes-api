@@ -24,6 +24,7 @@ class ProductDetailResource extends JsonResource
             'image_url' => $this->image_url,
             'name' => $this->name,
             'slug' => $this->slug,
+            'price' => number_format($this->price, 0, ',', '.'),
             'stock_qty' => $this->stock_qty,
             'qty_sold' => $this->qty_sold,
             'description' => $this->description,
