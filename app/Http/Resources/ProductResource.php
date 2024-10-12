@@ -26,7 +26,7 @@ class ProductResource extends JsonResource
             'variations' => VariationResource::collection($this->whenLoaded('variations')),
             'name' => $this->name,
             'slug' => $this->slug,
-            'price' => $this->price,
+            'price' => number_format($this->price),
             'description' => $this->description,
             'short_description' => $this->short_description,
             'status' => $this->status,
