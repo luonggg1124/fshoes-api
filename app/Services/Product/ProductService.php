@@ -96,7 +96,10 @@ class ProductService implements ProductServiceInterface
                 foreach ($variation->values as $value){
                     $attributes[$value->attribute->id]['id'] = $value->attribute->id;
                     $attributes[$value->attribute->id]['name'] = $value->attribute->name;
-                    $attributes[$value->attribute->id]['values'][$value->id] = $value->value;
+                    $attributes[$value->attribute->id]['values'][] = [
+                        'id' => $value->id,
+                        'value' => $value->value,
+                    ];
                 }
             }
             // automatically assign attributes
