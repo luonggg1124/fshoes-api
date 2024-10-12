@@ -3,6 +3,7 @@
 namespace App\Services\Product\Variation;
 
 use App\Http\Resources\Product\VariationResource;
+use App\Http\Resources\ProductResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Http\Traits\Cloudinary;
 use App\Http\Traits\Paginate;
@@ -36,14 +37,27 @@ class VariationService implements VariationServiceInterface
 
     public function index(int|string $pid)
     {
-        $product = $this->productRepository->find($pid);
+        $product = $this->productRepository->query()->find($pid);
+        if(!$product) throw new ModelNotFoundException('Product not found');
+        if($product->variations){
+            $attributes = [];
+            foreach ($product->variations as $variation) {
+                $variation->load(['images']);
+                foreach ($variation->values as $value){
+                    $attributes[$value->attribute->id]['id'] = $value->attribute->id;
+                    $attributes[$value->attribute->id]['name'] = $value->attribute->name;
+                    $attributes[$value->attribute->id]['values'][] = [
+                        'id' => $value->id,
+                        'value' => $value->value,
+                    ];
+                    $attributes[$value->attribute->id]['values'] = collect($attributes[$value->attribute->id]['values'])->unique('id');
+                }
+            }
+            // automatically assign attributes
+            $product->attributes = [...$attributes];
+        }
 
-        $column = request()->query('column') ?? 'id';
-        if (!in_array($column, $this->columns)) $column = 'id';
-        $sort = request()->query('sort') ?? 'desc';
-        if ($sort !== 'desc' && $sort !== 'asc') $sort = 'asc';
-        $variations = $product->variations()->orderBy($column, $sort);
-        return VariationResource::collection($this->loadRelationships($variations)->get());
+        return new ProductResource($product);
     }
     public function show(int|string $pid,int|string $id){
         $product = $this->productRepository->find($pid);

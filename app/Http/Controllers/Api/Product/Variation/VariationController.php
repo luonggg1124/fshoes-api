@@ -18,7 +18,7 @@ class VariationController extends Controller
     public function index(string|int $pid){
         return response()->json([
            'status' => true,
-           'variations' => $this->service->index($pid)
+           'product' => $this->service->index($pid)
         ]);
     }
     public function show(int|string $pid,int|string $id){

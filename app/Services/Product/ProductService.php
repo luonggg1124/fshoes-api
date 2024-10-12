@@ -100,6 +100,7 @@ class ProductService implements ProductServiceInterface
                         'id' => $value->id,
                         'value' => $value->value,
                     ];
+                    $attributes[$value->attribute->id]['values'] = collect($attributes[$value->attribute->id]['values'])->unique('id');
                 }
             }
             // automatically assign attributes
@@ -134,6 +135,30 @@ class ProductService implements ProductServiceInterface
 
     }
 
+    public function productVariations(int|string $id){
+        $product = $this->productRepository->query()->find($id);
+        if(!$product) throw new ModelNotFoundException('Product not found');
+        if($product->variations){
+            $attributes = [];
+            foreach ($product->variations as $variation) {
+                $variation->load(['images']);
+                foreach ($variation->values as $value){
+                    $attributes[$value->attribute->id]['id'] = $value->attribute->id;
+                    $attributes[$value->attribute->id]['name'] = $value->attribute->name;
+                    $attributes[$value->attribute->id]['values'][] = [
+                        'id' => $value->id,
+                        'value' => $value->value,
+                    ];
+                    $attributes[$value->attribute->id]['values'] = collect($attributes[$value->attribute->id]['values'])->unique('id');
+                }
+            }
+            // automatically assign attributes
+            $product->attributes = [...$attributes];
+        }
+
+        return new ProductResource($product);
+
+    }
     public function create(
         array $data,
         array $options = [
