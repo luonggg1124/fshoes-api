@@ -3,9 +3,7 @@
 namespace App\Services\Product;
 
 use App\Http\Resources\Attribute\AttributeResource;
-
 use App\Http\Resources\Product\ProductDetailResource;
-
 use App\Http\Traits\Paginate;
 use App\Http\Traits\Cloudinary;
 
@@ -96,16 +94,12 @@ class ProductService implements ProductServiceInterface
             $attributes = [];
             foreach ($product->variations as $variation) {
                 foreach ($variation->values as $value){
-                    $attributes[$value->attribute->id]['id'] = $value->attribute->id;
-                    $attributes[$value->attribute->id]['name'] = $value->attribute->name;
-                    $attributes[$value->attribute->id]['values'][$value->id] = $value->value;
-
+                    $attributes[$value->attribute->id][$value->id] = $value->value;
                 }
             }
             // automatically assign attributes
-            $product->attributes = [...$attributes];
+            $product->attributes = $attributes;
         }
-
         $productRelated = [];
         if($product->categories){
             foreach ($product->categories as $category){
