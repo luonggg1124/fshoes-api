@@ -2,6 +2,7 @@
 
 namespace App\Services\Product\Variation;
 
+use App\Http\Resources\Attribute\AttributeResource;
 use App\Http\Resources\Product\VariationResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Traits\CanLoadRelationships;
@@ -42,6 +43,7 @@ class VariationService implements VariationServiceInterface
         if($product->variations){
             $attributes = [];
             foreach ($product->variations as $variation) {
+
                 $variation->load(['images']);
                 foreach ($variation->values as $value){
                     $attributes[$value->attribute->id]['id'] = $value->attribute->id;
@@ -51,13 +53,18 @@ class VariationService implements VariationServiceInterface
                         'value' => $value->value,
                     ];
                     $attributes[$value->attribute->id]['values'] = collect($attributes[$value->attribute->id]['values'])->unique('id');
+                    unset($value->attribute);
                 }
             }
             // automatically assign attributes
             $product->attributes = [...$attributes];
         }
 
-        return new ProductResource($product);
+        return [
+            'variations' => VariationResource::collection($product->variations),
+            'ownAttributes' => $product->attributes,
+            'all_attribute' => AttributeResource::collection($product->ownAttributes()->orWhere('product_id',null)->get()->load('values'))
+        ];
     }
     public function show(int|string $pid,int|string $id){
         $product = $this->productRepository->find($pid);
