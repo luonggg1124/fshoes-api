@@ -15,7 +15,7 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         // php artisan db:seed --class=CategorySeeder
-        $mains = ["New & Featured",'Men','Women','Kids','Trend This Week','Best Selling','Shop By Sport'];
+        $mains = ["New & Featured",'Men','Women','Kids'];
         foreach ($mains as $name) {
             $category = Category::query()->create([
                 'name' => $name,
@@ -25,13 +25,27 @@ class CategorySeeder extends Seeder
             $category->slug = $slug;
             $category->save();
         }
-        $children = ['New Arrival','Latest Shoes', 'Latest Clothing','Clothing','Boys','Girls','Newest Sneakers'];
+        $homePage = ['Trend This Week','Best Selling','Shop By Sport'];
+        foreach ($homePage as $c) {
+            $category = Category::query()->create([
+                'name' => $c,
+                'is_main' => 2
+            ]);
+            $slug = Str::slug($c).'.'.$category->id;
+            $category->slug = $slug;
+            $category->save();
+        }
+        $children = ['New Arrival','Latest Shoes', 'Latest Clothing','Clothing','Boys','Girls','Newest Sneakers','Drunk','Cortez','Blazer','Bestsellers'];
         foreach ($children as $cat) {
             $category = Category::query()->create([
                 'name' => $cat,
                 'is_main' => 0
             ]);
-            $category->parents()->attach([1,2,3,4]);
+            $arrs = [
+                random_int(1,2),
+                random_int(3,4),
+            ];
+            $category->parents()->attach($arrs);
             $slug = Str::slug($cat).'.'.$category->id;
             $category->slug = $slug;
             $category->save();

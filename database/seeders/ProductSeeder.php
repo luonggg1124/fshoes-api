@@ -21,6 +21,11 @@ class ProductSeeder extends Seeder
 
 
         Product::factory(50)->create();
+        $allPs = Product::all();
+        foreach ($allPs as $p) {
+            $p->slug .= $p->slug.'.'.$p->id;
+            $p->save();
+        }
         foreach (Product::query()->take(15)->get() as $product) {
             $product->slug .= $product->slug.'.'.$product->id;
             $product->save();

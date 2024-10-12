@@ -85,6 +85,7 @@ class CategoryService implements CategoryServiceInterface
         $category = $this->loadRelationships($category);
         return new CategoryResource($category);
     }
+
     public function update(int|string $id, array $data, array $option = [
         'parents' => []
     ])
