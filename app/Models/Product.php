@@ -43,6 +43,10 @@ class Product extends Model
     {
         return $this->hasMany(Attribute::class);
     }
+    public function likedBy():BelongsToMany
+    {
+        return $this->belongsToMany(User::class,'user_product','product_id','user_id');
+    }
     public function orderDetails():HasMany
     {
         return $this->hasMany(OrderDetails::class);

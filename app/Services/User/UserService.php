@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Hash;
 class UserService implements UserServiceInterface
 {
     use CanLoadRelationships, Cloudinary, Paginate;
-    protected array $relations = ['profile', 'interestingCategories', 'addresses', 'allAvatars'];
+    protected array $relations = ['profile', 'interestingCategories', 'addresses', 'allAvatars','favoriteProducts'];
     private array $columns = [
         'nickname',
         'name',

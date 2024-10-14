@@ -9,6 +9,7 @@ use App\Models\Product;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProductSeeder extends Seeder
 {
@@ -23,12 +24,10 @@ class ProductSeeder extends Seeder
         Product::factory(50)->create();
         $allPs = Product::all();
         foreach ($allPs as $p) {
-            $p->slug .= $p->slug.'.'.$p->id;
+            $p->slug = Str::slug($p->name).'.'.$p->id;
             $p->save();
         }
         foreach (Product::query()->take(15)->get() as $product) {
-            $product->slug .= $product->slug.'.'.$product->id;
-            $product->save();
             DB::table('category_product')->insert([
                'product_id' => $product->id,
                'category_id' => rand(1, 4)

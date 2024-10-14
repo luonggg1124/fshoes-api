@@ -101,6 +101,7 @@ class ProductService implements ProductServiceInterface
                         'value' => $value->value,
                     ];
                     $attributes[$value->attribute->id]['values'] = collect($attributes[$value->attribute->id]['values'])->unique('id');
+                    unset($value->attribute);
                 }
             }
             // automatically assign attributes
@@ -109,6 +110,7 @@ class ProductService implements ProductServiceInterface
         $productRelated = [];
         if($product->categories){
             foreach ($product->categories as $category){
+
                 foreach ($category->products()->orderBy('qty_sold','desc')->take(3)->get() as $p)
                 $productRelated[] = $p;
                 if(count($productRelated) === 20)break;
@@ -120,6 +122,7 @@ class ProductService implements ProductServiceInterface
         if(count($uniProductRelated) < 20){
             $topSold = $this->productRepository->query()->orderBy('qty_sold','desc')->take(30)->get();
             foreach ($topSold as $item){
+
                 $uniProductRelated[] = $item;
                 if(count(collect($uniProductRelated)->unique('id')) === 20) {
                     $collectProduct = collect($uniProductRelated)->unique('id');
@@ -130,6 +133,7 @@ class ProductService implements ProductServiceInterface
             $collectProduct = $uniProductRelated;
         }
         $suggestedProduct = [...$collectProduct];
+        foreach ($collectProduct as $item) $item->load('categories');
         $product->suggestedProduct = $suggestedProduct;
         return new ProductDetailResource($product);
 
@@ -205,10 +209,6 @@ class ProductService implements ProductServiceInterface
     }
     protected function slug(string $name, int|string $id){
         $slug = Str::slug($name).'.'.$id;
-        $exists = $this->productRepository->query()->where('slug',$slug)->exists();
-        if($exists){
-            return Str::slug($name).'-'.Str::random(2).'.'.$id;
-        }
         return $slug;
     }
     public function destroy(int|string $id){

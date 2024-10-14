@@ -132,10 +132,6 @@ class CategoryService implements CategoryServiceInterface
     }
     protected function slug(string $name, int|string $id){
         $slug = Str::slug($name).'.'.$id;
-        $exists = $this->categoryRepository->query()->where('slug',$slug)->exists();
-        if($exists){
-            return Str::slug($name).'-'.Str::random(2).'.'.$id;
-        }
         return $slug;
     }
 }

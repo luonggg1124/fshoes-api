@@ -43,7 +43,9 @@ Route::group(['middleware' => ['auth:api']],function(){
 });
 
 
+Route::post('/check/email',[\App\Http\Controllers\Api\User\AuthController::class,'checkEmail']);
 Route::post('login',[\App\Http\Controllers\Api\User\AuthController::class,'login']);
+Route::post('register',[\App\Http\Controllers\Api\User\AuthController::class,'register']);
 // End Auth
 
 // Category Start

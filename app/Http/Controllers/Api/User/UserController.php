@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Http\Requests\User\CreateUserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -32,10 +33,11 @@ class UserController extends Controller
         }
     }
 
-    public function store(Request $request){
+    public function store(CreateUserRequest $request){
 
 
         try{
+
             $data = $request->all();
             $user = $this->userService->create($data);
             return response()->json([

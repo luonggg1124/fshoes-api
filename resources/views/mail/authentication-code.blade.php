@@ -1,4 +1,4 @@
-@component('mail:')
+
 <div style="text-align: center">
     <img src="{{ asset("logo.svg") }}" style="max-width: 100%">
     <h1>Your Fshoes Member profile code</h1>
@@ -8,4 +8,3 @@
 
 </div>
 
-@endcomponent
