@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class CartController extends Controller
 {
 
-    
+
     public function __construct(protected CartService $cartService)
     {}
     /**
@@ -32,7 +32,7 @@ class CartController extends Controller
         try {
             $newCart = $this->cartService->create($request->all());
             return response()->json([
-                'message' => 'Update cart successfully',
+                'message' => 'Create cart successfully',
                 'cart' => $newCart
             ],201);
         }catch (\Exception $e){
@@ -66,7 +66,7 @@ class CartController extends Controller
             ],201);
         }catch (\Exception $e){
             return response()->json(['error' => $e->getMessage()], 500);
-        }  
+        }
     }
 
     /**

@@ -32,7 +32,7 @@ class VariationResource extends JsonResource
             'status' => $this->status,
             'stock_qty' => $this->stock_qty,
             'qty_sold' => $this->qty_sold,
-            'created_at' => (new Carbon($this->created_at))->format('H:m d-m-Y')
+            'created_at' => (new Carbon($this->created_at))->format('d-m-Y H:i:s')
 
         ];
     }

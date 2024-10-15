@@ -23,9 +23,9 @@ class AttributeResource extends JsonResource
             'values' => ValueResource::collection($this->whenLoaded('values')),
             'product' => new ProductResource($this->whenLoaded('product')),
             'name' => $this->name,
-            'created_at' => (new Carbon($this->created_at))->format('H:m d-m-Y'),
-            'updated_at' => (new Carbon($this->updated_at))->format('H:m d-m-Y'),
-            'deleted_at' => (new Carbon($this->deleted_at))->format('H:m d-m-Y')
+            'created_at' => (new Carbon($this->created_at))->format('d-m-Y H:i:s'),
+            'updated_at' => (new Carbon($this->updated_at))->format('d-m-Y H:i:s'),
+            'deleted_at' => (new Carbon($this->deleted_at))->format('d-m-Y H:i:s')
         ];
     }
 }

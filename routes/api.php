@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\GroupsController;
 use App\Http\Controllers\Api\Image\ImageController;
 use App\Http\Controllers\Api\OrderDetailsController;
 use App\Http\Controllers\Api\OrdersController;
@@ -117,3 +118,8 @@ Route::get('test',[\App\Http\Controllers\TestController::class,'test']);
 
 //WishList
 Route::apiResource('wishlist' , WishlistController::class);
+
+//Groups
+Route::apiResource('groups' , GroupsController::class);
+Route::post('groups/restore/{id}' , [GroupsController::class,'restore']);
+Route::delete('groups/forceDelete/{id}' , [GroupsController::class,'forceDelete']);

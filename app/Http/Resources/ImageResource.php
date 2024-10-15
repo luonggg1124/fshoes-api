@@ -24,7 +24,7 @@ class ImageResource extends JsonResource
             'url' => $this->url,
             'public_id' => $this->public_id,
             'alt_text' => $this->alt_text,
-            'created_at' => (new Carbon($this->created_at))->format('H:m d-m-Y')
+            'created_at' => (new Carbon($this->created_at))->format('d-m-Y H:i:s')
         ];
     }
 }

@@ -23,7 +23,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'password' => $this->password,
-            'email_verified_at' => $this->email_verified_at ? (new Carbon($this->email_verified_at))->format('H:m d-m-Y') : null,
+            'email_verified_at' => $this->email_verified_at ? (new Carbon($this->email_verified_at))->format('d-m-Y H:i:s') : null,
             'google_id' => $this->google_id,
             'is_admin' => $this->is_admin,
             'status' => $this->status,

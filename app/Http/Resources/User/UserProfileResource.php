@@ -22,8 +22,8 @@ class UserProfileResource extends JsonResource
             'family_name' => $this->family_name,
             'address_active_id' => $this->address_active_id ? new UserAddressResource($this->addressActive()) : null,
             'birth_date' => $this->birth_date ? (new Carbon($this->birth_date))->format('d-m-Y') : null,
-            'created_at' => (new Carbon($this->created_at))->format('H:m d-m-Y'),
-            'updated_at' => (new Carbon($this->updated_at))->format('H:m d-m-Y'),
+            'created_at' => (new Carbon($this->created_at))->format('d-m-Y H:i:s'),
+            'updated_at' => (new Carbon($this->updated_at))->format('d-m-Y H:i:s'),
         ];
     }
 }

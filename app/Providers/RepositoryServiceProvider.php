@@ -63,6 +63,10 @@ class RepositoryServiceProvider extends ServiceProvider
             'wishlist'=>[
                 \App\Repositories\Wishlist\WishlistRepositoryInterface::class,
                 \App\Repositories\Wishlist\WishlistRepository::class
+            ],
+            'groups'=>[
+                \App\Repositories\Groups\GroupsRepositoryInterface::class,
+                \App\Repositories\Groups\GroupsRepository::class
             ]
 
         ];

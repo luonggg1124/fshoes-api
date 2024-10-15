@@ -63,6 +63,10 @@ class AppServiceProvider extends ServiceProvider
             'wishlist'=>[
                 \App\Services\Wishlist\WishlistServiceInterface::class,
                 \App\Services\Wishlist\WishlistService::class
+            ],
+            'groups'=>[
+                \App\Services\Groups\GroupsServiceInterface::class,
+                \App\Services\Groups\GroupsService::class
             ]
         ];
 
