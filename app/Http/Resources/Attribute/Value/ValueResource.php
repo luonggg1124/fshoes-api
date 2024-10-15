@@ -22,9 +22,9 @@ class ValueResource extends JsonResource
             'attribute' => new AttributeResource($this->whenLoaded('attribute')),
             'variations' => ValueResource::collection($this->whenLoaded('variations')),
             'value' => $this->value,
-            'created_at' => (new Carbon($this->created_at))->format('H:m d-m-Y'),
-            'updated_at' => (new Carbon($this->updated_at))->format('H:m d-m-Y'),
-            'deleted_at' => (new Carbon($this->deleted_at))->format('H:m d-m-Y')
+            'created_at' => (new Carbon($this->created_at))->format('d-m-Y H:i:s'),
+            'updated_at' => (new Carbon($this->updated_at))->format('d-m-Y H:i:s'),
+            'deleted_at' => (new Carbon($this->deleted_at))->format('d-m-Y H:i:s')
         ];
     }
 }

@@ -20,7 +20,7 @@ class CategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
-            'created_at' => (new Carbon($this->created_at))->format('H:m d-m-Y'),
+            'created_at' => (new Carbon($this->created_at))->format('d-m-Y H:i:s'),
             'products' => ProductResource::collection($this->whenLoaded('products')),
             'parents' => CategoryResource::collection($this->whenLoaded('parents')),
             'children' => CategoryResource::collection($this->whenLoaded('children')),

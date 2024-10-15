@@ -3,10 +3,12 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
+use App\Models\Groups;
 use App\Models\User;
 use App\Models\User\UserProfile;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use PHPUnit\Metadata\Group;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,17 +17,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+           ModulesSeeder::class,
+           GroupSeeder::class
+        ]);
         User::factory()->create([
             'email' => 'louis@gmail.com',
-            'nickname' => 'louis.ng'
+            'nickname' => 'louis.ng',
+            'group_id'=>'1'
         ]);
         User::factory(20)->create();
         // User::factory(30)->create();
-        UserProfile::create([
-            'user_id' => 1,
-            'given_name' => 'Louis',
-            'family_name' => 'Nguyen'
-        ]);
+//        UserProfile::create([
+//            'user_id' => 1,
+//            'given_name' => 'Louis',
+//            'family_name' => 'Nguyen'
+//        ]);
         User::factory()->create([
             'email' => 'quoc@gmail.com',
             'nickname' => 'quocaa'
@@ -40,7 +47,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             ProductSeeder::class,
             VariationSeeder::class,
-            OrderSeeder::class
+            OrderSeeder::class,
         ]);
     }
 }

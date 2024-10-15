@@ -14,7 +14,6 @@ class Order extends Model
     protected $table='orders';
     protected $fillable=[
         "user_id",
-        "total_amount",
         "payment_method",
         "payment_status",
         "shipping_method",
@@ -28,6 +27,7 @@ class Order extends Model
         "country",
         "voucher_id",
         "address",
+        "total_amount",
         "status"
     ];
 
