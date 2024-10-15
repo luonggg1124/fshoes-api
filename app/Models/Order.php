@@ -26,7 +26,6 @@ class Order extends Model
         "phone",
         "city",
         "country",
-        "postal_code",
         "voucher_id",
         "address",
         "status"
