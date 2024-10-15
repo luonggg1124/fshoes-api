@@ -7,11 +7,14 @@ use App\Http\Controllers\Api\Image\ImageController;
 use App\Http\Controllers\Api\OrderDetailsController;
 use App\Http\Controllers\Api\OrdersController;
 use App\Http\Controllers\Api\PaymentOnline;
+use App\Http\Controllers\Api\PostsController;
 use App\Http\Controllers\Api\Product\ProductController;
 use App\Http\Controllers\Api\Product\Variation\VariationController;
 use App\Http\Controllers\Api\Review\ReviewController;
+use App\Http\Controllers\Api\TopicsController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Api\WishlistController;
+use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -114,7 +117,7 @@ Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\A
 //Route::get('api/auth/google/redirect', [SocialiteController::class, 'googleRedirect']);
 //Route::post('auth/google/callback', [SocialiteController::class, 'googleCallback']);
 
-Route::get('test',[\App\Http\Controllers\TestController::class,'test']);
+Route::get('test',[TestController::class,'test']);
 
 //WishList
 Route::apiResource('wishlist' , WishlistController::class);
@@ -123,3 +126,14 @@ Route::apiResource('wishlist' , WishlistController::class);
 Route::apiResource('groups' , GroupsController::class);
 Route::post('groups/restore/{id}' , [GroupsController::class,'restore']);
 Route::delete('groups/forceDelete/{id}' , [GroupsController::class,'forceDelete']);
+
+
+//Topics
+Route::apiResource('topics' , TopicsController::class);
+Route::post('topics/restore/{id}' , [TopicsController::class,'restore']);
+Route::delete('topics/forceDelete/{id}' , [TopicsController::class,'forceDelete']);
+
+//Posts
+Route::apiResource('posts' , PostsController::class);
+Route::post('posts/restore/{id}' , [PostsController::class,'restore']);
+Route::delete('posts/forceDelete/{id}' , [PostsController::class,'forceDelete']);

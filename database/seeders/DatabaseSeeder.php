@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Groups;
+use App\Models\Posts;
 use App\Models\User;
 use App\Models\User\UserProfile;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -48,6 +49,10 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             VariationSeeder::class,
             OrderSeeder::class,
+            TopicsSeeder::class,
+            PostsSeeder::class
         ]);
+
+
     }
 }
