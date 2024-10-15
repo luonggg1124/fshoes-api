@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\Groups\GroupsServiceInterface;
+use App\Services\Topic\TopicsService;
 use Illuminate\Http\Request;
 use Mockery\Exception;
-use function GuzzleHttp\json_decode;
 
-class GroupsController extends Controller
+class TopicsController extends Controller
 {
-    public function __construct(protected GroupsServiceInterface $groupsService)
+    public function __construct(protected TopicsService $topicsService)
     {
     }
 
@@ -20,7 +19,7 @@ class GroupsController extends Controller
     public function index(Request $request)
     {
         return response()->json(
-            $this->groupsService->getAll($request->all()), 200
+            $this->topicsService->getAll($request->all()), 200
         );
     }
 
@@ -30,9 +29,9 @@ class GroupsController extends Controller
     public function store(Request $request)
     {
         try {
-            $group = $this->groupsService->create($request->all());
-            return response()->json(['message' => "Create group successfully",
-                                "group" => $group], 201);
+            $topic = $this->topicsService->create($request->all());
+            return response()->json(['message' => "Create topic successfully",
+                "topic" => $topic], 201);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 404);
         }
@@ -44,7 +43,7 @@ class GroupsController extends Controller
     public function show(string $id)
     {
         try {
-            return response()->json($this->groupsService->findById($id), 200);
+            return response()->json($this->topicsService->findById($id), 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 404);
         }
@@ -57,8 +56,8 @@ class GroupsController extends Controller
     {
         try {
             return response()->json([
-                "message"=>"Update group successfully",
-                "group" => $this->groupsService->update($id, $request->all())
+                "message"=>"Update topic successfully",
+                "topic" => $this->topicsService->update($id, $request->all())
             ], 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 404);
@@ -71,8 +70,8 @@ class GroupsController extends Controller
     public function destroy(string $id)
     {
         try {
-            $this->groupsService->delete($id);
-            return response()->json(['message' => "Deleted group"], 200);
+            $this->topicsService->delete($id);
+            return response()->json(['message' => "Deleted topic"], 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 404);
         }
@@ -81,8 +80,8 @@ class GroupsController extends Controller
     public function restore(string $id)
     {
         try {
-            $this->groupsService->restore($id);
-            return response()->json(['message' => "Restored group"], 200);
+            $this->topicsService->restore($id);
+            return response()->json(['message' => "Restored topic"], 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 404);
         }
@@ -91,8 +90,8 @@ class GroupsController extends Controller
     public function forceDelete(string $id)
     {
         try {
-            $this->groupsService->forceDelete($id);
-            return response()->json(['message' => "Force deleted group"], 200);
+            $this->topicsService->forceDelete($id);
+            return response()->json(['message' => "Force deleted topic"], 200);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 404);
         }

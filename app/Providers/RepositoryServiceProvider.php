@@ -67,6 +67,10 @@ class RepositoryServiceProvider extends ServiceProvider
             'groups'=>[
                 \App\Repositories\Groups\GroupsRepositoryInterface::class,
                 \App\Repositories\Groups\GroupsRepository::class
+            ],
+            'topics'=>[
+                \App\Repositories\Topic\TopicsRepositoryInterface::class,
+                \App\Repositories\Topic\TopicsRepository::class
             ]
 
         ];

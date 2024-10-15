@@ -67,6 +67,10 @@ class AppServiceProvider extends ServiceProvider
             'groups'=>[
                 \App\Services\Groups\GroupsServiceInterface::class,
                 \App\Services\Groups\GroupsService::class
+            ],
+            'topics'=>[
+                \App\Services\Topic\TopicServiceInterface::class,
+                \App\Services\Topic\TopicsService::class
             ]
         ];
 
