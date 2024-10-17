@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Services\Attribute\Value\AttributeValueServiceInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AttributeValueController extends Controller
 {
@@ -44,6 +45,12 @@ class AttributeValueController extends Controller
             ], 201);
 
         } catch (\Throwable $throw) {
+            Log::error(
+                message: __CLASS__.'@'.__FUNCTION__,context: [
+                'line' => $throw->getLine(),
+                'message' => $throw->getMessage()
+            ]
+            );
             if ($throw instanceof ModelNotFoundException) {
                 return \response()->json([
                     'status' => false,

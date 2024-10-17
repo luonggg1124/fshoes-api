@@ -13,6 +13,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class VariationResource extends JsonResource
 {
     public static $wrap = false;
+    private string $model = 'product_variation';
     /**
      * Transform the resource into an array.
      *
@@ -20,8 +21,8 @@ class VariationResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
 
+        $resource = [
             'id' => $this->id,
             'slug' => $this->slug,
             'product' => new ProductResource($this->whenLoaded('product')),
@@ -32,8 +33,13 @@ class VariationResource extends JsonResource
             'status' => $this->status,
             'stock_qty' => $this->stock_qty,
             'qty_sold' => $this->qty_sold,
-            'created_at' => (new Carbon($this->created_at))->format('d-m-Y H:i:s')
-
         ];
+        if ($this->includeTimes($this->model))
+        {
+            $resource['created_at'] = (new Carbon($this->created_at))->format('d-m-Y H:i:s');
+            $resource['updated_at'] = (new Carbon($this->updated_at))->format('d-m-Y H:i:s');
+            $resource['deleted_at'] = (new Carbon($this->updated_at))->format('d-m-Y H:i:s');
+        }
+        return $resource;
     }
 }

@@ -111,7 +111,7 @@ Route::apiResource('review',ReviewController::class)->parameter('review','id');
 Route::apiResource('attribute',\App\Http\Controllers\Api\Attribute\AttributeController::class)->parameter('attribute','id');
 Route::get('get/attribute/values/product/{id}',[ProductController::class,'getAttributeValues'])->name('get.attribute.values');
 Route::post('add/attribute/values/product/{id}',[ProductController::class,'createAttributeValues'])->name('add.attribute.values');
-Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\AttributeValueController::class)->parameters(['attribute'=>'aid','value' => 'id']);
+Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\AttributeValueController::class)->parameters(['attribute'=>'aid','value' => 'id'])->except('update');
 //Attribute - Attribute Value End
 
 //Route::get('api/auth/google/redirect', [SocialiteController::class, 'googleRedirect']);
