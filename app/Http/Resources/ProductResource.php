@@ -3,13 +3,17 @@
 namespace App\Http\Resources;
 
 use App\Http\Resources\Product\VariationResource;
+use App\Http\Traits\ResourceSummary;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
 {
+    use ResourceSummary;
+
     public static $wrap = false;
+    private string $model = 'product';
 
     /**
      * Transform the resource into an array.
@@ -18,7 +22,7 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $resource = [
             'id' => $this->id,
             'image_url' => $this->image_url,
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
@@ -32,9 +36,22 @@ class ProductResource extends JsonResource
             'status' => $this->status,
             'stock_qty' => $this->stock_qty,
             'qty_sold' => $this->qty_sold,
-            'created_at' => (new Carbon($this->created_at))->format('d-m-Y H:i:s'),
-            'updated_at' => (new Carbon($this->updated_at))->format('d-m-Y H:i:s'),
-            'deleted_at' => (new Carbon($this->deleted_at))->format('d-m-Y H:i:s')
         ];
+        if ($this->shouldSummaryRelation($this->model)) $resource = [
+            'id' => $this->id,
+            'image_url' => $this->image_url,
+            'categories' => CategoryResource::collection($this->whenLoaded('categories')),
+            'images' => ImageResource::collection($this->whenLoaded('images')),
+            'variations' => VariationResource::collection($this->whenLoaded('variations')),
+            'name' => $this->name,
+            'slug' => $this->slug,
+            'price' => number_format($this->price),
+        ];
+        if ($this->includeTimes($this->model)) {
+            $resource['created_at'] = (new Carbon($this->created_at))->format('d-m-Y H:i:s');
+            $resource['updated_at'] = (new Carbon($this->updated_at))->format('d-m-Y H:i:s');
+            $resource['deleted_at'] = (new Carbon($this->updated_at))->format('d-m-Y H:i:s');
+        }
+        return $resource;
     }
 }

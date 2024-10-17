@@ -5,13 +5,16 @@ namespace App\Http\Resources\Product;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\ImageResource;
 use App\Http\Resources\ProductResource;
+use App\Http\Traits\ResourceSummary;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductDetailResource extends JsonResource
 {
+    use ResourceSummary;
     public static $wrap = false;
+    private string $model = 'product_detail';
     /**
      * Transform the resource into an array.
      *
@@ -19,7 +22,7 @@ class ProductDetailResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $resource = [
             'id' => $this->id,
             'image_url' => $this->image_url,
             'name' => $this->name,
@@ -37,5 +40,12 @@ class ProductDetailResource extends JsonResource
             'variations' => VariationResource::collection($this->variations),
             'suggestedProduct' => ProductResource::collection($this->suggestedProduct),
         ];
+        if ($this->includeTimes($this->model))
+        {
+            $resource['created_at'] = (new Carbon($this->created_at))->format('d-m-Y H:i:s');
+            $resource['updated_at'] = (new Carbon($this->updated_at))->format('d-m-Y H:i:s');
+            $resource['deleted_at'] = (new Carbon($this->updated_at))->format('d-m-Y H:i:s');
+        }
+        return $resource;
     }
 }
