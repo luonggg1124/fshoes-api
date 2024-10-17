@@ -71,6 +71,10 @@ class RepositoryServiceProvider extends ServiceProvider
             'topics'=>[
                 \App\Repositories\Topic\TopicsRepositoryInterface::class,
                 \App\Repositories\Topic\TopicsRepository::class
+            ],
+            'posts'=>[
+                \App\Repositories\Post\PostRepositoryInterface::class,
+                \App\Repositories\Post\PostRepository::class
             ]
 
         ];

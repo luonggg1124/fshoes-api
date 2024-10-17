@@ -71,6 +71,10 @@ class AppServiceProvider extends ServiceProvider
             'topics'=>[
                 \App\Services\Topic\TopicServiceInterface::class,
                 \App\Services\Topic\TopicsService::class
+            ],
+            'posts'=>[
+                \App\Services\Post\PostServiceInterface::class,
+                \App\Services\Post\PostService::class
             ]
         ];
 
