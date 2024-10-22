@@ -62,6 +62,7 @@ class OrderService implements OrderServiceInterface
     public function update(int|string $id ,array $data,array $option = []){
         try {
             $order = $this->orderRepository->update($id,$data);
+
              $this->orderHistoryService->create(["order_id"=>$id, "user_id"=>1 ,"description"=> "Update Status Order"]);
             return $order;
          }catch (\Exception $e){

@@ -130,7 +130,7 @@ class PaymentOnline extends Controller
         $ipnUrl = $request->url;
         $extraData = "";
 
-        $orderId = 'WM_' . rand(1000, 9999); // Mã đơn hàng
+        $orderId = 'FS_' . rand(1000, 9999); // Mã đơn hàng
         $orderInfo = 'MOMO PAYMENT';
         $amount = ($request->total * 24000);
         $requestId = time() . "";

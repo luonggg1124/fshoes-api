@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('city');
             $table->string('country');
             $table->foreignId('voucher_id')->nullable();
-            $table->enum("status" , ["Waiting Confirm" , "Confirmed" , "Pending" , "Cancelled" , "Transporting" , "Done"]);
+            $table->enum("status" , [ "Cancelled" , "Waiting Confirm", "Pending", "Transporting" , "Done"]);
             $table->text('note')->nullable();
             $table->softDeletes();
             $table->timestamps();
