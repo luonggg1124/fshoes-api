@@ -35,6 +35,28 @@ class Product extends Model
     {
         return $this->belongsToMany(Image::class,'product_image','product_id','image_id');
     }
+    public function discounts():BelongsToMany
+    {
+        return $this->belongsToMany(Discount::class,'product_discount','product_id','discount_id');
+    }
+    public function scopeGetCurrentDiscount()
+    {
+        $discount = $this->discounts()->where('is_active', true)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())->first();
+        return $discount;
+    }
+    public function scopeGetSalePrice(){
+        $discount = $this->getCurrentDiscount();
+        if($discount){
+            if($discount->value == 'percent') return $this->price - ($this->price*$discount->value/100);
+            else return $this->price - $discount->value;
+        }else{
+            return $this->price;
+        }
+
+    }
+
     public function variations():HasMany
     {
         return $this->hasMany(ProductVariations::class);

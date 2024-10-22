@@ -75,6 +75,10 @@ class RepositoryServiceProvider extends ServiceProvider
             'posts'=>[
                 \App\Repositories\Post\PostRepositoryInterface::class,
                 \App\Repositories\Post\PostRepository::class
+            ],
+            'discounts'=>[
+                \App\Repositories\Discount\DiscountRepositoryInterface::class,
+                \App\Repositories\Discount\DiscountRepository::class
             ]
 
         ];

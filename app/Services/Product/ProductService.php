@@ -7,6 +7,7 @@ use App\Http\Resources\Product\ProductDetailResource;
 use App\Http\Traits\Paginate;
 use App\Http\Traits\Cloudinary;
 
+use App\Repositories\Product\Variation\VariationRepositoryInterface;
 use App\Services\Image\ImageServiceInterface;
 use App\Http\Resources\ProductResource;
 use App\Http\Traits\CanLoadRelationships;
@@ -35,7 +36,9 @@ class ProductService implements ProductServiceInterface
     ];
     public function __construct(
         protected ProductRepositoryInterface $productRepository,
+        protected VariationRepositoryInterface $variationRepository,
         protected ImageServiceInterface $imageService,
+
     ) {
     }
 
@@ -87,12 +90,16 @@ class ProductService implements ProductServiceInterface
         $product = $this->loadRelationships($product);
         return new ProductResource($product);
     }
+
     public function productDetail(int|string $id){
         $product = $this->productRepository->query()->find($id);
         if(!$product) throw new ModelNotFoundException('Product not found');
         if($product->variations){
             $attributes = [];
             foreach ($product->variations as $variation) {
+                //$salePrice = $this->discountPrice($product->id, $variation->id);
+                //$variation->sale_price = $salePrice;
+                //dd($variation);
                 foreach ($variation->values as $value){
                     $attributes[$value->attribute->id]['id'] = $value->attribute->id;
                     $attributes[$value->attribute->id]['name'] = $value->attribute->name;
@@ -104,13 +111,13 @@ class ProductService implements ProductServiceInterface
                     unset($value->attribute);
                 }
             }
-            // automatically assign attributes
             $product->attributes = [...$attributes];
+        }else{
+            $product->sale_price = $this->discountPrice($product->id);
         }
         $productRelated = [];
         if($product->categories){
             foreach ($product->categories as $category){
-
                 foreach ($category->products()->orderBy('qty_sold','desc')->take(3)->get() as $p)
                 $productRelated[] = $p;
                 if(count($productRelated) === 20)break;
@@ -122,7 +129,6 @@ class ProductService implements ProductServiceInterface
         if(count($uniProductRelated) < 20){
             $topSold = $this->productRepository->query()->orderBy('qty_sold','desc')->take(30)->get();
             foreach ($topSold as $item){
-
                 $uniProductRelated[] = $item;
                 if(count(collect($uniProductRelated)->unique('id')) === 20) {
                     $collectProduct = collect($uniProductRelated)->unique('id');

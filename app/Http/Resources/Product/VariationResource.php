@@ -4,14 +4,17 @@ namespace App\Http\Resources\Product;
 
 
 use App\Http\Resources\Attribute\Value\ValueResource;
+use App\Http\Resources\Discount\DiscountResource;
 use App\Http\Resources\ImageResource;
 use App\Http\Resources\ProductResource;
+use App\Http\Traits\ResourceSummary;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class VariationResource extends JsonResource
 {
+    use ResourceSummary;
     public static $wrap = false;
     private string $model = 'product_variation';
     /**
@@ -28,7 +31,9 @@ class VariationResource extends JsonResource
             'product' => new ProductResource($this->whenLoaded('product')),
             'images' => ImageResource::collection($this->whenLoaded('images')),
             'values' => ValueResource::collection($this->whenLoaded('values')),
-            'price' => $this->price,
+            'price' => number_format($this->price, 0, ',', '.'),
+            'sale_price' => $this->getSalePrice ? number_format($this->getSalePrice(), 0, ',', '.') : null,
+            'currentDiscount' => new DiscountResource($this->getCurrentDiscount()),
             'sku' => $this->sku,
             'status' => $this->status,
             'stock_qty' => $this->stock_qty,

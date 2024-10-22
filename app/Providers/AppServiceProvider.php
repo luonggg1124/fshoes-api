@@ -75,6 +75,10 @@ class AppServiceProvider extends ServiceProvider
             'posts'=>[
                 \App\Services\Post\PostServiceInterface::class,
                 \App\Services\Post\PostService::class
+            ],
+            'discounts' => [
+                \App\Services\Discount\DiscountServiceInterface::class,
+                \App\Services\Discount\DiscountService::class
             ]
         ];
 
