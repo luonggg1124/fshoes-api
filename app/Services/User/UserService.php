@@ -52,11 +52,13 @@ class UserService implements UserServiceInterface
     public function create(array $data, array $options = ['avatar' => null, 'profile' => []])
     {
 
-        $user = DB::transaction(function () use ($data, $options) {
+            $user = DB::transaction(function () use ($data, $options) {
             if ($this->userRepository->query()->where('email', $data['email'])->exists())
                 throw \Illuminate\Validation\ValidationException::withMessages([
                     'email' => 'The email have already been taken'
                 ]);
+            if(isset($data) && empty($data['group_id'])) $data['group_id'] = 1;
+
             $data['status'] = 'active';
             $data['nickname'] = $this->createNickname($data['name']);
             $user = $this->userRepository->create($data);

@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Mockery\Exception;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 
 class AuthService extends UserService
@@ -21,6 +23,10 @@ class AuthService extends UserService
         return true;
     }
     public function register(array $data, array $options = ['profile' => []]){
+        $credential = [
+            'email' => $data['email'],
+            'password' => $data['password']
+        ];
         $user = DB::transaction(function () use ($data, $options) {
             if ($this->userRepository->query()->where('email', $data['email'])->exists())
                 throw \Illuminate\Validation\ValidationException::withMessages([
@@ -35,7 +41,9 @@ class AuthService extends UserService
             $this->createProfile($user->id, $options['profile']);
             return $user;
         }, 3);
-        return $user;
+        if($user)
+        return $this->login($credential);
+        else throw new Exception('something went wrong');
     }
     public function login(array $credentials = [
         'email' => '',
@@ -46,7 +54,13 @@ class AuthService extends UserService
         if(!$user) throw new ModelNotFoundException('User not found');
         if(!Hash::check($credentials['password'], $user->password)) throw new AuthenticationException('Wrong password');
         $token = auth()->login($user);
-        return $token;
+        $refresh_token = auth()->claims([
+            'exp' => now()->addDays(30)->timestamp,
+        ])->attempt($credentials);
+        return [
+            'access_token' => $token,
+            'refresh_token' => $refresh_token,
+        ];
     }
     public function getCode(string $email){
         $code = random_int(1234567, 9876543);

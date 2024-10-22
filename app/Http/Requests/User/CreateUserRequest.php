@@ -27,6 +27,7 @@ class CreateUserRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
+            'group' => 'nullable|integer|exists:groups,id',
             'profile' => 'nullable|array'
         ];
     }
@@ -55,6 +56,7 @@ class CreateUserRequest extends FormRequest
 
 
 
+            'group.exists' => 'Group does not exist',
 
         ];
     }
