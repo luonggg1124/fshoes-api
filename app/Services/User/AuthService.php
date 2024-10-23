@@ -57,9 +57,11 @@ class AuthService extends UserService
         $refresh_token = auth()->claims([
             'exp' => now()->addDays(30)->timestamp,
         ])->attempt($credentials);
+        $user->load('profile');
         return [
             'access_token' => $token,
             'refresh_token' => $refresh_token,
+            'user' => new UserResource($user)
         ];
     }
     public function getCode(string $email){

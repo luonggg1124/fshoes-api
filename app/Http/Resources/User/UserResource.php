@@ -28,10 +28,6 @@ class UserResource extends JsonResource
             'is_admin' => $this->is_admin,
             'status' => $this->status,
             'profile' => new UserProfileResource($this->whenLoaded('profile')),
-            'interestingCategories' => CategoryResource::collection($this->whenLoaded('interestingCategories')),
-            'addresses' => UserAddressResource::collection($this->whenLoaded('addresses')),
-            'avatar' => new AvatarResource($this->avatar()),
-            'allAvatars' => AvatarResource::collection($this->whenLoaded('allAvatars'))
         ];
     }
 }
