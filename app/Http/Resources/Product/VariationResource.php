@@ -6,12 +6,14 @@ namespace App\Http\Resources\Product;
 use App\Http\Resources\Attribute\Value\ValueResource;
 use App\Http\Resources\ImageResource;
 use App\Http\Resources\ProductResource;
+use App\Http\Traits\ResourceSummary;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class VariationResource extends JsonResource
 {
+    use ResourceSummary;
     public static $wrap = false;
     private string $model = 'product_variation';
     /**
