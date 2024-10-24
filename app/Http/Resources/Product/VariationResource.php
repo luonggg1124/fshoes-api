@@ -43,7 +43,9 @@ class VariationResource extends JsonResource
         {
             $resource['created_at'] = $this->created_at;
             $resource['updated_at'] = $this->updated_at;
+
             $resource['deleted_at'] = $this->deleted_at;
+
         }
         return $resource;
     }

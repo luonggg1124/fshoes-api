@@ -35,9 +35,9 @@ class AttributeResource extends JsonResource
             ];
         }
         if(\request()->query('times')){
-            $resource['created_at']  = (new Carbon($this->created_at))->format('d-m-Y H:i:s');
-            $resource['updated_at']  = (new Carbon($this->updated_at))->format('d-m-Y H:i:s');
-            $resource['deleted_at']  = (new Carbon($this->updated_at))->format('d-m-Y H:i:s');
+            $resource['created_at']  = $this->created_at;
+            $resource['updated_at']  = $this->updated_at;
+            $resource['deleted_at']  = $this->updated_at;
         }
         return $resource;
     }

@@ -52,13 +52,15 @@ class AuthController extends Controller
 
     public function register(CreateUserRequest $request){
         try{
-
             $data = $request->all();
-            $user = $this->service->register($data,options: [
+            $data['group_id'] = 1;
+
+            $token = $this->service->register($data,options: [
                 'profile' => $request->profile
             ]);
-            $token = auth()->login($user);
-            return $this->respondWithToken($token);
+
+
+            return $this->respondWithToken($token['access_token'],$token['refresh_token'],$token['user']);
         }catch(\Throwable $th){
             Log::error(__CLASS__.'@'.__FUNCTION__,[
                 "line" => $th->getLine(),
@@ -100,7 +102,8 @@ class AuthController extends Controller
         try {
             $credentials = $request->only('email', 'password');
             $token = $this->service->login($credentials);
-            return $this->respondWithToken($token);
+
+            return $this->respondWithToken($token['access_token'],$token['refresh_token'],$token['user']);
         } catch (\Throwable $throwable) {
             if ($throwable instanceof JWTException) {
                 return response()->json([
@@ -148,16 +151,32 @@ class AuthController extends Controller
         ]);
     }
 
-    public function refresh()
+    public function refresh(Request $request)
     {
-        return $this->respondWithToken(auth()->refresh());
+        try {
+            if(!$request->refresh_token) return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized'
+            ],401);
+            $newToken = auth()->setToken($request->refresh_token)->refresh();
+            $user = auth()->user();
+            return $this->respondWithToken($request->refresh_token,$newToken,$user);
+        }catch (\Exception $e){
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized'
+            ],401);
+        }
+
     }
 
-    protected function respondWithToken($token): Response|JsonResponse
+    protected function respondWithToken($token,$refreshToken,$user): Response|JsonResponse
     {
         return response()->json([
             'status' => true,
             'access_token' => $token,
+            'refresh_token' => $refreshToken,
+            'user' => $user,
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);

@@ -44,19 +44,21 @@ Route::group(['middleware' => ['auth:api']],function(){
     Route::apiResource('user',UserController::class)->parameter('user','nickname')->except(['index','destroy']);
     Route::post('logout',[\App\Http\Controllers\Api\User\AuthController::class,'logout']);
     Route::get('auth/me',[\App\Http\Controllers\Api\User\AuthController::class,'me']);
+    Route::post('auth/refresh/token',[\App\Http\Controllers\Api\User\AuthController::class,'refresh']);
 });
 
 
 Route::post('/check/email',[\App\Http\Controllers\Api\User\AuthController::class,'checkEmail']);
 Route::post('login',[\App\Http\Controllers\Api\User\AuthController::class,'login']);
 Route::post('register',[\App\Http\Controllers\Api\User\AuthController::class,'register']);
+
 // End Auth
 
 // Category Start
 
 Route::apiResource('category', CategoryController::class)
     ->parameter('category', 'id')->only(['index','show']);
-
+Route::post('category/{id}/products',[CategoryController::class,'cle'])->name('category.add.products');
 Route::get('main/categories',[CategoryController::class,'mains'])->name('main.categories');
 
 // Category End

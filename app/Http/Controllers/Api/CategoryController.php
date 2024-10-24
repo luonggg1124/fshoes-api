@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\CreateCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Services\Category\CategoryServiceInterface;
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
@@ -66,7 +68,32 @@ class CategoryController extends Controller
             ], 500);
         }
     }
+    public function addProducts(Request $request,int|string $id){
+        try {
+            $products = $request->products;
+            if(!$products || !is_array($products)) return response()->json([
+                'status' => false,
+                'error' => 'Products not found'
+            ],422);
 
+            $category = $this->categoryService->addProducts($id,$products);
+            return response()->json([
+                'status' => true,
+                'category' => $category
+            ],201);
+        }catch (\Throwable $throw){
+            if($throw instanceof ModelNotFoundException){
+                return response()->json([
+                    'status' => false,
+                    'error' => $throw->getMessage()
+                ],404);
+            }
+            return response()->json([
+                'status' => false,
+                'error' => 'Something went wrong'
+            ],500);
+        }
+    }
     /**
      * Display the specified resource.
      */

@@ -8,7 +8,7 @@ interface CategoryServiceInterface
     function getAll();
     function mains();
     function findById(int|string $id);
-
+    function addProducts(int|string $id, array $products = []);
     function create(array $data, array $option = []);
     function update(int|string $id,array $data, array $option = []);
 

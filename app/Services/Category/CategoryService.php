@@ -55,7 +55,12 @@ class CategoryService implements CategoryServiceInterface
         $category = $this->loadRelationships($category);
         return new CategoryResource($category);
     }
-
+    public function addProducts(int|string $id, array $products = []){
+        $category = $this->categoryRepository->find($id);
+        if (!$category) throw new ModelNotFoundException('Category not found');
+        if($products) $category->products()->syncWithoutDetaching($products);
+        return new CategoryResource($this->loadRelationships($category));
+    }
     /**
      * @throws \Exception
      */

@@ -21,7 +21,7 @@ class UserAddressResource extends JsonResource
             'user' => new UserResource($this->user()),
             'phone_num' => $this->phone_num,
             'name' => $this->name,
-            'created_at' =>  (new Carbon($this->created_at))->format('d-m-Y H:i:s')
+            'created_at' =>  $this->created_at
         ];
     }
 }
