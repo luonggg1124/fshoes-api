@@ -31,6 +31,12 @@ class CreateOrderRequest extends FormRequest
             "shipping_method" => "required",
             "shipping_cost" => "required",
             "amount_collected" => "required",
+            "receiver_full_name"=>"required",
+            "phone"=>"required",
+            "city"=>"required",
+            "country"=>"required",
+            "address"=>"required",
+            "status"=>"required"
         ];
     }
     public function messages(): array
@@ -43,6 +49,12 @@ class CreateOrderRequest extends FormRequest
             'shipping_method.required' => 'Shipping method is required',
             'shipping_cost.required' => 'Shipping cost is required',
             'amount_collected.required' => 'Amount collected is required',
+            "receiver_full_name.required" => "Receiver full name is required",
+            "phone.required" => "Phone is required",
+            "city.required" => "City is required",
+            "country.required" => "Country is required",
+            "address.required" => "Address is required",
+            "status.required" => "Status is required"
         ];
     }
 
