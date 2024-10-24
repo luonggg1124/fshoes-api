@@ -31,9 +31,9 @@ class VariationResource extends JsonResource
             'product' => new ProductResource($this->whenLoaded('product')),
             'images' => ImageResource::collection($this->whenLoaded('images')),
             'values' => ValueResource::collection($this->whenLoaded('values')),
-            'price' => number_format($this->price, 0, ',', '.'),
-            'sale_price' => $this->getSalePrice ? number_format($this->getSalePrice(), 0, ',', '.') : null,
-            'currentDiscount' => new DiscountResource($this->getCurrentDiscount()),
+            'price' => $this->price,
+            'sale_price' => $this->salePrice(),
+            'currentDiscount' => new DiscountResource($this->currentDiscount()),
             'sku' => $this->sku,
             'status' => $this->status,
             'stock_qty' => $this->stock_qty,
@@ -41,9 +41,9 @@ class VariationResource extends JsonResource
         ];
         if ($this->includeTimes($this->model))
         {
-            $resource['created_at'] = (new Carbon($this->created_at))->format('d-m-Y H:i:s');
-            $resource['updated_at'] = (new Carbon($this->updated_at))->format('d-m-Y H:i:s');
-            $resource['deleted_at'] = (new Carbon($this->updated_at))->format('d-m-Y H:i:s');
+            $resource['created_at'] = $this->created_at;
+            $resource['updated_at'] = $this->updated_at;
+            $resource['deleted_at'] = $this->deleted_at;
         }
         return $resource;
     }

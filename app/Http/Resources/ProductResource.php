@@ -30,8 +30,8 @@ class ProductResource extends JsonResource
             'variations' => VariationResource::collection($this->whenLoaded('variations')),
             'name' => $this->name,
             'slug' => $this->slug,
-            'price' => number_format($this->price),
-            'sale_price' => $this->sale_price ? number_format($this->sale_price, 0, ',', '.') : null,
+            'price' => $this->price,
+            'sale_price' => $this->sale_price ,
             'description' => $this->description,
             'short_description' => $this->short_description,
             'status' => $this->status,
@@ -46,8 +46,8 @@ class ProductResource extends JsonResource
             'variations' => VariationResource::collection($this->whenLoaded('variations')),
             'name' => $this->name,
             'slug' => $this->slug,
-            'price' => number_format($this->price),
-            'sale_price' => $this->sale_price ? number_format($this->sale_price) : null,
+            'price' => $this->price,
+            'sale_price' =>  $this->salePrice(),
         ];
         if ($this->includeTimes($this->model)) {
             $resource['created_at'] = (new Carbon($this->created_at))->format('d-m-Y H:i:s');

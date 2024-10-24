@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 
 class Product extends Model
@@ -39,22 +41,21 @@ class Product extends Model
     {
         return $this->belongsToMany(Discount::class,'product_discount','product_id','discount_id');
     }
-    public function scopeGetCurrentDiscount()
+    public function currentDiscount()
     {
-        $discount = $this->discounts()->where('is_active', true)
+      return $this->discounts()->where('is_active', true)
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now())->first();
-        return $discount;
+
     }
-    public function scopeGetSalePrice(){
-        $discount = $this->getCurrentDiscount();
+    public function salePrice(){
+        $discount = $this->currentDiscount();
         if($discount){
             if($discount->value == 'percent') return $this->price - ($this->price*$discount->value/100);
             else return $this->price - $discount->value;
         }else{
             return $this->price;
         }
-
     }
 
     public function variations():HasMany
@@ -87,5 +88,14 @@ class Product extends Model
     public function reviews():HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function scopeSortByColumn(QueryBuilder|EloquentBuilder $query,array $columns = [],string $defaultColumn = 'updated_at',string $defaultSort = 'desc'):QueryBuilder|EloquentBuilder
+    {
+        $sort = request()->query('sort');
+        $column = request()->query('column');
+        if(!in_array($sort,['asc','desc'])) $sort = $defaultSort;
+        if(!in_array($column,$columns)) $column = $defaultColumn;
+       return $query->orderBy($column,$sort);
     }
 }

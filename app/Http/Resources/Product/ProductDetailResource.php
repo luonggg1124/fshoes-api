@@ -7,7 +7,6 @@ use App\Http\Resources\Discount\DiscountResource;
 use App\Http\Resources\ImageResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Traits\ResourceSummary;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -30,17 +29,17 @@ class ProductDetailResource extends JsonResource
             'image_url' => $this->image_url,
             'name' => $this->name,
             'slug' => $this->slug,
-            'price' => number_format($this->price, 0, ',', '.'),
-            'sale_price' => $this->getSalePrice ? number_format($this->getSalePrice, 0, ',', '.') : null,
+            'price' => $this->price,
+            'sale_price' => $this->salePrice(),
             'stock_qty' => $this->stock_qty,
             'qty_sold' => $this->qty_sold,
             'description' => $this->description,
             'short_description' => $this->short_description,
+            'attributes' => $this->attributes,
             'images' => ImageResource::collection($this->images),
             'categories' => CategoryResource::collection($this->categories),
-            'attributes' => $this->attributes,
             'variations' => VariationResource::collection($this->variations),
-            'currentDiscount' => new DiscountResource($this->getCurrentDiscount),
+            'currentDiscount' => new DiscountResource($this->currentDiscount()),
             'suggestedProduct' => ProductResource::collection($this->suggestedProduct),
         ];
         if ($this->shouldSummaryRelation($this->model))
@@ -49,17 +48,17 @@ class ProductDetailResource extends JsonResource
                 'image_url' => $this->image_url,
                 'name' => $this->name,
                 'slug' => $this->slug,
-                'price' => number_format($this->price, 0, ',', '.'),
-                'sale_price' => $this->sale_price ? number_format($this->sale_price, 0, ',', '.') : null,
+                'price' => $this->price,
+                'sale_price' => $this->salePrice(),
+                'attributes' => $this->attributes,
                 'images' => ImageResource::collection($this->whenLoaded('images')),
                 'categories' => CategoryResource::collection($this->whenLoaded('categories')),
-                'attributes' => $this->attributes,
                 'variations' => VariationResource::collection($this->whenLoaded('variations')),
             ];
         if ($this->includeTimes($this->model)) {
-            $resource['created_at'] = (new Carbon($this->created_at))->format('d-m-Y H:i:s');
-            $resource['updated_at'] = (new Carbon($this->updated_at))->format('d-m-Y H:i:s');
-            $resource['deleted_at'] = (new Carbon($this->updated_at))->format('d-m-Y H:i:s');
+            $resource['created_at'] = $this->created_at;
+            $resource['updated_at'] = $this->updated_at;
+            $resource['deleted_at'] = $this->deleted_at;
         }
         return $resource;
     }

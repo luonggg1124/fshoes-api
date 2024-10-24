@@ -24,14 +24,14 @@ class DiscountResource extends JsonResource
         $resource = [
             'type' => $this->type,
             'value' => $this->value,
-            'start_date' => (new Carbon($this->start_date))->format('d-m-Y H:i:s'),
-            'end_date' => (new Carbon($this->end_date))->format('d-m-Y H:i:s'),
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
             'is_active' => $this->is_active
         ];
         if ($this->includeTimes($this->model)) {
-            $resource['created_at'] = (new Carbon($this->created_at))->format('d-m-Y H:i:s');
-            $resource['updated_at'] = (new Carbon($this->updated_at))->format('d-m-Y H:i:s');
-            $resource['deleted_at'] = (new Carbon($this->updated_at))->format('d-m-Y H:i:s');
+            $resource['created_at'] = $this->created_at;
+            $resource['updated_at'] = $this->updated_at;
+            $resource['deleted_at'] = $this->deleted_at;
         }
         return $resource;
     }

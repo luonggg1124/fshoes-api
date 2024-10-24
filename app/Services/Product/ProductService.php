@@ -12,7 +12,6 @@ use App\Services\Image\ImageServiceInterface;
 use App\Http\Resources\ProductResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Repositories\Product\ProductRepositoryInterface;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -24,6 +23,7 @@ class ProductService implements ProductServiceInterface
 
     private array $relations = ['categories', 'images', 'variations','ownAttributes'];
     private array $columns = [
+        'id',
         'name',
         'slug',
         'price',
@@ -44,8 +44,9 @@ class ProductService implements ProductServiceInterface
 
     public function all()
     {
+
         $perPage = request()->query('per_page');
-        $products = $this->loadRelationships($this->productRepository->query()->orderBy('updated_at','desc'))->paginate($perPage);
+        $products = $this->loadRelationships($this->productRepository->query()->sortByColumn(columns:$this->columns))->paginate($perPage);
         return [
             'paginator' => $this->paginate($products),
             'data' => ProductResource::collection(
@@ -61,7 +62,7 @@ class ProductService implements ProductServiceInterface
                 $query->where('categories.name','Trend This Week');
             });
 
-        return ProductResource::collection($this->loadRelationships($products)->take(15)->get());
+        return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns:$this->columns))->take(15)->get());
     }
     public function shopBySports()
     {
@@ -69,14 +70,14 @@ class ProductService implements ProductServiceInterface
             ->whereHas('categories',function ($query){
                 $query->where('categories.name','like','Shop By Sport');
             });
-        return ProductResource::collection($this->loadRelationships($products)->get());
+        return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns:$this->columns))->get());
     }
     public function bestSellingProducts(){
         $products = $this->productRepository->query()->with(['categories'])
             ->whereHas('categories',function ($query){
                 $query->where('categories.name','Best Selling');
             });
-        return ProductResource::collection($this->loadRelationships($products)->take(5)->get());
+        return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns:$this->columns))->take(5)->get());
     }
     public function findById(int|string $id)
     {
@@ -85,21 +86,16 @@ class ProductService implements ProductServiceInterface
         if (!$product) {
             throw new ModelNotFoundException('Product not found');
         }
-
-
         $product = $this->loadRelationships($product);
         return new ProductResource($product);
     }
-
     public function productDetail(int|string $id){
         $product = $this->productRepository->query()->find($id);
         if(!$product) throw new ModelNotFoundException('Product not found');
         if($product->variations){
             $attributes = [];
             foreach ($product->variations as $variation) {
-                //$salePrice = $this->discountPrice($product->id, $variation->id);
-                //$variation->sale_price = $salePrice;
-                //dd($variation);
+                $variation->load('images');
                 foreach ($variation->values as $value){
                     $attributes[$value->attribute->id]['id'] = $value->attribute->id;
                     $attributes[$value->attribute->id]['name'] = $value->attribute->name;
@@ -112,8 +108,6 @@ class ProductService implements ProductServiceInterface
                 }
             }
             $product->attributes = [...$attributes];
-        }else{
-            $product->sale_price = $this->discountPrice($product->id);
         }
         $productRelated = [];
         if($product->categories){
@@ -142,7 +136,6 @@ class ProductService implements ProductServiceInterface
         foreach ($collectProduct as $item) $item->load('categories');
         $product->suggestedProduct = $suggestedProduct;
         return new ProductDetailResource($product);
-
     }
 
     public function create(
@@ -153,7 +146,6 @@ class ProductService implements ProductServiceInterface
         ]
     )
     {
-
         return DB::transaction(function () use ($data, $options) {
             $product = $this->productRepository->create($data);
             if(!$product) throw new \Exception('Cannot create product');
@@ -227,7 +219,7 @@ class ProductService implements ProductServiceInterface
     public function productWithTrashed()
     {
         $perPage = request()->query('per_page');
-        $products = $this->loadRelationships($this->productRepository->query()->withTrashed()->latest())->paginate($perPage);
+        $products = $this->loadRelationships($this->productRepository->query()->withTrashed()->sortByColumn(columns:$this->columns))->paginate($perPage);
         return [
             'paginator' => $this->paginate($products),
             'data' => ProductResource::collection(
@@ -238,7 +230,7 @@ class ProductService implements ProductServiceInterface
     public function productTrashed(){
         $perPage = request()->query('per_page');
 
-        $products = $this->loadRelationships($this->productRepository->query()->onlyTrashed()->orderBy('deleted_at','desc'))->paginate($perPage);
+        $products = $this->loadRelationships($this->productRepository->query()->onlyTrashed()->sortByColumn(columns:$this->columns,defaultColumn:'deleted_at'))->paginate($perPage);
         return [
             'paginator' => $this->paginate($products),
             'data' => ProductResource::collection(
