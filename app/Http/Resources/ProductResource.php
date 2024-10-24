@@ -4,7 +4,6 @@ namespace App\Http\Resources;
 
 use App\Http\Resources\Product\VariationResource;
 use App\Http\Traits\ResourceSummary;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -31,6 +30,7 @@ class ProductResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'price' => $this->price,
+            'sale_price' => $this->salePrice() ,
             'description' => $this->description,
             'short_description' => $this->short_description,
             'status' => $this->status,
@@ -46,6 +46,8 @@ class ProductResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'price' => $this->price,
+            'sale_price' =>  $this->salePrice(),
+
         ];
         if ($this->includeTimes($this->model)) {
             $resource['created_at']  = $this->created_at;

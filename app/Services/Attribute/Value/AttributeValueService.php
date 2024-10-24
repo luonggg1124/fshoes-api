@@ -14,7 +14,7 @@ class AttributeValueService implements AttributeValueServiceInterface
     use CanLoadRelationships, Paginate;
 
     private array $relations = ['attribute', 'variations'];
-    private array $columns = ['attribute_id', 'value', 'created_at', 'updated_at'];
+    private array $columns = ['id','attribute_id', 'value', 'created_at', 'updated_at'];
 
     public function __construct(
         protected AttributeValueRepositoryInterface $repository,
@@ -29,11 +29,8 @@ class AttributeValueService implements AttributeValueServiceInterface
         if (!$attribute)
             throw new ModelNotFoundException('Attribute not found');
 
-        $column = request()->query('column') ?? 'id';
-        if (!in_array($column, $this->columns)) $column = 'id';
-        $sort = request()->query('sort') ?? 'desc';
-        if ($sort !== 'desc' && $sort !== 'asc') $sort = 'asc';
-        $values = $attribute->values()->orderBy($column, $sort);
+
+        $values = $attribute->values()->sortByColumn(columns:$this->columns);
         return ValueResource::collection($this->loadRelationships($values)->get());
     }
 

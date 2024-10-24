@@ -7,11 +7,11 @@ use App\Http\Resources\Product\ProductDetailResource;
 use App\Http\Traits\Paginate;
 use App\Http\Traits\Cloudinary;
 
+use App\Repositories\Product\Variation\VariationRepositoryInterface;
 use App\Services\Image\ImageServiceInterface;
 use App\Http\Resources\ProductResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Repositories\Product\ProductRepositoryInterface;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -23,6 +23,7 @@ class ProductService implements ProductServiceInterface
 
     private array $relations = ['categories', 'images', 'variations','ownAttributes'];
     private array $columns = [
+        'id',
         'name',
         'slug',
         'price',
@@ -35,14 +36,17 @@ class ProductService implements ProductServiceInterface
     ];
     public function __construct(
         protected ProductRepositoryInterface $productRepository,
+        protected VariationRepositoryInterface $variationRepository,
         protected ImageServiceInterface $imageService,
+
     ) {
     }
 
     public function all()
     {
+
         $perPage = request()->query('per_page');
-        $products = $this->loadRelationships($this->productRepository->query()->orderBy('updated_at','desc'))->paginate($perPage);
+        $products = $this->loadRelationships($this->productRepository->query()->sortByColumn(columns:$this->columns))->paginate($perPage);
         return [
             'paginator' => $this->paginate($products),
             'data' => ProductResource::collection(
@@ -58,7 +62,7 @@ class ProductService implements ProductServiceInterface
                 $query->where('categories.name','Trend This Week');
             });
 
-        return ProductResource::collection($this->loadRelationships($products)->take(15)->get());
+        return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns:$this->columns))->take(15)->get());
     }
     public function shopBySports()
     {
@@ -66,14 +70,14 @@ class ProductService implements ProductServiceInterface
             ->whereHas('categories',function ($query){
                 $query->where('categories.name','like','Shop By Sport');
             });
-        return ProductResource::collection($this->loadRelationships($products)->get());
+        return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns:$this->columns))->get());
     }
     public function bestSellingProducts(){
         $products = $this->productRepository->query()->with(['categories'])
             ->whereHas('categories',function ($query){
                 $query->where('categories.name','Best Selling');
             });
-        return ProductResource::collection($this->loadRelationships($products)->take(5)->get());
+        return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns:$this->columns))->take(5)->get());
     }
     public function findById(int|string $id)
     {
@@ -82,8 +86,6 @@ class ProductService implements ProductServiceInterface
         if (!$product) {
             throw new ModelNotFoundException('Product not found');
         }
-
-
         $product = $this->loadRelationships($product);
         return new ProductResource($product);
     }
@@ -93,6 +95,7 @@ class ProductService implements ProductServiceInterface
         if($product->variations){
             $attributes = [];
             foreach ($product->variations as $variation) {
+                $variation->load('images');
                 foreach ($variation->values as $value){
                     $attributes[$value->attribute->id]['id'] = $value->attribute->id;
                     $attributes[$value->attribute->id]['name'] = $value->attribute->name;
@@ -104,13 +107,11 @@ class ProductService implements ProductServiceInterface
                     unset($value->attribute);
                 }
             }
-            // automatically assign attributes
             $product->attributes = [...$attributes];
         }
         $productRelated = [];
         if($product->categories){
             foreach ($product->categories as $category){
-
                 foreach ($category->products()->orderBy('qty_sold','desc')->take(3)->get() as $p)
                 $productRelated[] = $p;
                 if(count($productRelated) === 20)break;
@@ -122,7 +123,6 @@ class ProductService implements ProductServiceInterface
         if(count($uniProductRelated) < 20){
             $topSold = $this->productRepository->query()->orderBy('qty_sold','desc')->take(30)->get();
             foreach ($topSold as $item){
-
                 $uniProductRelated[] = $item;
                 if(count(collect($uniProductRelated)->unique('id')) === 20) {
                     $collectProduct = collect($uniProductRelated)->unique('id');
@@ -136,7 +136,6 @@ class ProductService implements ProductServiceInterface
         foreach ($collectProduct as $item) $item->load('categories');
         $product->suggestedProduct = $suggestedProduct;
         return new ProductDetailResource($product);
-
     }
 
     public function create(
@@ -147,7 +146,6 @@ class ProductService implements ProductServiceInterface
         ]
     )
     {
-
         return DB::transaction(function () use ($data, $options) {
             $product = $this->productRepository->create($data);
             if(!$product) throw new \Exception('Cannot create product');
@@ -221,7 +219,7 @@ class ProductService implements ProductServiceInterface
     public function productWithTrashed()
     {
         $perPage = request()->query('per_page');
-        $products = $this->loadRelationships($this->productRepository->query()->withTrashed()->latest())->paginate($perPage);
+        $products = $this->loadRelationships($this->productRepository->query()->withTrashed()->sortByColumn(columns:$this->columns))->paginate($perPage);
         return [
             'paginator' => $this->paginate($products),
             'data' => ProductResource::collection(
@@ -232,7 +230,7 @@ class ProductService implements ProductServiceInterface
     public function productTrashed(){
         $perPage = request()->query('per_page');
 
-        $products = $this->loadRelationships($this->productRepository->query()->onlyTrashed()->orderBy('deleted_at','desc'))->paginate($perPage);
+        $products = $this->loadRelationships($this->productRepository->query()->onlyTrashed()->sortByColumn(columns:$this->columns,defaultColumn:'deleted_at'))->paginate($perPage);
         return [
             'paginator' => $this->paginate($products),
             'data' => ProductResource::collection(

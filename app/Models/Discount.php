@@ -5,22 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
-class AttributeValue extends Model
+class Discount extends Model
 {
-    protected $fillable = ['value','attribute_id'];
-    use HasFactory, SoftDeletes;
-    public function attribute():BelongsTo
+    use HasFactory;
+
+    public function products(): BelongsToMany
     {
-        return $this->belongsTo(Attribute::class,'attribute_id');
+        return $this->belongsToMany(Product::class,'product_discount','discount_id','product_id');
     }
+
     public function variations():BelongsToMany
     {
-        return $this->belongsToMany(ProductVariations::class,'product_variation_attributes','attribute_value_id','variation_id');
+        return $this->belongsToMany(ProductVariations::class,'variation_discount','discount_id','variation_id');
     }
     public function scopeSortByColumn(QueryBuilder|EloquentBuilder $query,array $columns = [],string $defaultColumn = 'updated_at',string $defaultSort = 'desc'):QueryBuilder|EloquentBuilder
     {

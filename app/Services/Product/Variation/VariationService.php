@@ -20,6 +20,7 @@ class VariationService implements VariationServiceInterface
 
     private array $relations = ['product', 'images', 'values'];
     private array $columns = [
+        'id',
         'slug',
         'price',
         'short_description',
