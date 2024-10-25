@@ -15,5 +15,8 @@ class DiscountService implements DiscountServiceInterface
     {
     }
 
+    public function addSale(){
+
+    }
 
 }

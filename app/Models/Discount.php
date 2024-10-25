@@ -14,12 +14,12 @@ class Discount extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class,'product_discount','discount_id','product_id');
+        return $this->belongsToMany(Product::class,'product_discount','discount_id','product_id')->withPivot('quantity');
     }
 
     public function variations():BelongsToMany
     {
-        return $this->belongsToMany(ProductVariations::class,'variation_discount','discount_id','variation_id');
+        return $this->belongsToMany(ProductVariations::class,'variation_discount','discount_id','variation_id')->withPivot('quantity');
     }
     public function scopeSortByColumn(QueryBuilder|EloquentBuilder $query,array $columns = [],string $defaultColumn = 'updated_at',string $defaultSort = 'desc'):QueryBuilder|EloquentBuilder
     {

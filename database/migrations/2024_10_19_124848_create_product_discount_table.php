@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products');
             $table->foreignId('discount_id')->constrained('discounts');
             $table->unique(['product_id', 'discount_id'],'product_discount_unique');
+            $table->integer('quantity')->default(0)->nullable();
             $table->timestamps();
         });
     }

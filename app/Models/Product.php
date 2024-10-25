@@ -39,7 +39,7 @@ class Product extends Model
     }
     public function discounts():BelongsToMany
     {
-        return $this->belongsToMany(Discount::class,'product_discount','product_id','discount_id');
+        return $this->belongsToMany(Discount::class,'product_discount','product_id','discount_id')->withPivot('quantity');
     }
     public function currentDiscount()
     {
