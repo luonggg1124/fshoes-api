@@ -68,7 +68,8 @@ class CategoryController extends Controller
             ], 500);
         }
     }
-    public function addProducts(Request $request,int|string $id){
+    public function addProducts(Request $request,int|string $id):Response|JsonResponse
+    {
         try {
             $products = $request->products;
             if(!$products || !is_array($products)) return response()->json([
@@ -79,7 +80,42 @@ class CategoryController extends Controller
             $category = $this->categoryService->addProducts($id,$products);
             return response()->json([
                 'status' => true,
+                'message' => 'Products added successfully',
                 'category' => $category
+            ],201);
+        }catch (\Throwable $throw){
+            Log::error('Some thing went wrong!', [
+                'message' => $throw->getMessage(),
+                'file' => $throw->getFile(),
+                'line' => $throw->getLine(),
+                'trace' => $throw->getTraceAsString(),
+            ]);
+            if($throw instanceof ModelNotFoundException){
+                return response()->json([
+                    'status' => false,
+                    'error' => $throw->getMessage()
+                ],404);
+            }
+            return response()->json([
+                'status' => false,
+                'error' => 'Something went wrong'
+            ],500);
+        }
+    }
+    public function deleteProducts(Request $request,int|string $id):Response|JsonResponse
+    {
+        try {
+            $products = $request->products;
+            if(!$products || !is_array($products)) return response()->json([
+                'status' => false,
+                'error' => 'Products not found'
+            ],422);
+
+            $category = $this->categoryService->deleteProducts($id,$products);
+            return response()->json([
+                'status' => true,
+                'message' => 'Deleted successfully!',
+                'category' => $category,
             ],201);
         }catch (\Throwable $throw){
             Log::error('Some thing went wrong!', [
