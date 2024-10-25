@@ -10,10 +10,10 @@ class DiscountService implements DiscountServiceInterface
 {
     public function __construct(
         protected DiscountRepositoryInterface  $repository
-
     )
     {
     }
+
 
     public function addSale(){
 

@@ -88,6 +88,9 @@ class VariationService implements VariationServiceInterface
         if (!$variation) throw new \Exception('Failed to create variation');
         if (isset($options['images'])) $variation->images()->attach($options['images']);
         $variation->values()->attach($options['values']);
+        $valuesName = [...$variation->values()->get()->pluck('value')];
+        $strName = implode(' - ',$valuesName);
+        $variation->name = $variation->product->name.'['.$strName.']';
         $variation->slug = $this->slug($variation->id);
         $variation->save();
         return new VariationResource($this->loadRelationships($variation));
@@ -106,6 +109,7 @@ class VariationService implements VariationServiceInterface
                 'values' => $values,
                 'images' => $images
             ]);
+
             $list[] = $variation;
         }
         if (empty($list) || count($list) < 1) throw new \Exception('Can not create variations');

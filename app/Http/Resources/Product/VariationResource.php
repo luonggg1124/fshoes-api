@@ -28,6 +28,7 @@ class VariationResource extends JsonResource
         $resource = [
             'id' => $this->id,
             'slug' => $this->slug,
+            'name' => $this->name,
             'product' => new ProductResource($this->whenLoaded('product')),
             'images' => ImageResource::collection($this->whenLoaded('images')),
             'values' => ValueResource::collection($this->whenLoaded('values')),

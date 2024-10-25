@@ -82,6 +82,12 @@ class CategoryController extends Controller
                 'category' => $category
             ],201);
         }catch (\Throwable $throw){
+            Log::error('Some thing went wrong!', [
+                'message' => $throw->getMessage(),
+                'file' => $throw->getFile(),
+                'line' => $throw->getLine(),
+                'trace' => $throw->getTraceAsString(),
+            ]);
             if($throw instanceof ModelNotFoundException){
                 return response()->json([
                     'status' => false,

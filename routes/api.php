@@ -58,7 +58,7 @@ Route::post('register',[\App\Http\Controllers\Api\User\AuthController::class,'re
 
 Route::apiResource('category', CategoryController::class)
     ->parameter('category', 'id')->only(['index','show']);
-Route::post('category/{id}/products',[CategoryController::class,'cle'])->name('category.add.products');
+Route::post('category/{id}/products',[CategoryController::class,'addProducts'])->name('category.add.products');
 Route::get('main/categories',[CategoryController::class,'mains'])->name('main.categories');
 
 // Category End
