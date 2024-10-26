@@ -66,6 +66,7 @@ class OrderService implements OrderServiceInterface
              $this->orderHistoryService->create(["order_id"=>$id, "user_id"=>1 ,"description"=> "Update Status Order"]);
             return $order;
          }catch (\Exception $e){
+            
              throw new \Exception('Cannot update order');
          }
     }
