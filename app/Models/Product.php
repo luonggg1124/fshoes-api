@@ -41,11 +41,17 @@ class Product extends Model
     {
         return $this->belongsToMany(Discount::class,'product_discount','product_id','discount_id')->withPivot('quantity');
     }
+    public function saleQuantity()
+    {
+        $discount = $this->currentDiscount();
+        if($discount)  return $discount->original['pivot_quantity'];
+        return 0;
+    }
     public function currentDiscount()
     {
-      return $this->discounts()->where('is_active', true)
+      return $this->discounts()->wherePivot('quantity','>',0)->where('is_active', true)
             ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now())->first();
+            ->where('end_date', '>=', now())->orderBy('created_at','desc')->first();
 
     }
     public function salePrice(){

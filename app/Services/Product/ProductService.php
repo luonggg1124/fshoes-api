@@ -147,6 +147,7 @@ class ProductService implements ProductServiceInterface
     )
     {
         return DB::transaction(function () use ($data, $options) {
+            if(empty($data['status'])) $data['status'] = 0;
             $product = $this->productRepository->create($data);
             if(!$product) throw new \Exception('Cannot create product');
             $product->slug = $this->slug($product->name,$product->id);

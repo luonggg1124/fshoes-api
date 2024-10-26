@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\Discount\DiscountController;
 use App\Http\Controllers\Api\GroupsController;
 use App\Http\Controllers\Api\Image\ImageController;
 use App\Http\Controllers\Api\OrderDetailsController;
@@ -98,6 +99,10 @@ Route::put('status/product/{id}',[ProductController::class,'updateProductStatus'
 Route::apiResource('product.variation',VariationController::class)->parameters(['product' => 'pid', 'variation'=>'id']);
 //Product End
 
+//Discount
+
+Route::apiResource('discount',DiscountController::class)->parameters(['discount' => 'id']);
+//Discount End
 //Image
 Route::apiResource('image',ImageController::class)->parameter('image','id')->only(['index','store','destroy']);
 Route::delete('image/delete-many',[ImageController::class,'deleteMany'])->name('image.delete.many');

@@ -45,9 +45,10 @@ class ProductVariations extends Model
     }
     public function currentDiscount()
     {
-        return $this->discounts()->where('is_active', true)
+
+        return $this->discounts()->wherePivot('quantity','>',0)->where('is_active', true)
             ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now())->first();
+            ->where('end_date', '>=', now())->orderBy('created_at','desc')->first();
     }
     public function salePrice(){
         $discount = $this->currentDiscount();
@@ -58,6 +59,12 @@ class ProductVariations extends Model
             return $this->price;
         }
 
+    }
+    public function saleQuantity()
+    {
+        $discount = $this->currentDiscount();
+        if($discount)  return $discount->original['pivot_quantity'];
+        return 0;
     }
     public function scopeSortByColumn(QueryBuilder|EloquentBuilder $query,array $columns = [],string $defaultColumn = 'updated_at',string $defaultSort = 'desc'):QueryBuilder|EloquentBuilder
     {

@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
 class Discount extends Model
 {
-    use HasFactory;
-
+    use HasFactory,SoftDeletes;
+    protected $fillable = ['name','type','value','start_date','end_date','is_active'];
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class,'product_discount','discount_id','product_id')->withPivot('quantity');

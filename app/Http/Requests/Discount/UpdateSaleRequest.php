@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
-class CreateSaleRequest extends FormRequest
+class UpdateSaleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -35,7 +35,6 @@ class CreateSaleRequest extends FormRequest
             'variations' => 'nullable|array',
         ];
     }
-
     protected function failedValidation(Validator $validator)
     {
         $errors = $validator->errors();
@@ -52,8 +51,6 @@ class CreateSaleRequest extends FormRequest
             'value.number' => 'The sale value must be a number.',
             'start_date.date' => 'The sale start date must be a date.',
             'start_date.before' => 'The sale start date must not be after the end date.',
-
-
         ];
     }
 }
