@@ -24,7 +24,7 @@ class OrderService implements OrderServiceInterface
 
     public function getAll($params): AnonymousResourceCollection
     {
-        $orders = $this->orderRepository->query()->with(['orderDetails' , 'orderHistory' ]);
+        $orders = $this->orderRepository->query()->with(['orderDetails' , 'orderHistory' ,'user' ]);
         if(isset($params['user_id'])){
             $orders->where('user_id' , $params['user_id']);
         }
@@ -36,7 +36,7 @@ class OrderService implements OrderServiceInterface
 
     public function findById(int|string $id)
     {
-        $cart = $this->orderRepository->query()->where('id', $id)->with(["orderDetails" , 'orderHistory'])->first();
+        $cart = $this->orderRepository->query()->where('id', $id)->with(["orderDetails" , 'orderHistory' , 'user'])->first();
         if(!$cart){
             throw new ModelNotFoundException('Order not found');
         }
