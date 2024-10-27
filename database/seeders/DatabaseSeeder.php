@@ -50,7 +50,8 @@ class DatabaseSeeder extends Seeder
             VariationSeeder::class,
             OrderSeeder::class,
             TopicsSeeder::class,
-            PostsSeeder::class
+            PostsSeeder::class,
+            VoucherSeeder::class,
         ]);
 
 
