@@ -123,7 +123,7 @@ class DiscountController extends Controller
             ]);
             return response()->json([
                 'status' => true,
-                'message' => 'Create discount successfully.',
+                'message' => 'Updated discount successfully.',
                 'discount' => $discount
             ],201);
         } catch (\Throwable $throw) {
@@ -147,5 +147,34 @@ class DiscountController extends Controller
         }
 
 
+    }
+    public function destroy(int|string $id):Response|JsonResponse
+    {
+        try {
+            $status = $this->service->destroy($id);
+            return response()->json([
+                'status' => $status,
+                'message' => 'Delete discount successfully.'
+            ]);
+        }catch (\Throwable $throw)
+        {
+            Log::error('Some thing went wrong!', [
+                'message' => $throw->getMessage(),
+                'file' => $throw->getFile(),
+                'line' => $throw->getLine(),
+                'trace' => $throw->getTraceAsString(),
+            ]);
+            if ($throw instanceof ModelNotFoundException) {
+                return response()->json([
+                    'status' => false,
+                    'message' => $throw->getMessage()
+                ], 404);
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong'
+            ], 500);
+        }
     }
 }

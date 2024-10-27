@@ -70,4 +70,12 @@ class DiscountService implements DiscountServiceInterface
         }
         return new DiscountResource($this->loadRelationships($discount));
     }
+
+    public function destroy(int|string $id)
+    {
+        $discount = $this->repository->find($id);
+        if(!$discount) throw new ModelNotFoundException('Discount not found');
+        $discount->delete();
+        return true;
+    }
 }
