@@ -80,6 +80,11 @@ class AppServiceProvider extends ServiceProvider
                 \App\Services\Discount\DiscountServiceInterface::class,
                 \App\Services\Discount\DiscountService::class
             ]
+            ,
+            'vouchers' => [
+                \App\Services\Voucher\VoucherServiceInterface::class,
+                \App\Services\Voucher\VoucherService::class
+            ]
         ];
 
         foreach ($services as $service) {

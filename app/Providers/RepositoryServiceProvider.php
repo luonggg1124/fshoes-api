@@ -80,6 +80,11 @@ class RepositoryServiceProvider extends ServiceProvider
                 \App\Repositories\Discount\DiscountRepositoryInterface::class,
                 \App\Repositories\Discount\DiscountRepository::class
             ]
+            ,
+            'vouchers'=>[
+                \App\Repositories\Voucher\VouchersRepositoryInterface::class,
+                \App\Repositories\Voucher\VouchersRepository::class
+            ]
 
         ];
 
