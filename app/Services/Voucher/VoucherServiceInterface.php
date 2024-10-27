@@ -1,18 +1,12 @@
 <?php
+namespace App\Services\Voucher;
 
-namespace App\Services\Category;
-
-
-interface CategoryServiceInterface
-{
-    function getAll();
-    function mains();
+interface VoucherServiceInterface {
+    function getAll(array $params);
     function findById(int|string $id);
-    function addProducts(int|string $id, array $products = []);
-    function deleteProducts(int|string $id, array $products = []);
     function create(array $data, array $option = []);
     function update(int|string $id,array $data, array $option = []);
-
     function delete(int|string $id);
+    function restore(int|string $id);
     function forceDelete(int|string $id);
 }

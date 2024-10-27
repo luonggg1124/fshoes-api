@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Product\Variation\VariationController;
 use App\Http\Controllers\Api\Review\ReviewController;
 use App\Http\Controllers\Api\TopicsController;
 use App\Http\Controllers\Api\User\UserController;
+use App\Http\Controllers\Api\VouchersController;
 use App\Http\Controllers\Api\WishlistController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
@@ -60,6 +61,7 @@ Route::post('register',[\App\Http\Controllers\Api\User\AuthController::class,'re
 Route::apiResource('category', CategoryController::class)
     ->parameter('category', 'id')->only(['index','show']);
 Route::post('category/{id}/products',[CategoryController::class,'addProducts'])->name('category.add.products');
+Route::delete('category/{id}/products',[CategoryController::class,'deleteProducts'])->name('category.delete.products');
 Route::get('main/categories',[CategoryController::class,'mains'])->name('main.categories');
 
 // Category End
@@ -145,3 +147,9 @@ Route::delete('topics/forceDelete/{id}' , [TopicsController::class,'forceDelete'
 Route::apiResource('posts' , PostsController::class);
 Route::post('posts/restore/{id}' , [PostsController::class,'restore']);
 Route::delete('posts/forceDelete/{id}' , [PostsController::class,'forceDelete']);
+
+//Vouchers
+Route::apiResource('vouchers' , VouchersController::class);
+Route::post('vouchers/restore/{id}' , [VouchersController::class,'restore']);
+Route::delete('vouchers/forceDelete/{id}' , [VouchersController::class,'forceDelete']);
+

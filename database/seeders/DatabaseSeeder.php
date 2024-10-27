@@ -51,7 +51,8 @@ class DatabaseSeeder extends Seeder
             OrderSeeder::class,
             DiscountSeeder::class,
             TopicsSeeder::class,
-            PostsSeeder::class
+            PostsSeeder::class,
+            VoucherSeeder::class,
         ]);
 
 
