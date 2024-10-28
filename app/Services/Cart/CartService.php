@@ -11,7 +11,7 @@ class CartService implements CartServiceInterface {
     public function __construct(protected CartRepositoryInterface $cartRepository){}
 
     function getAll($params){
-        $allCart = $this->cartRepository->query()->with('product')->with('product_variation');
+        $allCart = $this->cartRepository->query()->with(['product' , 'product_variation' , 'product_variation.product']);
         if(isset($params['user_id'])){
 
             $allCart->where('user_id' , $params['user_id']);
@@ -22,7 +22,7 @@ class CartService implements CartServiceInterface {
         );
     }
     function findById(int|string $id){
-        $cart = $this->cartRepository->query()->where('id', $id)->with(["product","product_variation"])->first();
+        $cart = $this->cartRepository->query()->where('id', $id)->with(["product","product_variation", 'product_variation.product'])->first();
         if(!$cart){
             throw new ModelNotFoundException('Cart not found');
         }
