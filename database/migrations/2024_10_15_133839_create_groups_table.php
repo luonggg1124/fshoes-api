@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
-            $table->string('group_name');
+            $table->string('group_name')->unique();
             $table->longText("permissions")->nullable();
             $table->softDeletes();
             $table->timestamps();
