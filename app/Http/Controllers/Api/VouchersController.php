@@ -61,4 +61,9 @@ class VouchersController extends Controller
     {
         return $this->voucherService->forceDelete($id);
     }
+
+    public function getVoucherByCode(string $code)
+    {
+       return $this->voucherService->findByCode($code);
+    }
 }

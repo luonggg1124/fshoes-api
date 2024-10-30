@@ -151,5 +151,5 @@ Route::delete('posts/forceDelete/{id}' , [PostsController::class,'forceDelete'])
 //Vouchers
 Route::apiResource('vouchers' , VouchersController::class);
 Route::post('vouchers/restore/{id}' , [VouchersController::class,'restore']);
+Route::get('vouchers/code/{code}' , [VouchersController::class,'getVoucherByCode']);
 Route::delete('vouchers/forceDelete/{id}' , [VouchersController::class,'forceDelete']);
-
