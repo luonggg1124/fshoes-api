@@ -126,6 +126,7 @@ class UserService implements UserServiceInterface
 
     public function update(string $nickname, array $data, array $options = [])
     {
+
     }
     public function findByNickname(string $nickname)
     {

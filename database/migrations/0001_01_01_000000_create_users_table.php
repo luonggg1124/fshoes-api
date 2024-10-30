@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nickname')->nullable();
             $table->string('name');
+            $table->foreignId('avatar')->nullable()->constrained('user_avatars');
             $table->boolean('is_admin')->default(0);
             $table->enum('status',['active','banned'])->default('active');
             $table->string('email')->unique();
