@@ -27,7 +27,7 @@ class PaymentOnline extends Controller
         $vnp_TxnRef = 'FS_' . rand(1000, 9999);
         $vnp_OrderInfo = "VNPAY PAYMENT";
         $vnp_OrderType = "FSHOES";
-        $vnp_Amount = $request->total;
+        $vnp_Amount = $request->total * 100;
         $vnp_Locale = "VN";
         $vnp_BankCode = "NCB";
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
