@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\Discount\SaleController;
+use App\Http\Controllers\Api\ExportController;
 use App\Http\Controllers\Api\GroupsController;
 use App\Http\Controllers\Api\Image\ImageController;
 use App\Http\Controllers\Api\OrderDetailsController;
@@ -100,6 +102,10 @@ Route::put('status/product/{id}',[ProductController::class,'updateProductStatus'
 Route::apiResource('product.variation',VariationController::class)->parameters(['product' => 'pid', 'variation'=>'id']);
 //Product End
 
+//Discount
+
+Route::apiResource('sale',SaleController::class)->parameters(['sale' => 'id']);
+//Discount End
 //Image
 Route::apiResource('image',ImageController::class)->parameter('image','id')->only(['index','store','destroy']);
 Route::delete('image/delete-many',[ImageController::class,'deleteMany'])->name('image.delete.many');
@@ -108,6 +114,10 @@ Route::delete('image/delete-many',[ImageController::class,'deleteMany'])->name('
 
 // Review
 Route::apiResource('review',ReviewController::class)->parameter('review','id');
+// Like
+Route::middleware('auth:api')->post('review/{id}/like', [ReviewController::class, 'toggleLike']);
+// Route::post('review/{id}/like', [ReviewController::class, 'toggleLike']);
+
 
 // End Review
 
@@ -148,3 +158,6 @@ Route::apiResource('vouchers' , VouchersController::class);
 Route::post('vouchers/restore/{id}' , [VouchersController::class,'restore']);
 Route::get('vouchers/code/{code}' , [VouchersController::class,'getVoucherByCode']);
 Route::delete('vouchers/forceDelete/{id}' , [VouchersController::class,'forceDelete']);
+
+//Export
+Route::get('export/order/{id}' ,[ExportController::class,'exportOrder']);

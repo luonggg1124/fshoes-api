@@ -11,10 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('groups', function (Blueprint $table) {
+        Schema::create('sales', function (Blueprint $table) {
             $table->id();
-            $table->string('group_name')->unique();
-            $table->longText("permissions")->nullable();
+            $table->string('name')->nullable();
+            $table->enum('type', ['percent', 'fixed'])->default('percent');
+            $table->decimal('value', 10, 2)->default(0);
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
+            $table->boolean('is_active')->default(true);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -25,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('groups');
+        Schema::dropIfExists('sales');
     }
 };

@@ -49,6 +49,7 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             VariationSeeder::class,
             OrderSeeder::class,
+            SaleSeeder::class,
             TopicsSeeder::class,
             PostsSeeder::class,
             VoucherSeeder::class,

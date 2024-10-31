@@ -7,7 +7,7 @@ use App\Models\Sale;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class DiscountSeeder extends Seeder
+class SaleSeeder extends Seeder
 {
     /**
      * Run the database seeds.

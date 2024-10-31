@@ -80,6 +80,7 @@ class VariationSeeder extends Seeder
                 }
                 $valueStr = implode('-', $valueArr);
                 $slug = $valueStr . '.' . $variation->id;
+                $variation->name = $variation->product->name.' '.'['.implode(' - ',[...$values]).']';
                 $variation->slug = $slug;
                 $variation->save();
                 $images = Image::factory(3)->create();

@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('groups', function (Blueprint $table) {
+        Schema::create('review_like', function (Blueprint $table) {
             $table->id();
-            $table->string('group_name')->unique();
-            $table->longText("permissions")->nullable();
-            $table->softDeletes();
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('review_id')->constrained('reviews');
+            $table->unique(['user_id','review_id']);
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('groups');
+        Schema::dropIfExists('review_like');
     }
 };

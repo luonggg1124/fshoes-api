@@ -1,20 +1,19 @@
 <?php
 
-namespace App\Http\Resources\Discount;
+namespace App\Http\Resources\Sale;
 
 use App\Http\Resources\Product\VariationResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Traits\ResourceSummary;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DiscountResource extends JsonResource
+class SaleResource extends JsonResource
 {
     use ResourceSummary;
 
     public static $wrap = false;
-    private string $model = 'discount';
+    private string $model = 'sale';
 
     /**
      * Transform the resource into an array.

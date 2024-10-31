@@ -112,27 +112,23 @@ class CategoryService implements CategoryServiceInterface
     }
     public function delete(int|string $id)
     {
-        try {
+
             $category = $this->categoryRepository->find($id);
-            if ($category->delete_at) {
-                return false;
+            if (!$category) {
+               throw new ModelNotFoundException('Category not found');
             }
             $category->delete($id);
-        } catch (\Exception $e) {
-            throw new \Exception('Cannot delete category');
-        }
+            return true;
     }
     public function forceDelete(int|string $id)
     {
-        try {
+
             $category = $this->categoryRepository->find($id);
-            if ($category->image_url) {
-                $this->deleteImageCloudinary($category->public_id);
+            if (!$category) {
+                throw new ModelNotFoundException('Category not found');
             }
             $category->forceDelete($id);
-        } catch (\Exception $e) {
-            throw new \Exception('Cannot delete category');
-        }
+            return true;
     }
     protected function slug(string $name, int|string $id){
         $slug = Str::slug($name).'.'.$id;
