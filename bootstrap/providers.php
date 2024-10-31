@@ -5,5 +5,6 @@ return [
     App\Providers\RepositoryServiceProvider::class,
     CloudinaryLabs\CloudinaryLaravel\CloudinaryServiceProvider::class,
     Srmklive\PayPal\Providers\PayPalServiceProvider::class,
-    Kreait\Laravel\Firebase\ServiceProvider::class
+    Kreait\Laravel\Firebase\ServiceProvider::class,
+    Barryvdh\DomPDF\ServiceProvider::class
 ];
