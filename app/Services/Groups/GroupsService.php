@@ -38,7 +38,7 @@ class GroupsService implements GroupsServiceInterface
             try{
                 $group =  $this->groupsRepository->create([
                     'group_name' => $data['group_name'],
-                    'permissions' => json_encode($data['permissions']),
+                    'permissions' => json_encode($data['permissions'] ?? ""),
                 ]);
                 return GroupResource::make($group);
             }catch (Exception $exception){
