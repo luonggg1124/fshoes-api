@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\Discount\DiscountController;
+use App\Http\Controllers\Api\ExportController;
 use App\Http\Controllers\Api\GroupsController;
 use App\Http\Controllers\Api\Image\ImageController;
 use App\Http\Controllers\Api\OrderDetailsController;
@@ -151,5 +152,8 @@ Route::delete('posts/forceDelete/{id}' , [PostsController::class,'forceDelete'])
 //Vouchers
 Route::apiResource('vouchers' , VouchersController::class);
 Route::post('vouchers/restore/{id}' , [VouchersController::class,'restore']);
+Route::get('vouchers/code/{code}' , [VouchersController::class,'getVoucherByCode']);
 Route::delete('vouchers/forceDelete/{id}' , [VouchersController::class,'forceDelete']);
 
+//Export
+Route::get('export/order/{id}' ,[ExportController::class,'exportOrder']);

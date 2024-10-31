@@ -32,6 +32,13 @@ class VoucherService implements VoucherServiceInterface
 
     }
 
+    function findByCode(int|string $code)
+    {
+        $voucher = $this->vouchersRepository->query()->withTrashed()->where('code', $code)->first();
+        if ($voucher) return response()->json(VoucherResource::make($voucher) , 200);
+        else return response()->json(["message"=>"Voucher Not Found"] , 404);
+    }
+
     function create(array $data, array $option = [])
     {
         try {
