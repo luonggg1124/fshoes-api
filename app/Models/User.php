@@ -15,8 +15,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -34,7 +35,8 @@ class User extends Authenticatable
         'email_verified_at',
         'is_admin',
         'is_active',
-        'status'
+        'status',
+        'group_id'
     ];
 
     /**
@@ -60,6 +62,14 @@ class User extends Authenticatable
         ];
     }
 
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
     public function profile():HasOne
     {
         return $this->hasOne(UserProfile::class);
@@ -67,6 +77,10 @@ class User extends Authenticatable
     public function interestingCategories():BelongsToMany
     {
         return $this->belongsToMany(Category::class,'user_interests','user_id','category_id');
+    }
+    public function favoriteProducts():BelongsToMany
+    {
+        return $this->belongsToMany(Product::class,'user_product','user_id','product_id');
     }
     public function addresses():HasMany
     {
@@ -78,7 +92,7 @@ class User extends Authenticatable
     }
     public function avatar()
     {
-       
+
         $avatar = $this->allAvatars()->where('is_active',true)->latest()->first();
         if(!$avatar){
             return null;

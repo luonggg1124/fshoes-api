@@ -16,29 +16,29 @@ use Illuminate\Support\Facades\Hash;
 class UserService implements UserServiceInterface
 {
     use CanLoadRelationships, Cloudinary, Paginate;
-    protected array $relations = ['profile', 'interestingCategories', 'addresses', 'allAvatars'];
+    protected array $relations = ['profile', 'interestingCategories', 'addresses', 'allAvatars','favoriteProducts'];
+    private array $columns = [
+        'nickname',
+        'name',
+        'email',
+        'password',
+        'google_id',
+        'email_verified_at',
+        'is_admin',
+        'is_active',
+        'status',
+        'created_at',
+        'updated_at',
+    ];
     public function __construct(
         public UserRepositoryInterface $userRepository
     ) {
     }
-    public function login(string $email, string $password) {
-        $user = $this->userRepository->findByColumnOrEmail($email);
-        if(!$user){
-            throw ValidationException::withMessages([
-                'email' => 'The provided email are incorrect'
-            ]);
-        }
-        if(!Hash::check($password,$user->password)){
-            throw ValidationException::withMessages([
-               'password' => 'The provided password are incorrect'
-           ]);
-       }
-       $token = $user->createToken('api-token')->plainTextToken;
-       return $token;
-    }
+
     public function all()
     {
         $column = request()->query('column') ?? 'id';
+        if(!in_array($column,$this->columns)) $column = 'id';
         $sort = request()->query('sort') ?? 'desc';
         if ($sort !== 'desc' && $sort !== 'asc')
             $sort = 'asc';
@@ -52,11 +52,13 @@ class UserService implements UserServiceInterface
     public function create(array $data, array $options = ['avatar' => null, 'profile' => []])
     {
 
-        $user = DB::transaction(function () use ($data, $options) {
+            $user = DB::transaction(function () use ($data, $options) {
             if ($this->userRepository->query()->where('email', $data['email'])->exists())
                 throw \Illuminate\Validation\ValidationException::withMessages([
                     'email' => 'The email have already been taken'
                 ]);
+            if(isset($data) && empty($data['group_id'])) $data['group_id'] = 1;
+
             $data['status'] = 'active';
             $data['nickname'] = $this->createNickname($data['name']);
             $user = $this->userRepository->create($data);
@@ -124,6 +126,7 @@ class UserService implements UserServiceInterface
 
     public function update(string $nickname, array $data, array $options = [])
     {
+
     }
     public function findByNickname(string $nickname)
     {

@@ -20,7 +20,7 @@ class AvatarResource extends JsonResource
             'user' => new UserResource($this->user()),
             'avatar_url' => $this->avatar_url,
             'cloudinary_public_id' => $this->cloudinary_public_id,
-            'created_at' => (new \Carbon\Carbon($this->created_at))->format('H:m d-m-Y')
+            'created_at' => (new \Carbon\Carbon($this->created_at))->format('d-m-Y H:i:s')
         ];
     }
 }

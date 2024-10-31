@@ -25,14 +25,12 @@ class CreateProductRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'price' => 'required',
-            'sale_price' => 'required',
-            'is_sale' => 'nullable',
             'description' => 'nullable',
             'short_description' => 'nullable',
-            'status' => 'nullable',
+            'image_url' => 'required|string',
             'stock_qty' => 'required|numeric',
-            'qty_sold' => 'nullable|numeric',
             'images' => 'nullable|array',
+            'categories' => 'nullable|array',
         ];
     }
     protected function failedValidation(Validator $validator)
@@ -51,14 +49,13 @@ class CreateProductRequest extends FormRequest
             'name.max' => 'Product name is too long,255 characters is maximum',
 
 
-
             'price.required' => 'Product price is required',
-            'sale_price.required' => 'Product price is required',
 
             'stock_qty.required' => 'Product stock quantity is required',
             'stock_qty.numeric' =>  'Product stock quantity  must be a type of number',
 
-
+            'image_url.required' => 'Product image is required',
+            'image_url.string' => 'Product image not found.Try again!',
 
 
         ];

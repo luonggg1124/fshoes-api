@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\CreateCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Services\Category\CategoryServiceInterface;
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
@@ -20,11 +22,18 @@ class CategoryController extends Controller
     public function index():Response|JsonResponse
     {
 
-        return response()->json(
-           $this->categoryService->getAll()
-        );
+        return response()->json([
+                'status' => true,
+                'categories' =>$this->categoryService->getAll()
+            ]);
     }
-
+    public function mains():JsonResponse
+    {
+        return response()->json([
+            'status' => true,
+           'categories' => $this->categoryService->mains()
+        ]);
+    }
     /**
      * Store a newly created resource in storage.
      */
@@ -33,25 +42,100 @@ class CategoryController extends Controller
 
         try {
             $category = $this->categoryService->create($request->validated(),[
-                'image' => $request->file('image'),
+               'parents' => $request->parents
             ]);
             return response()->json([
                 'message' => 'Category created successfully',
                 'category' => $category
             ],201);
-        }catch (\Exception $e){
+        }catch (\Throwable $throw){
 
             Log::error('Some thing went wrong!', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
+                'message' => $throw->getMessage(),
+                'file' => $throw->getFile(),
+                'line' => $throw->getLine(),
+                'trace' => $throw->getTraceAsString(),
             ]);
-
-            return response()->json(['error' => $e->getMessage()], 500);
+            if($throw instanceof ModelNotFoundException){
+                return response()->json([
+                    'status' => false,
+                    'error' => $throw->getMessage()
+                ], 404);
+            }
+            return response()->json([
+                'status' => false,
+                'error' => 'Something went wrong'
+            ], 500);
         }
     }
+    public function addProducts(Request $request,int|string $id):Response|JsonResponse
+    {
+        try {
+            $products = $request->products;
+            if(!$products || !is_array($products)) return response()->json([
+                'status' => false,
+                'error' => 'Products not found'
+            ],422);
 
+            $category = $this->categoryService->addProducts($id,$products);
+            return response()->json([
+                'status' => true,
+                'message' => 'Products added successfully',
+                'category' => $category
+            ],201);
+        }catch (\Throwable $throw){
+            Log::error('Some thing went wrong!', [
+                'message' => $throw->getMessage(),
+                'file' => $throw->getFile(),
+                'line' => $throw->getLine(),
+                'trace' => $throw->getTraceAsString(),
+            ]);
+            if($throw instanceof ModelNotFoundException){
+                return response()->json([
+                    'status' => false,
+                    'error' => $throw->getMessage()
+                ],404);
+            }
+            return response()->json([
+                'status' => false,
+                'error' => 'Something went wrong'
+            ],500);
+        }
+    }
+    public function deleteProducts(Request $request,int|string $id):Response|JsonResponse
+    {
+        try {
+            $products = $request->products;
+            if(!$products || !is_array($products)) return response()->json([
+                'status' => false,
+                'error' => 'Products not found'
+            ],422);
+
+            $category = $this->categoryService->deleteProducts($id,$products);
+            return response()->json([
+                'status' => true,
+                'message' => 'Deleted successfully!',
+                'category' => $category,
+            ],201);
+        }catch (\Throwable $throw){
+            Log::error('Some thing went wrong!', [
+                'message' => $throw->getMessage(),
+                'file' => $throw->getFile(),
+                'line' => $throw->getLine(),
+                'trace' => $throw->getTraceAsString(),
+            ]);
+            if($throw instanceof ModelNotFoundException){
+                return response()->json([
+                    'status' => false,
+                    'error' => $throw->getMessage()
+                ],404);
+            }
+            return response()->json([
+                'status' => false,
+                'error' => 'Something went wrong'
+            ],500);
+        }
+    }
     /**
      * Display the specified resource.
      */
@@ -72,22 +156,30 @@ class CategoryController extends Controller
     {
         try {
             $category = $this->categoryService->update($id,$request->validated(),[
-                'image' => $request->file('image'),
+                'parents'=> $request->parents
             ]);
             return response()->json([
                 'message' => 'Category updated successfully',
                 'category' => $category
             ],201);
-        }catch (\Exception $e){
+        }catch (\Throwable $throw){
 
             Log::error('Some thing went wrong!', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
+                'message' => $throw->getMessage(),
+                'file' => $throw->getFile(),
+                'line' => $throw->getLine(),
+                'trace' => $throw->getTraceAsString(),
             ]);
-
-            return response()->json(['error' => $e->getMessage()], 500);
+            if($throw instanceof ModelNotFoundException){
+                return response()->json([
+                    'status' => false,
+                    'error' => $throw->getMessage()
+                ], 404);
+            }
+            return response()->json([
+                'status' => false,
+                'error' => 'Something went wrong'
+            ], 500);
         }
     }
 
@@ -99,6 +191,7 @@ class CategoryController extends Controller
         try {
             $this->categoryService->delete($id);
             return response()->json([
+                'status' => true,
                 'message' => 'Category deleted successfully',
             ]);
         }catch (\Exception $e){
