@@ -53,6 +53,10 @@ Route::apiResource('product',ProductController::class)->parameter('product','id'
 
 // Review 
 Route::apiResource('review',ReviewController::class)->parameter('review','id');
+// Like
+Route::middleware('auth:sanctum')->post('review/{id}/like', [ReviewController::class, 'toggleLike']);
+// Route::post('review/{id}/like', [ReviewController::class, 'toggleLike']);
+
 
 // End Review
 
