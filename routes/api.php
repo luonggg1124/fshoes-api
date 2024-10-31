@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\Discount\DiscountController;
+use App\Http\Controllers\Api\Discount\SaleController;
 use App\Http\Controllers\Api\ExportController;
 use App\Http\Controllers\Api\GroupsController;
 use App\Http\Controllers\Api\Image\ImageController;
@@ -104,7 +104,7 @@ Route::apiResource('product.variation',VariationController::class)->parameters([
 
 //Discount
 
-Route::apiResource('discount',DiscountController::class)->parameters(['discount' => 'id']);
+Route::apiResource('sale',SaleController::class)->parameters(['sale' => 'id']);
 //Discount End
 //Image
 Route::apiResource('image',ImageController::class)->parameter('image','id')->only(['index','store','destroy']);
@@ -115,7 +115,7 @@ Route::delete('image/delete-many',[ImageController::class,'deleteMany'])->name('
 // Review
 Route::apiResource('review',ReviewController::class)->parameter('review','id');
 // Like
-Route::middleware('auth:sanctum')->post('review/{id}/like', [ReviewController::class, 'toggleLike']);
+Route::middleware('auth:api')->post('review/{id}/like', [ReviewController::class, 'toggleLike']);
 // Route::post('review/{id}/like', [ReviewController::class, 'toggleLike']);
 
 

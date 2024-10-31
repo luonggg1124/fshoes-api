@@ -102,7 +102,7 @@ class VariationController extends Controller
             return \response()->json([
                 'status' => $success,
                 'message' => 'Deleted successfully!'
-            ],201);
+            ]);
         }catch (\Throwable $throwable) {
             return \response()->json([
                 'status' => false,

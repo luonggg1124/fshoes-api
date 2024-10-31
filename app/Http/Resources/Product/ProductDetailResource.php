@@ -3,9 +3,9 @@
 namespace App\Http\Resources\Product;
 
 use App\Http\Resources\CategoryResource;
-use App\Http\Resources\Discount\DiscountResource;
 use App\Http\Resources\ImageResource;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\Sale\SaleResource;
 use App\Http\Traits\ResourceSummary;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -39,7 +39,7 @@ class ProductDetailResource extends JsonResource
             'images' => ImageResource::collection($this->images),
             'categories' => CategoryResource::collection($this->categories),
             'variations' => VariationResource::collection($this->variations),
-            'currentDiscount' => new DiscountResource($this->currentDiscount()),
+            'currentSale' => new SaleResource($this->currentSale()),
             'suggestedProduct' => ProductResource::collection($this->suggestedProduct),
         ];
         if ($this->shouldSummaryRelation($this->model))

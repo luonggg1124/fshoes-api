@@ -78,9 +78,9 @@ class AppServiceProvider extends ServiceProvider
                 \App\Services\Post\PostServiceInterface::class,
                 \App\Services\Post\PostService::class
             ],
-            'discounts' => [
-                \App\Services\Discount\DiscountServiceInterface::class,
-                \App\Services\Discount\DiscountService::class
+            'sales' => [
+                \App\Services\Sale\SaleServiceInterface::class,
+                \App\Services\Sale\SaleService::class
             ]
             ,
             'vouchers' => [
@@ -94,7 +94,7 @@ class AppServiceProvider extends ServiceProvider
             $this->app->singleton(ReviewRepositoryInterface::class, ReviewRepository::class);
         }
     }
- 
+
 
     /**
      * Bootstrap any application services.

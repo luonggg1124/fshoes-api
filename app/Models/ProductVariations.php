@@ -39,19 +39,19 @@ class ProductVariations extends Model
     {
         return $this->belongsToMany(AttributeValue::class,'product_variation_attributes','variation_id','attribute_value_id');
     }
-    public function discounts():BelongsToMany
+    public function sales():BelongsToMany
     {
-        return $this->belongsToMany(Discount::class,'variation_discount','variation_id','discount_id')->withPivot('quantity');
+        return $this->belongsToMany(Sale::class,'variation_sale','variation_id','sale_id')->withPivot('quantity');
     }
-    public function currentDiscount()
+    public function currentSale()
     {
 
-        return $this->discounts()->wherePivot('quantity','>',0)->where('is_active', true)
+        return $this->sales()->wherePivot('quantity','>',0)->where('is_active', true)
             ->where('start_date', '<=', now())
             ->where('end_date', '>=', now())->orderBy('created_at','desc')->first();
     }
     public function salePrice(){
-        $discount = $this->currentDiscount();
+        $discount = $this->currentSale();
         if($discount){
             if($discount->type === 'percent') return $this->price - ($this->price*$discount->value/100);
             else return $this->price - $discount->value;
@@ -62,7 +62,7 @@ class ProductVariations extends Model
     }
     public function saleQuantity()
     {
-        $discount = $this->currentDiscount();
+        $discount = $this->currentSale();
         if($discount)  return $discount->original['pivot_quantity'];
         return 0;
     }

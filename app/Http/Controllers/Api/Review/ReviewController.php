@@ -105,7 +105,7 @@ class ReviewController extends Controller
     public function toggleLike(Request $request, int $review_id): JsonResponse
     {
         try {
-            $user_id = $request->user()->id;  // Lấy ID người dùng hiện tại
+            $user_id = request()->user()->id;  // Lấy ID người dùng hiện tại
             // $user_id = 1;
 
             // Gọi đến service để xử lý toggle like
@@ -120,6 +120,6 @@ class ReviewController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-    
+
 
 }

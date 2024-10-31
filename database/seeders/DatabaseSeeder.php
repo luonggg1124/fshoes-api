@@ -49,7 +49,7 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             VariationSeeder::class,
             OrderSeeder::class,
-            DiscountSeeder::class,
+            SaleSeeder::class,
             TopicsSeeder::class,
             PostsSeeder::class,
             VoucherSeeder::class,

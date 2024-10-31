@@ -2,8 +2,9 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\Discount\DiscountResource;
+
 use App\Http\Resources\Product\VariationResource;
+use App\Http\Resources\Sale\SaleResource;
 use App\Http\Traits\ResourceSummary;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -35,7 +36,7 @@ class ProductResource extends JsonResource
             'qty_sold' => $this->qty_sold,
             'qty_sale' => $this->saleQuantity(),
             'image_url' => $this->image_url,
-            'currentDiscount' => new DiscountResource($this->currentDiscount()),
+            'currentSale' => new SaleResource($this->currentSale()),
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'images' => ImageResource::collection($this->whenLoaded('images')),
             'variations' => VariationResource::collection($this->whenLoaded('variations')),

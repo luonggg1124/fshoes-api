@@ -213,7 +213,6 @@ class ProductService implements ProductServiceInterface
     public function destroy(int|string $id){
         $product = $this->productRepository->find($id);
         if(!$product) throw new ModelNotFoundException('Product not found');
-        $product->variations()->delete();
         $product->delete();
         return true;
     }

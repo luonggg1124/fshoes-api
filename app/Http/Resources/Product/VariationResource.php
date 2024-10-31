@@ -4,11 +4,10 @@ namespace App\Http\Resources\Product;
 
 
 use App\Http\Resources\Attribute\Value\ValueResource;
-use App\Http\Resources\Discount\DiscountResource;
 use App\Http\Resources\ImageResource;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\Sale\SaleResource;
 use App\Http\Traits\ResourceSummary;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -36,7 +35,7 @@ class VariationResource extends JsonResource
             'stock_qty' => $this->stock_qty,
             'qty_sold' => $this->qty_sold,
             'qty_sale' => $this->saleQuantity(),
-            'currentDiscount' => new DiscountResource($this->currentDiscount()),
+            'currentSale' => new SaleResource($this->currentSale()),
             'product' => new ProductResource($this->whenLoaded('product')),
             'images' => ImageResource::collection($this->whenLoaded('images')),
             'values' => ValueResource::collection($this->whenLoaded('values')),
