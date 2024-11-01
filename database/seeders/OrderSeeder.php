@@ -33,7 +33,7 @@ class OrderSeeder extends Seeder
                 'phone' => '0123456789',
                 'city' => 'Hanoi',
                 'country' => 'VietNam',
-                'status' => 'Done',
+                'status' => '1',
                 'created_at' => Carbon::now()->subDays(random_int(5,25)),
                 'updated_at' => Carbon::now()
             ]);
