@@ -53,18 +53,11 @@ class OrdersController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @throws \Exception
      */
     public function update(Request $request, string $id)
     {
-        try {
-            $order = $this->orderService->update($id, $request->all());
-            return response()->json([
-                'message' => 'Update order successfully',
-                'order' => $order
-            ],200);
-        }catch (\Exception $e){
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+        return $this->orderService->update($id, $request->all());
     }
 
     /**

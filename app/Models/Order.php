@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Order extends Model
 {
 
-    use HasFactory,softDeletes;
+    use HasFactory;
     protected $table='orders';
     protected $fillable=[
         "user_id",
@@ -47,5 +47,9 @@ class Order extends Model
     {
         return $this->belongsTo(User::class);
     }
- 
+    public function voucher():BelongsTo
+    {
+        return $this->belongsTo(Voucher::class);
+    }
+
 }
