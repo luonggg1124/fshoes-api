@@ -167,17 +167,18 @@ class PaymentOnline extends Controller
         Stripe::setApiKey("sk_test_51Q3Bwk00OUlOewUZydndUP5rand7Mrcam8wUb7CvLfjKmpx2W5zXmbQ6srqoEqKKiIQbvmYEcyQHXWj34sAgfWOi00fP2Vdia6");
         $checkoutSession = Session::create([
             'payment_method_types' => ['card'],
-            'line_items' => [
+                   'line_items' => [
                 [
                     'price_data' => [
                         'currency' => 'VND',
                         'product_data' => [
-                            "name" => "",
+                            "name" => "Fshoes Store",
                         ],
                         'unit_amount' => $request->total,
                     ],
                     'quantity' => 1,
                 ],
+            ],
             ],
             'customer_email' => 'longvulinhhoang@gmail.com',
             'mode' => 'payment',
