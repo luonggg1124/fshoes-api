@@ -164,24 +164,25 @@ class PaymentOnline extends Controller
 
     public function stripe(Request $request)
     {
+        Stripe::setApiKey("sk_test_51Q3Bwk00OUlOewUZydndUP5rand7Mrcam8wUb7CvLfjKmpx2W5zXmbQ6srqoEqKKiIQbvmYEcyQHXWj34sAgfWOi00fP2Vdia6");
         $checkoutSession = Session::create([
             'payment_method_types' => ['card'],
             'line_items' => [
                 [
                     'price_data' => [
-                        'currency' => 'USD',
+                        'currency' => 'VND',
                         'product_data' => [
-                            "name" => "Shirt",
+                            "name" => "",
                         ],
-                        'unit_amount' => 12 * 100,
+                        'unit_amount' => $request->total,
                     ],
                     'quantity' => 1,
                 ],
             ],
             'customer_email' => 'longvulinhhoang@gmail.com',
             'mode' => 'payment',
-            'success_url' => "http://newtest.local/" . '?session_id={CHECKOUT_SESSION_ID}&status=1',
-            'cancel_url' => "http://newtest.local/status=0",
+            'success_url' => $request->url . '?session_id={CHECKOUT_SESSION_ID}&status=1',
+            'cancel_url' => $request->url."?status=0",
         ]);
         return $checkoutSession->url;
     }
