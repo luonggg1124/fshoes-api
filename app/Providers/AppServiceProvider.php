@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\Review\ReviewRepositoryInterface;
+use App\Repositories\Review\ReviewRepository;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -76,16 +78,23 @@ class AppServiceProvider extends ServiceProvider
                 \App\Services\Post\PostServiceInterface::class,
                 \App\Services\Post\PostService::class
             ],
-            'discounts' => [
-                \App\Services\Discount\DiscountServiceInterface::class,
-                \App\Services\Discount\DiscountService::class
+            'sales' => [
+                \App\Services\Sale\SaleServiceInterface::class,
+                \App\Services\Sale\SaleService::class
+            ]
+            ,
+            'vouchers' => [
+                \App\Services\Voucher\VoucherServiceInterface::class,
+                \App\Services\Voucher\VoucherService::class
             ]
         ];
 
         foreach ($services as $service) {
             $this->app->bind($service[0], $service[1]);
+            $this->app->singleton(ReviewRepositoryInterface::class, ReviewRepository::class);
         }
     }
+
 
     /**
      * Bootstrap any application services.

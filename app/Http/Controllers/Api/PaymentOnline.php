@@ -24,10 +24,10 @@ class PaymentOnline extends Controller
         $vnp_TmnCode = "R85DPSR9";//Mã website tại VNPAY
         $vnp_HashSecret = "90Y8TI5MF8APZOXUM4H07PDRY0E9ZEOZ"; //Chuỗi bí mật
 
-        $vnp_TxnRef = 'WM_' . rand(1000, 9999);
+        $vnp_TxnRef = 'FS_' . rand(1000, 9999);
         $vnp_OrderInfo = "VNPAY PAYMENT";
         $vnp_OrderType = "FSHOES";
-        $vnp_Amount = $request->total * 2400000;
+        $vnp_Amount = $request->total * 100;
         $vnp_Locale = "VN";
         $vnp_BankCode = "NCB";
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
@@ -123,7 +123,7 @@ class PaymentOnline extends Controller
 
 
         $orderInfo = "FSHOES";
-        $amount = $request->total * 24000;
+        $amount = $request->total;
         $orderId = time() . "";
         //Trang trả về để lây data
         $redirectUrl = $request->url;
@@ -132,7 +132,7 @@ class PaymentOnline extends Controller
 
         $orderId = 'FS_' . rand(1000, 9999); // Mã đơn hàng
         $orderInfo = 'MOMO PAYMENT';
-        $amount = ($request->total * 24000);
+        $amount = $request->total ;
         $requestId = time() . "";
         $requestType = "payWithATM";
         $extraData = ($extraData ? $_POST["extraData"] : "");

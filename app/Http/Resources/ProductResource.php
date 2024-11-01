@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources;
 
+
 use App\Http\Resources\Product\VariationResource;
+use App\Http\Resources\Sale\SaleResource;
 use App\Http\Traits\ResourceSummary;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -23,20 +25,23 @@ class ProductResource extends JsonResource
     {
         $resource = [
             'id' => $this->id,
-            'image_url' => $this->image_url,
-            'categories' => CategoryResource::collection($this->whenLoaded('categories')),
-            'images' => ImageResource::collection($this->whenLoaded('images')),
-            'variations' => VariationResource::collection($this->whenLoaded('variations')),
             'name' => $this->name,
             'slug' => $this->slug,
             'price' => $this->price,
-            'sale_price' => $this->salePrice() ,
+            'sale_price' => $this->salePrice(),
             'description' => $this->description,
             'short_description' => $this->short_description,
             'status' => $this->status,
             'stock_qty' => $this->stock_qty,
             'qty_sold' => $this->qty_sold,
+            'qty_sale' => $this->saleQuantity(),
+            'image_url' => $this->image_url,
+            'currentSale' => new SaleResource($this->currentSale()),
+            'categories' => CategoryResource::collection($this->whenLoaded('categories')),
+            'images' => ImageResource::collection($this->whenLoaded('images')),
+            'variations' => VariationResource::collection($this->whenLoaded('variations')),
         ];
+
         if ($this->shouldSummaryRelation($this->model)) $resource = [
             'id' => $this->id,
             'image_url' => $this->image_url,

@@ -234,13 +234,11 @@ class ProductController extends Controller
     public function destroy(int|string $id)
     {
         try {
-            DB::transaction(function () use ($id){
-                $this->productService->destroy($id);
-            });
+            $this->productService->destroy($id);
             return \response()->json([
                 'status' => true,
                 'message' => 'Deleted successfully'
-            ],201);
+            ]);
         }catch (\Throwable $throw){
             Log::error(
                 message: __CLASS__.'@'.__FUNCTION__,context: [
@@ -305,7 +303,7 @@ class ProductController extends Controller
                 'status' => $sucess,
                 'message' => 'Deleted successfully',
 
-            ],201);
+            ]);
         }catch (\Throwable $throwable){
             Log::error(
                 message: __CLASS__.'@'.__FUNCTION__,context: [

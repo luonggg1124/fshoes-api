@@ -29,13 +29,7 @@ class GroupsController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $group = $this->groupsService->create($request->all());
-            return response()->json(['message' => "Create group successfully",
-                                "group" => $group], 201);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 404);
-        }
+        return $this->groupsService->create($request->all());
     }
 
     /**
@@ -55,14 +49,7 @@ class GroupsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        try {
-            return response()->json([
-                "message"=>"Update group successfully",
-                "group" => $this->groupsService->update($id, $request->all())
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 404);
-        }
+        return $this->groupsService->update($id, $request->all());
     }
 
     /**

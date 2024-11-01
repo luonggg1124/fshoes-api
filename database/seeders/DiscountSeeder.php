@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Discount;
 use App\Models\Product;
+use App\Models\Sale;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,7 +15,7 @@ class DiscountSeeder extends Seeder
     public function run(): void
     {
         //php artisan db:seed --class=DiscountSeeder
-        $discounts = Discount::factory(3)->create();
+        $discounts = Sale::factory(3)->create();
 
         foreach($discounts as $discount){
             $count = 15;

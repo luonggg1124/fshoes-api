@@ -147,6 +147,7 @@ class ProductService implements ProductServiceInterface
     )
     {
         return DB::transaction(function () use ($data, $options) {
+            if(empty($data['status'])) $data['status'] = 0;
             $product = $this->productRepository->create($data);
             if(!$product) throw new \Exception('Cannot create product');
             $product->slug = $this->slug($product->name,$product->id);
@@ -212,7 +213,6 @@ class ProductService implements ProductServiceInterface
     public function destroy(int|string $id){
         $product = $this->productRepository->find($id);
         if(!$product) throw new ModelNotFoundException('Product not found');
-        $product->variations()->delete();
         $product->delete();
         return true;
     }
