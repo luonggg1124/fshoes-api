@@ -179,7 +179,6 @@ class PaymentOnline extends Controller
                     'quantity' => 1,
                 ],
             ],
-            ],
             'customer_email' => 'longvulinhhoang@gmail.com',
             'mode' => 'payment',
             'success_url' => $request->url . '?session_id={CHECKOUT_SESSION_ID}&status=1',
