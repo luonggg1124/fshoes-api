@@ -18,6 +18,7 @@ return new class extends Migration
             $table->longText('content');
             $table->foreignId('topic_id')->constrained('topics');
             $table->foreignId('author_id')->constrained('users');
+            $table->integer('views')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

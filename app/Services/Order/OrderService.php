@@ -5,10 +5,12 @@ namespace App\Services\Order;
 
 
 use App\Http\Resources\OrdersCollection;
+use App\Models\Order;
 use App\Repositories\Order\OrderRepositoryInterface;
 use App\Repositories\OrderDetail\OrderDetailRepositoryInterface;
 use App\Services\OrderHistory\OrderHistoryService;
 use App\Services\OrderHistory\OrderHistoryServiceInterface;
+use Cassandra\Exception\InvalidQueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -36,11 +38,11 @@ class OrderService implements OrderServiceInterface
 
     public function findById(int|string $id)
     {
-        $cart = $this->orderRepository->query()->where('id', $id)->with(["orderDetails" , 'orderHistory' , 'user'  , 'orderDetails.variation' , 'orderDetails.product'])->first();
-        if(!$cart){
+        $order = $this->orderRepository->query()->where('id', $id)->with(["orderDetails" , 'orderHistory' , 'user'  , 'orderDetails.variation' , 'orderDetails.product' , 'voucher'])->first();
+        if(!$order){
             throw new ModelNotFoundException('Order not found');
         }
-        return new OrdersCollection($cart);
+        return new OrdersCollection($order);
     }
 
     /**
@@ -49,12 +51,12 @@ class OrderService implements OrderServiceInterface
     public function create(array $data, array $option = []){
         try {
             $order = $this->orderRepository->create($data);
-            foreach($data['order_details'] as $detail){
+            foreach($data['order_details'] ?? [] as $detail){
                 $detail['order_id'] =  $order->id;
                 $this->orderDetailRepository->create($detail);
             }
              $this->orderHistoryService->create(["order_id"=>$order->id, "user_id"=>$data['user_id'],"description"=> "Created Order"]);
-            return $order;
+            return OrdersCollection::make($order);
         }catch (\Exception $e){
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -62,11 +64,10 @@ class OrderService implements OrderServiceInterface
     public function update(int|string $id ,array $data,array $option = []){
         try {
             $order = $this->orderRepository->update($id,$data);
-
              $this->orderHistoryService->create(["order_id"=>$id, "user_id"=>1 ,"description"=> "Update Status Order"]);
-            return $order;
-         }catch (\Exception $e){
-             throw new \Exception('Cannot update order');
+            return response()->json(["message"=>"Update order successful"],200);
+         }catch (ModelNotFoundException $e){
+             return response()->json(['error' => "Can't update order"], 500);
          }
     }
 
