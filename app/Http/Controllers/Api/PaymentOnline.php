@@ -114,7 +114,7 @@ class PaymentOnline extends Controller
         return $result;
     }
 
-    public function momo(Request $request)
+     public function momo(Request $request)
     {
         $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
         $partnerCode = 'MOMOBKUN20180529';
@@ -122,10 +122,10 @@ class PaymentOnline extends Controller
         $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
 
 
+
         $orderInfo = "FSHOES";
         $amount = $request->total;
         $orderId = time() . "";
-        //Trang trả về để lây data
         $redirectUrl = $request->url;
         $ipnUrl = $request->url;
         $extraData = "";
@@ -135,8 +135,8 @@ class PaymentOnline extends Controller
         $amount = $request->total ;
         $requestId = time() . "";
         $requestType = "payWithATM";
-        $extraData = ($extraData ? $_POST["extraData"] : "");
-//        before sign HMAC SHA256 signature11
+        // $extraData = ($extraData ? $_POST["extraData"] : "");
+        //before sign HMAC SHA256 signature
         $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
         $signature = hash_hmac("sha256", $rawHash, $secretKey);
         $data = array(
@@ -157,7 +157,7 @@ class PaymentOnline extends Controller
         $result = $this->execPostRequest($endpoint, json_encode($data));
         $jsonResult = json_decode($result, true);  // decode json
 
-        //Just an example, please check more in there
+        //Just a example, please check more in there
 
         return json_encode($jsonResult);
     }
