@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Http\Requests\User\CreateUserRequest;
+use BaconQrCode\Common\Mode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -22,6 +23,54 @@ class UserController extends Controller
             'users' => $this->userService->all()
         ]);
     }
+    public function addFavoriteProduct(int|string $user_id, int|string $product_id){
+        try {
+            $user = $this->userService->addFavoriteProduct($user_id,$product_id);
+            return response()->json([
+                'status' => true,
+                'message' => 'Add favorite product successfully!',
+                'user' => $user->load(['favoriteProducts'])
+            ],201);
+        }catch (\Throwable $throw)
+        {
+            Log::error(__CLASS__.'@'.__FUNCTION__,[
+                "line" => $throw->getLine(),
+                "message" => $throw->getMessage()
+            ]);
+            if($throw instanceof ModelNotFoundException) return response()->json([
+                'status' => false,
+                'message' => $throw->getMessage()
+            ],404);
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong!'
+            ],500);
+        }
+    }
+    public function removeFavoriteProduct(int|string $user_id, int|string $product_id){
+        try {
+            $user = $this->userService->removeFavoriteProduct($user_id,$product_id);
+            return response()->json([
+                'status' => true,
+                'message' => 'Add favorite product successfully!',
+                'user' => $user->load(['favoriteProducts'])
+            ],200);
+        }catch (\Throwable $throw)
+        {
+            Log::error(__CLASS__.'@'.__FUNCTION__,[
+                "line" => $throw->getLine(),
+                "message" => $throw->getMessage()
+            ]);
+            if($throw instanceof ModelNotFoundException) return response()->json([
+                'status' => false,
+                'message' => $throw->getMessage()
+            ],404);
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong!'
+            ],500);
+        }
+    }
     public function show(string $nickname) {
         try{
             $user = $this->userService->findByNickname($nickname);
@@ -34,10 +83,7 @@ class UserController extends Controller
     }
 
     public function store(CreateUserRequest $request){
-
-
         try{
-
             $data = $request->all();
             $user = $this->userService->create($data);
             return response()->json([

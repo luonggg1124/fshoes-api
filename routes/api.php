@@ -16,7 +16,6 @@ use App\Http\Controllers\Api\Review\ReviewController;
 use App\Http\Controllers\Api\TopicsController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Api\VouchersController;
-use App\Http\Controllers\Api\WishlistController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +41,8 @@ Route::group(['middleware' => ['auth:sanctum','is_admin']], function(){
 // End Admin
 Route::apiResource('category',CategoryController::class)->parameter('category','id')->except(['index','show']);
 Route::get('user',[UserController::class,'index']);
+Route::post('user/{user_id}/add-favorite/product/{product_id}',[UserController::class,'addFavoriteProduct'])->name('add.favorite.product');
+Route::post('user/{user_id}/remove-favorite/product/{product_id}',[UserController::class,'removeFavoriteProduct'])->name('remove.favorite.product');
 // Auth
 Route::group(['middleware' => ['auth:api']],function(){
     Route::apiResource('user',UserController::class)->parameter('user','nickname')->except(['index','destroy']);
@@ -134,8 +135,6 @@ Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\A
 
 Route::get('test',[TestController::class,'test']);
 
-//WishList
-Route::apiResource('wishlist' , WishlistController::class);
 
 //Groups
 Route::apiResource('groups' , GroupsController::class);

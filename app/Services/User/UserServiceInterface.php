@@ -8,5 +8,6 @@ interface UserServiceInterface
     public function findByNickname(string $nickname);
     function update(string $nickname, array $data, array $options = []);
     public function all();
-
+    function addFavoriteProduct(int|string $userId,int|string $productId);
+    function removeFavoriteProduct(int|string $userId,int|string $productId);
 }

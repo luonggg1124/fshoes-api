@@ -62,10 +62,6 @@ class AppServiceProvider extends ServiceProvider
                 \App\Services\OrderHistory\OrderHistoryServiceInterface::class,
                 \App\Services\OrderHistory\OrderHistoryService::class
             ],
-            'wishlist'=>[
-                \App\Services\Wishlist\WishlistServiceInterface::class,
-                \App\Services\Wishlist\WishlistService::class
-            ],
             'groups'=>[
                 \App\Services\Groups\GroupsServiceInterface::class,
                 \App\Services\Groups\GroupsService::class

@@ -86,19 +86,6 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(UserAddress::class);
     }
-    public function allAvatars():HasMany
-    {
-        return $this->hasMany(UserAvatar::class,'user_id');
-    }
-    public function avatar()
-    {
-
-        $avatar = $this->allAvatars()->where('is_active',true)->latest()->first();
-        if(!$avatar){
-            return null;
-        }
-        return $avatar;
-    }
 
     public function reviews():HasMany
     {

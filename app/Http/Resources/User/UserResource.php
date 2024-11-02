@@ -2,13 +2,15 @@
 
 namespace App\Http\Resources\User;
 
-use Carbon\Carbon;
+use App\Http\Resources\ProductResource;
+use App\Http\Traits\ResourceSummary;
 use Illuminate\Http\Request;
-use App\Http\Resources\CategoryResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
+    use ResourceSummary;
+    private $model = 'user';
     public static $wrap = false;
     /**
      * Transform the resource into an array.
@@ -17,16 +19,31 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $resource = [
             'id' => $this->id,
             'nickname' => $this->nickname,
+            'avatar_url' => $this->avatar_url,
             'name' => $this->name,
             'email' => $this->email,
-            'email_verified_at' => $this->email_verified_at ? (new Carbon($this->email_verified_at))->format('d-m-Y H:i:s') : null,
+            'email_verified_at' => $this->email_verified_at,
             'google_id' => $this->google_id,
-            'is_admin' => $this->is_admin,
             'status' => $this->status,
             'profile' => new UserProfileResource($this->whenLoaded('profile')),
+            'favoriteProducts' => ProductResource::collection($this->whenLoaded('favoriteProducts')),
         ];
+        if($this->shouldSummaryRelation($this->model))
+            $resource = [
+                'id' => $this->id,
+                'nickname' => $this->nickname,
+                'avatar_url' => $this->avatar_url,
+                'name' => $this->name,
+                'email' => $this->email,
+            ];
+        if($this->includeTimes($this->model)){
+            $resource['created_at'] = $this->created_at;
+            $resource['updated_at'] = $this->updated_at;
+            $resource['deleted_at'] = $this->updated_at;
+        }
+        return $resource;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Services\User;
 
+use App\Repositories\Product\ProductRepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
 use App\Http\Traits\Paginate;
 use App\Http\Traits\Cloudinary;
@@ -9,9 +11,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\User\UserResource;
 use App\Http\Traits\CanLoadRelationships;
-use Illuminate\Validation\ValidationException;
 use App\Repositories\User\UserRepositoryInterface;
-use Illuminate\Support\Facades\Hash;
+
 
 class UserService implements UserServiceInterface
 {
@@ -31,7 +32,8 @@ class UserService implements UserServiceInterface
         'updated_at',
     ];
     public function __construct(
-        public UserRepositoryInterface $userRepository
+        public UserRepositoryInterface $userRepository,
+        protected ProductRepositoryInterface $productRepository
     ) {
     }
 
@@ -134,4 +136,22 @@ class UserService implements UserServiceInterface
         return new UserResource($this->loadRelationships($user));
     }
 
+    public function addFavoriteProduct(int|string $userId,int|string $productId)
+    {
+        $user = $this->userRepository->find($userId);
+        if(!$user) throw new ModelNotFoundException('User not found!');
+        $product = $this->productRepository->find($productId);
+        if(!$product) throw new ModelNotFoundException('Product not found!');
+        $user->favoriteProducts()->sync($productId);
+        return new UserResource($this->loadRelationships($user));
+    }
+    public function removeFavoriteProduct(int|string $userId,int|string $productId)
+    {
+        $user = $this->userRepository->find($userId);
+        if(!$user) throw new ModelNotFoundException('User not found!');
+        $product = $this->productRepository->find($productId);
+        if(!$product) throw new ModelNotFoundException('Product not found!');
+        $user->favoriteProducts()->detach($productId);
+        return new UserResource($this->loadRelationships($user));
+    }
 }
