@@ -2,6 +2,7 @@
 
 namespace App\Services\User;
 
+use App\Http\Resources\ProductResource;
 use App\Repositories\Product\ProductRepositoryInterface;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -140,8 +141,8 @@ class UserService implements UserServiceInterface
     {
         $user = auth()->user();
         if(!$user) throw new AuthorizationException('Unauthorized');
-        $user->load('favoriteProducts');
-        return new UserResource($this->loadRelationships($user));
+        $products = $user->favoriteProducts()->with(['categories'])->get();
+        return ProductResource::collection($products);
     }
     public function addFavoriteProduct(int|string $productId)
     {
@@ -150,8 +151,8 @@ class UserService implements UserServiceInterface
         $product = $this->productRepository->find($productId);
         if(!$product) throw new ModelNotFoundException('Product not found!');
         $user->favoriteProducts()->syncWithoutDetaching($productId);
-        $user->load('favoriteProducts');
-        return new UserResource($this->loadRelationships($user));
+        $products = $user->favoriteProducts()->with(['categories'])->get();
+        return ProductResource::collection($products);
     }
     public function removeFavoriteProduct(int|string $productId)
     {
@@ -160,7 +161,7 @@ class UserService implements UserServiceInterface
         $product = $this->productRepository->find($productId);
         if(!$product) throw new ModelNotFoundException('Product not found!');
         $user->favoriteProducts()->detach($productId);
-        $user->load('favoriteProducts');
-        return new UserResource($this->loadRelationships($user));
+        $products = $user->favoriteProducts()->with(['categories'])->get();
+        return ProductResource::collection($products);
     }
 }

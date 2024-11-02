@@ -27,10 +27,11 @@ class UserController extends Controller
     public function getFavoriteProduct()
     {
         try {
-            $user = $this->userService->getFavoriteProduct();
+            $products = $this->userService->getFavoriteProduct();
             return response()->json([
                 'status' => true,
-                'user' => $user
+                'user' => request()->user(),
+                'products' => $products
             ]);
         }catch (\Throwable $throw)
         {
@@ -54,11 +55,12 @@ class UserController extends Controller
     }
     public function addFavoriteProduct(int|string $product_id){
         try {
-            $user = $this->userService->addFavoriteProduct($product_id);
+            $products = $this->userService->addFavoriteProduct($product_id);
             return response()->json([
                 'status' => true,
                 'message' => 'Add favorite product successfully!',
-                'user' => $user
+                'user' => request()->user(),
+                'products' => $products
             ],201);
         }catch (\Throwable $throw)
         {
@@ -82,11 +84,12 @@ class UserController extends Controller
     }
     public function removeFavoriteProduct(int|string $product_id){
         try {
-            $user = $this->userService->removeFavoriteProduct($product_id);
+            $products = $this->userService->removeFavoriteProduct($product_id);
             return response()->json([
                 'status' => true,
                 'message' => 'Add favorite product successfully!',
-                'user' => $user
+                'user' => request()->user(),
+                'products' => $products
             ],200);
         }catch (\Throwable $throw)
         {
