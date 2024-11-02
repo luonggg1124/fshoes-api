@@ -42,6 +42,10 @@ class UserController extends Controller
                 'status' => false,
                 'message' => $throw->getMessage()
             ],401);
+            if($throw instanceof ModelNotFoundException) return response()->json([
+                'status' => false,
+                'message' => $throw->getMessage()
+            ],404);
             return response()->json([
                 'status' => false,
                 'message' => 'Something went wrong!'
@@ -66,6 +70,10 @@ class UserController extends Controller
                 'status' => false,
                 'message' => $throw->getMessage()
             ],401);
+            if($throw instanceof ModelNotFoundException) return response()->json([
+                'status' => false,
+                'message' => $throw->getMessage()
+            ],404);
             return response()->json([
                 'status' => false,
                 'message' => 'Something went wrong!'
@@ -90,6 +98,10 @@ class UserController extends Controller
                 'status' => false,
                 'message' => $throw->getMessage()
             ],401);
+            if($throw instanceof ModelNotFoundException) return response()->json([
+                'status' => false,
+                'message' => $throw->getMessage()
+            ],404);
             return response()->json([
                 'status' => false,
                 'message' => 'Something went wrong!'
