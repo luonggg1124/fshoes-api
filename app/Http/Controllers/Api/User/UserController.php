@@ -23,13 +23,13 @@ class UserController extends Controller
             'users' => $this->userService->all()
         ]);
     }
-    public function addFavoriteProduct(int|string $user_id, int|string $product_id){
+    public function addFavoriteProduct(int|string $product_id){
         try {
-            $user = $this->userService->addFavoriteProduct($user_id,$product_id);
+            $user = $this->userService->addFavoriteProduct($product_id);
             return response()->json([
                 'status' => true,
                 'message' => 'Add favorite product successfully!',
-                'user' => $user->load(['favoriteProducts'])
+                'user' => $user
             ],201);
         }catch (\Throwable $throw)
         {
@@ -47,13 +47,13 @@ class UserController extends Controller
             ],500);
         }
     }
-    public function removeFavoriteProduct(int|string $user_id, int|string $product_id){
+    public function removeFavoriteProduct(int|string $product_id){
         try {
-            $user = $this->userService->removeFavoriteProduct($user_id,$product_id);
+            $user = $this->userService->removeFavoriteProduct($product_id);
             return response()->json([
                 'status' => true,
                 'message' => 'Add favorite product successfully!',
-                'user' => $user->load(['favoriteProducts'])
+                'user' => $user
             ],200);
         }catch (\Throwable $throw)
         {

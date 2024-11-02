@@ -136,22 +136,24 @@ class UserService implements UserServiceInterface
         return new UserResource($this->loadRelationships($user));
     }
 
-    public function addFavoriteProduct(int|string $userId,int|string $productId)
+    public function addFavoriteProduct(int|string $productId)
     {
-        $user = $this->userRepository->find($userId);
+        $user = request()->user();
         if(!$user) throw new ModelNotFoundException('User not found!');
         $product = $this->productRepository->find($productId);
         if(!$product) throw new ModelNotFoundException('Product not found!');
-        $user->favoriteProducts()->sync($productId);
+        $user->favoriteProducts()->syncWithoutDetaching($productId);
+        $user->load('favoriteProducts');
         return new UserResource($this->loadRelationships($user));
     }
-    public function removeFavoriteProduct(int|string $userId,int|string $productId)
+    public function removeFavoriteProduct(int|string $productId)
     {
-        $user = $this->userRepository->find($userId);
+        $user = request()->user();
         if(!$user) throw new ModelNotFoundException('User not found!');
         $product = $this->productRepository->find($productId);
         if(!$product) throw new ModelNotFoundException('Product not found!');
         $user->favoriteProducts()->detach($productId);
+        $user->load('favoriteProducts');
         return new UserResource($this->loadRelationships($user));
     }
 }
