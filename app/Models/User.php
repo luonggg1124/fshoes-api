@@ -33,7 +33,7 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'google_id',
         'email_verified_at',
-        'is_admin',
+        'avatar_url',
         'is_active',
         'status',
         'group_id'

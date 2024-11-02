@@ -30,7 +30,6 @@ class UserController extends Controller
             $products = $this->userService->getFavoriteProduct();
             return response()->json([
                 'status' => true,
-                'user' => request()->user(),
                 'products' => $products
             ]);
         }catch (\Throwable $throw)
@@ -59,7 +58,6 @@ class UserController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Add favorite product successfully!',
-                'user' => request()->user(),
                 'products' => $products
             ],201);
         }catch (\Throwable $throw)
@@ -88,7 +86,6 @@ class UserController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Add favorite product successfully!',
-                'user' => request()->user(),
                 'products' => $products
             ],200);
         }catch (\Throwable $throw)
