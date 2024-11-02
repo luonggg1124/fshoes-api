@@ -48,6 +48,7 @@ Route::group(['middleware' => ['auth:api']],function(){
     Route::post('logout',[\App\Http\Controllers\Api\User\AuthController::class,'logout']);
     Route::get('auth/me',[\App\Http\Controllers\Api\User\AuthController::class,'me']);
     Route::post('auth/refresh/token',[\App\Http\Controllers\Api\User\AuthController::class,'refresh']);
+    Route::get('user/get-favorite/product',[UserController::class,'getFavoriteProduct'])->name('get.favorite.product');
     Route::post('user/add-favorite/product/{product_id}',[UserController::class,'addFavoriteProduct'])->name('add.favorite.product');
     Route::delete('user/remove-favorite/product/{product_id}',[UserController::class,'removeFavoriteProduct'])->name('remove.favorite.product');
 });

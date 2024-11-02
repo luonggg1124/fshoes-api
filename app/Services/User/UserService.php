@@ -3,6 +3,7 @@
 namespace App\Services\User;
 
 use App\Repositories\Product\ProductRepositoryInterface;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
 use App\Http\Traits\Paginate;
@@ -138,12 +139,14 @@ class UserService implements UserServiceInterface
     public function getFavoriteProduct()
     {
         $user = auth()->user();
-        if(!$user)
+        if(!$user) throw new AuthorizationException('Unauthorized');
+        $user->load('favoriteProducts');
+        return new UserResource($this->loadRelationships($user));
     }
     public function addFavoriteProduct(int|string $productId)
     {
         $user = request()->user();
-        if(!$user) throw new ModelNotFoundException('User not found!');
+        if(!$user) throw new AuthorizationException('Unauthorized!');
         $product = $this->productRepository->find($productId);
         if(!$product) throw new ModelNotFoundException('Product not found!');
         $user->favoriteProducts()->syncWithoutDetaching($productId);
@@ -153,7 +156,7 @@ class UserService implements UserServiceInterface
     public function removeFavoriteProduct(int|string $productId)
     {
         $user = request()->user();
-        if(!$user) throw new ModelNotFoundException('User not found!');
+        if(!$user) throw new AuthorizationException('Unauthorized!');
         $product = $this->productRepository->find($productId);
         if(!$product) throw new ModelNotFoundException('Product not found!');
         $user->favoriteProducts()->detach($productId);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\User;
 
 use App\Http\Requests\User\CreateUserRequest;
 use BaconQrCode\Common\Mode;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -23,6 +24,30 @@ class UserController extends Controller
             'users' => $this->userService->all()
         ]);
     }
+    public function getFavoriteProduct()
+    {
+        try {
+            $user = $this->userService->getFavoriteProduct();
+            return response()->json([
+                'status' => true,
+                'user' => $user
+            ]);
+        }catch (\Throwable $throw)
+        {
+            Log::error(__CLASS__.'@'.__FUNCTION__,[
+                "line" => $throw->getLine(),
+                "message" => $throw->getMessage()
+            ]);
+            if($throw instanceof AuthorizationException) return response()->json([
+                'status' => false,
+                'message' => $throw->getMessage()
+            ],401);
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong!'
+            ],500);
+        }
+    }
     public function addFavoriteProduct(int|string $product_id){
         try {
             $user = $this->userService->addFavoriteProduct($product_id);
@@ -37,10 +62,10 @@ class UserController extends Controller
                 "line" => $throw->getLine(),
                 "message" => $throw->getMessage()
             ]);
-            if($throw instanceof ModelNotFoundException) return response()->json([
+            if($throw instanceof AuthorizationException) return response()->json([
                 'status' => false,
                 'message' => $throw->getMessage()
-            ],404);
+            ],401);
             return response()->json([
                 'status' => false,
                 'message' => 'Something went wrong!'
@@ -61,10 +86,10 @@ class UserController extends Controller
                 "line" => $throw->getLine(),
                 "message" => $throw->getMessage()
             ]);
-            if($throw instanceof ModelNotFoundException) return response()->json([
+            if($throw instanceof AuthorizationException) return response()->json([
                 'status' => false,
                 'message' => $throw->getMessage()
-            ],404);
+            ],401);
             return response()->json([
                 'status' => false,
                 'message' => 'Something went wrong!'
