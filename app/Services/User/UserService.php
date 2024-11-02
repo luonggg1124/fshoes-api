@@ -135,7 +135,11 @@ class UserService implements UserServiceInterface
         $user = $this->userRepository->findByNickname($nickname);
         return new UserResource($this->loadRelationships($user));
     }
-
+    public function getFavoriteProduct()
+    {
+        $user = auth()->user();
+        if(!$user)
+    }
     public function addFavoriteProduct(int|string $productId)
     {
         $user = request()->user();
