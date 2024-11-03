@@ -44,7 +44,6 @@ class ProductService implements ProductServiceInterface
 
     public function all()
     {
-
         $perPage = request()->query('per_page');
         $products = $this->loadRelationships($this->productRepository->query()->sortByColumn(columns:$this->columns))->paginate($perPage);
         return [

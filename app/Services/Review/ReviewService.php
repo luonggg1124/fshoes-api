@@ -4,6 +4,7 @@ namespace App\Services\Review;
 use App\Http\Resources\Review\ReviewResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Http\Traits\Paginate;
+use App\Repositories\Product\ProductRepositoryInterface;
 use App\Repositories\Review\ReviewRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -13,7 +14,18 @@ class ReviewService implements ReviewServiceInterface
 
     use CanLoadRelationships, Paginate;
     private array $relations = ['user', 'product'];
-    public function __construct(protected ReviewRepositoryInterface $reviewRepository)
+    private array $columns = [
+        'id',
+        'title',
+        'text',
+        'rating',
+        'created_at',
+        'updated_at',
+    ];
+    public function __construct(
+        protected ReviewRepositoryInterface $reviewRepository,
+        private ProductRepositoryInterface $productRepository
+    )
     {
 
     }
@@ -21,7 +33,12 @@ class ReviewService implements ReviewServiceInterface
     // Lấy tất cả reviews
     public function all()
     {
-        return ReviewResource::collection($this->reviewRepository->all());
+        $perPage = request()->query('per_page');
+        $reviews = $this->loadRelationships($this->reviewRepository->query()->sortByColumn(columns:$this->columns))->paginate($perPage);
+        return [
+            'paginator' => $this->paginate($reviews),
+            'data' => ReviewResource::collection($reviews->items())
+        ];
     }
 
     // Thêm review
@@ -63,7 +80,13 @@ class ReviewService implements ReviewServiceInterface
         $review->delete();
         return true;
     }
-
+    public function reviewsByProduct(int|string $productId)
+    {
+        $product = $this->productRepository->find($productId);
+        if (!$product) throw new ModelNotFoundException('Product not found');
+        $reviews = $product->reviews()->with(['user'])->get();
+        return ReviewResource::collection($reviews);
+    }
     public function getProduct(int|string $productId)
     {
         // Lấy tất cả các review của sản phẩm

@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace App\Services\Review;
 
 use Illuminate\Http\Request;
@@ -12,4 +12,5 @@ interface ReviewServiceInterface{
     public function delete(int|string $id);
     public function getByLikes();
     public function toggleLike(int $review_id, int $user_id);
+    public function reviewsByProduct(int|string $productId);
 }

@@ -8,6 +8,7 @@ use App\Http\Requests\Review\UpdateReviewRequest;
 use App\Http\Resources\Review\ReviewResource;
 use App\Services\Review\ReviewServiceInterface;
 
+use BaconQrCode\Common\Mode;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
@@ -129,6 +130,34 @@ class ReviewController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
+    public function reviewsByProduct(int|string $id): Response|JsonResponse
+    {
+        try {
+            $reviews = $this->reviewService->reviewsByProduct($id);
+            return response()->json([
+                'status' => true,
+                'reviews' => $reviews
+            ]);
+        }catch (\Throwable $throw)
+        {
+            Log::error(
+                message: __CLASS__.'@'.__FUNCTION__,context: [
+                'line' => $throw->getLine(),
+                'message' => $throw->getMessage()
+            ]
+            );
+            if($throw instanceof ModelNotFoundException)
+            {
+                return response()->json([
+                    'status' => false,
+                    'message' => $throw->getMessage()
+                ],404);
+            }
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong!'
+            ],500);
+        }
+    }
 
 }

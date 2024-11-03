@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\Groups;
 use App\Models\Posts;
+use App\Models\Review;
 use App\Models\User;
 use App\Models\User\UserProfile;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -54,7 +55,7 @@ class DatabaseSeeder extends Seeder
             PostsSeeder::class,
             VoucherSeeder::class,
         ]);
-
+        Review::factory(300)->create();
 
     }
 }
