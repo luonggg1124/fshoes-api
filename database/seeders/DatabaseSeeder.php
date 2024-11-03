@@ -45,6 +45,36 @@ class DatabaseSeeder extends Seeder
             'given_name' => 'Quoc',
             'family_name' => 'Anh'
         ]);
+        User::factory()->create([
+            'email' => 'long@gmail.com',
+            'nickname' => 'longv'
+        ]);
+        // User::factory(30)->create();
+        UserProfile::create([
+            'user_id' => 2,
+            'given_name' => 'Long',
+            'family_name' => 'Vu'
+        ]);
+        User::factory()->create([
+            'email' => 'linh@gmail.com',
+            'nickname' => 'linhn'
+        ]);
+        // User::factory(30)->create();
+        UserProfile::create([
+            'user_id' => 2,
+            'given_name' => 'Linh',
+            'family_name' => 'Nguyen'
+        ]);
+        User::factory()->create([
+            'email' => 'thai@gmail.com',
+            'nickname' => 'thain'
+        ]);
+        // User::factory(30)->create();
+        UserProfile::create([
+            'user_id' => 2,
+            'given_name' => 'Thai',
+            'family_name' => 'Nguyen'
+        ]);
         $this->call([
             CategorySeeder::class,
             ProductSeeder::class,

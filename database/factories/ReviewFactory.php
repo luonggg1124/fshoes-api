@@ -18,7 +18,7 @@ class ReviewFactory extends Factory
     {
         return [
             'product_id' => random_int(1,50),
-            'user_id' => random_int(1,2),
+            'user_id' => random_int(1,5),
             'title' => $this->faker->sentence,
             'text' => $this->faker->paragraph,
             'rating' => random_int(1,5)
