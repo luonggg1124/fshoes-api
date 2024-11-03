@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
         ]);
         // User::factory(30)->create();
         UserProfile::create([
-            'user_id' => 2,
+            'user_id' => 3,
             'given_name' => 'Long',
             'family_name' => 'Vu'
         ]);
@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
         ]);
         // User::factory(30)->create();
         UserProfile::create([
-            'user_id' => 2,
+            'user_id' => 4,
             'given_name' => 'Linh',
             'family_name' => 'Nguyen'
         ]);
@@ -71,7 +71,7 @@ class DatabaseSeeder extends Seeder
         ]);
         // User::factory(30)->create();
         UserProfile::create([
-            'user_id' => 2,
+            'user_id' => 5,
             'given_name' => 'Thai',
             'family_name' => 'Nguyen'
         ]);
