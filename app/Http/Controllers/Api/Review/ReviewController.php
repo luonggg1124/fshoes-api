@@ -9,6 +9,7 @@ use App\Http\Resources\Review\ReviewResource;
 use App\Services\Review\ReviewServiceInterface;
 
 use BaconQrCode\Common\Mode;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
@@ -106,8 +107,24 @@ class ReviewController extends Controller
                 'status' => true,
                 'message' => 'Review deleted successfully',
             ]);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+        } catch (\Throwable $throw) {
+            if($throw instanceof ModelNotFoundException)
+            {
+                return response()->json([
+                    'status' => false,
+                    'message' => $throw->getMessage()
+                ],404);
+            }
+            if($throw instanceof AuthorizationException){
+                return response()->json([
+                    'status' => false,
+                    'message' => $throw->getMessage()
+                ],401);
+            }
+            return response()->json([
+                'status' => false,
+                'message' => "Something went wrong!"
+            ],500);
         }
     }
 

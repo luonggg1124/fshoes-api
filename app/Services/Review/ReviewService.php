@@ -73,10 +73,7 @@ class ReviewService implements ReviewServiceInterface
         $review = $this->reviewRepository->find($id);
         if (!$review)
             throw new ModelNotFoundException('Review not found');
-        if($data['product_id']){
-            $product = $this->productRepository->find($data['product_id']);
-            if(!$product) throw new ModelNotFoundException('Product not found');
-        }
+
         $updated = $review->update($data);
         if ($updated) {
             return new ReviewResource($this->loadRelationships($review));
@@ -90,8 +87,8 @@ class ReviewService implements ReviewServiceInterface
         $review = $this->reviewRepository->find($id);
         if (!$review)
             throw new ModelNotFoundException('Review not found');
-        $requestUser = \request()->user();
-        if($requestUser->id != $review->user_id) throw new AuthorizationException("Unauthorized!");
+//        $requestUser = \request()->user();
+//        if($requestUser->id != $review->user_id) throw new AuthorizationException("Unauthorized!");
         $review->delete();
         return true;
     }
