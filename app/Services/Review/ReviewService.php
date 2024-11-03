@@ -6,6 +6,7 @@ use App\Http\Traits\CanLoadRelationships;
 use App\Http\Traits\Paginate;
 use App\Repositories\Product\ProductRepositoryInterface;
 use App\Repositories\Review\ReviewRepositoryInterface;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
@@ -44,6 +45,14 @@ class ReviewService implements ReviewServiceInterface
     // Thêm review
     public function create(array $data)
     {
+        if($data['product_id']){
+            $product = $this->productRepository->find($data['product_id']);
+            if(!$product) throw  new ModelNotFoundException('Product not found');
+        }
+        $user = \request()->user();
+
+        if(!$user) throw new AuthorizationException("Unauthorized!");
+        $data['user_id'] = $user->id;
         $review = $this->reviewRepository->create($data);
         return new ReviewResource($this->loadRelationships($review));
     }
@@ -64,6 +73,10 @@ class ReviewService implements ReviewServiceInterface
         $review = $this->reviewRepository->find($id);
         if (!$review)
             throw new ModelNotFoundException('Review not found');
+        if($data['product_id']){
+            $product = $this->productRepository->find($data['product_id']);
+            if(!$product) throw new ModelNotFoundException('Product not found');
+        }
         $updated = $review->update($data);
         if ($updated) {
             return new ReviewResource($this->loadRelationships($review));
@@ -77,6 +90,8 @@ class ReviewService implements ReviewServiceInterface
         $review = $this->reviewRepository->find($id);
         if (!$review)
             throw new ModelNotFoundException('Review not found');
+        $requestUser = \request()->user();
+        if($requestUser->id != $review->user_id) throw new AuthorizationException("Unauthorized!");
         $review->delete();
         return true;
     }

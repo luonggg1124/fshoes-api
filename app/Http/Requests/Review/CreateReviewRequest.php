@@ -25,7 +25,6 @@ class CreateReviewRequest extends FormRequest
     {
         return [
             'product_id' => 'required|exists:products,id',
-            'user_id' => 'required|exists:users,id',
             'title' => 'required|string|max:255',
             'text' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',
@@ -46,8 +45,6 @@ class CreateReviewRequest extends FormRequest
             'product_id.required' => 'The product ID is required.',
             'product_id.exists' => 'The selected product does not exist in the system.',
 
-            'user_id.required' => 'The user ID is required.',
-            'user_id.exists' => 'The selected user does not exist in the system.',
 
             'title.required' => 'The title is required.',
             'title.string' => 'The title must be a string.',

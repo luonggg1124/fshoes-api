@@ -51,6 +51,10 @@ Route::group(['middleware' => ['auth:api']],function(){
     Route::get('user/get-favorite/product',[UserController::class,'getFavoriteProduct'])->name('get.favorite.product');
     Route::post('user/add-favorite/product/{product_id}',[UserController::class,'addFavoriteProduct'])->name('add.favorite.product');
     Route::delete('user/remove-favorite/product/{product_id}',[UserController::class,'removeFavoriteProduct'])->name('remove.favorite.product');
+
+
+    Route::post('review/{id}/like', [ReviewController::class, 'toggleLike']);
+    Route::apiResource('review',ReviewController::class)->parameter('review','id');
 });
 
 
@@ -116,9 +120,9 @@ Route::delete('image/delete-many',[ImageController::class,'deleteMany'])->name('
 
 
 // Review
-Route::apiResource('review',ReviewController::class)->parameter('review','id');
+
 // Like
-Route::middleware('auth:api')->post('review/{id}/like', [ReviewController::class, 'toggleLike']);
+
 Route::get('product/{id}/reviews',[ReviewController::class,'reviewsByProduct'])->name('product.reviews');
 
 
