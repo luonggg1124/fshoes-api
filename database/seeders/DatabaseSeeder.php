@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
             'nickname' => 'louis.ng',
             'group_id'=>'1'
         ]);
-        User::factory(20)->create();
+
         // User::factory(30)->create();
 //        UserProfile::create([
 //            'user_id' => 1,
@@ -75,6 +75,7 @@ class DatabaseSeeder extends Seeder
             'given_name' => 'Thai',
             'family_name' => 'Nguyen'
         ]);
+        User::factory(20)->create();
         $this->call([
             CategorySeeder::class,
             ProductSeeder::class,
