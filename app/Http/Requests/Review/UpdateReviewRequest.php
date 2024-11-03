@@ -24,7 +24,6 @@ class UpdateReviewRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_id' => 'required|exists:products,id',
             'title' => 'sometimes|required|string|max:255',
             'text' => 'sometimes|required|string',
             'rating' => 'sometimes|required|integer|min:1|max:5',
@@ -42,8 +41,6 @@ class UpdateReviewRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'product_id.required' => 'The product ID is required.',
-            'product_id.exists' => 'The selected product does not exist in the system.',
 
             'title.sometimes.required' => 'Product title is required if present.',
             'title.string' => 'Product title must be a type of string.',
