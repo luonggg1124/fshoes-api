@@ -5,16 +5,13 @@ namespace App\Http\Controllers\Api\Review;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Review\CreateReviewRequest;
 use App\Http\Requests\Review\UpdateReviewRequest;
-use App\Http\Resources\Review\ReviewResource;
 use App\Services\Review\ReviewServiceInterface;
-
-use BaconQrCode\Common\Mode;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
+use Mockery\Exception;
 
 class ReviewController extends Controller
 {
@@ -43,14 +40,31 @@ class ReviewController extends Controller
                 'message' => 'Review created successfully',
                 'review' => $review
             ], 201);
-        } catch (\Exception $e) {
+        } catch (\Throwable $throw) {
             Log::error('Some thing went wrong!', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
+                'message' => $throw->getMessage(),
+                'file' => $throw->getFile(),
+                'line' => $throw->getLine(),
+                'trace' => $throw->getTraceAsString(),
             ]);
-            return response()->json(['error' => $e->getMessage()], 500);
+
+           if($throw instanceof ModelNotFoundException)
+           {
+               return response()->json([
+                   'status' => false,
+                   'message' => $throw->getMessage()
+               ],404);
+           }
+           if($throw instanceof Exception){
+               return response()->json([
+                   'status' => false,
+                   'message' => $throw->getMessage()
+               ],401);
+           }
+           return response()->json([
+               'status' => false,
+               'message' => "Something went wrong!"
+           ],500);
         }
     }
 
@@ -128,7 +142,7 @@ class ReviewController extends Controller
         }
     }
 
-    public function toggleLike(Request $request, int $review_id): JsonResponse
+    public function toggleLike(int $review_id): JsonResponse
     {
         try {
             $user_id = request()->user()->id;  // Lấy ID người dùng hiện tại

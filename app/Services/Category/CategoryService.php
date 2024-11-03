@@ -24,7 +24,7 @@ class CategoryService implements CategoryServiceInterface
     {
         $perPage = request()->query('per_page');
 
-        $categories = $this->loadRelationships($this->categoryRepository->query()->sortByColumn(columns:$this->columns))->paginate($perPage);
+        $categories = $this->loadRelationships($this->categoryRepository->query()->where('is_main','!=',1)->sortByColumn(columns:$this->columns))->paginate($perPage);
         //return $categories;
         return [
             'paginator' => $this->paginate($categories),

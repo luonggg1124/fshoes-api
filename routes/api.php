@@ -53,7 +53,7 @@ Route::group(['middleware' => ['auth:api']],function(){
     Route::delete('user/remove-favorite/product/{product_id}',[UserController::class,'removeFavoriteProduct'])->name('remove.favorite.product');
 
 
-    Route::post('review/{id}/like', [ReviewController::class, 'toggleLike']);
+    Route::post('review/{id}/like', [ReviewController::class, 'toggleLike'])->name('review.like');
     Route::apiResource('review',ReviewController::class)->parameter('review','id');
 });
 

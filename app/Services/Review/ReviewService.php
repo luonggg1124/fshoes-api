@@ -6,9 +6,11 @@ use App\Http\Traits\CanLoadRelationships;
 use App\Http\Traits\Paginate;
 use App\Repositories\Product\ProductRepositoryInterface;
 use App\Repositories\Review\ReviewRepositoryInterface;
-use Illuminate\Auth\Access\AuthorizationException;
+
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
+use Mockery\Exception;
+
 
 class ReviewService implements ReviewServiceInterface
 {
@@ -49,9 +51,12 @@ class ReviewService implements ReviewServiceInterface
             $product = $this->productRepository->find($data['product_id']);
             if(!$product) throw  new ModelNotFoundException('Product not found');
         }
-        $user = \request()->user();
 
-        if(!$user) throw new AuthorizationException("Unauthorized!");
+        $user = \request()->user();
+        $alreadyReview = $user->reviews()->where('product_id', $data['product_id'])->first();
+        if($alreadyReview){
+            throw new Exception("You already have a review for this product");
+        }
         $data['user_id'] = $user->id;
         $review = $this->reviewRepository->create($data);
         return new ReviewResource($this->loadRelationships($review));
