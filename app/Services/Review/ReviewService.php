@@ -21,7 +21,7 @@ class ReviewService implements ReviewServiceInterface
     // Lấy tất cả reviews
     public function all()
     {
-        return $this->reviewRepository->all();
+        return ReviewResource::collection($this->reviewRepository->all());
     }
 
     // Thêm review
@@ -70,7 +70,7 @@ class ReviewService implements ReviewServiceInterface
         $reviews = $this->reviewRepository->findByProduct($productId);
 
         // Nạp các quan hệ cho từng review (ví dụ: user, product)
-        return $this->loadRelationships($reviews);
+        return ReviewResource::collection($this->loadRelationships($reviews));
     }
 
     public function getByLikes()

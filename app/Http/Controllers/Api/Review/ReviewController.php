@@ -26,7 +26,7 @@ class ReviewController extends Controller
     public function index(): Response|JsonResponse
     {
         return \response()->json([
-            $this->reviewService->all()
+            "reviews" => $this->reviewService->all()
         ]);
     }
 
@@ -58,9 +58,15 @@ class ReviewController extends Controller
     public function show(int|string $id): Response|JsonResponse
     {
         try {
-            return response()->json($this->reviewService->find($id));
+            return response()->json([
+                'status' => true,
+                'review' => $this->reviewService->find($id)
+            ]);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json([
+                'status' => false,
+                'error' => $e->getMessage()],
+                404);
         }
     }
 
@@ -72,6 +78,7 @@ class ReviewController extends Controller
         try {
             $review = $this->reviewService->update($id, $request->validated());
             return response()->json([
+                'status' => true,
                 'message' => 'Review created successfully',
                 'review' => $review
             ], 201);
@@ -95,6 +102,7 @@ class ReviewController extends Controller
         try {
             $this->reviewService->delete($id);
             return response()->json([
+                'status' => true,
                 'message' => 'Review deleted successfully',
             ]);
         } catch (\Exception $e) {
@@ -112,6 +120,7 @@ class ReviewController extends Controller
             $likesCount = $this->reviewService->toggleLike($review_id, $user_id);
 
             return response()->json([
+                'status' => true,
                 'message' => 'Like status toggled',
                 'likes_count' => $likesCount,
             ], 200);

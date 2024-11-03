@@ -4,7 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Models\User\UserAvatar;
+
 use App\Models\User\UserAddress;
 use App\Models\User\UserProfile;
 use Laravel\Sanctum\HasApiTokens;
