@@ -3,8 +3,9 @@
 namespace App\Services\Post;
 
 use App\Http\Resources\PostResource;
-use App\Http\Resources\TopicsResource;
 use App\Repositories\Post\PostRepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Mockery\Exception;
 
 class PostService implements PostServiceInterface
@@ -18,19 +19,27 @@ class PostService implements PostServiceInterface
     function getAll(array $params)
     {
         $posts = $this->postRepository->all();
-        return PostResource::collection($posts);
+        return response()->json(PostResource::collection($posts), 200);
     }
 
     function findById(int|string $id)
     {
-      $post = $this->postRepository->find($id);
-      return new PostResource($post);
+        try{
+            $post = $this->postRepository->query()->findOrFail($id);
+            return response()->json(PostResource::make($post), 200);
+        }catch(ModelNotFoundException $e){
+            return response()->json(['message' => "Post not found"], 404);
+        }
     }
 
     function findByUserId(int|string $id)
     {
-        $post = $this->postRepository->query()->where('author_id', $id)->get();
-        return new PostResource($post);
+        try{
+            $post = $this->postRepository->query()->where('author_id', $id)->get();
+            return response()->json(PostResource::make($post), 200);
+        }catch(ModelNotFoundException $e){
+            return response()->json(['message' => "Post not found"], 404);
+        }
     }
 
     function create(array $data, array $option = [])
@@ -43,38 +52,85 @@ class PostService implements PostServiceInterface
                 'topic_id' => $data['topic_id'],
                 'author_id' => $data['author_id'],
             ]);
+
             return PostResource::make($post);
+        } catch (QueryException $exception) {
+            if ($exception->getCode() === '23000') {
+                return response()->json(['message' => "The title or slug already exists. Please choose a different value."], 422);
+            }
+            return response()->json(['message' => "Something went wrong. Please try again later."], 500);
         } catch (Exception $exception) {
-            throw new Exception("");
+            // Handle general exceptions
+            return response()->json("An unexpected error occurred. Please try again.", 500);
         }
+
     }
 
     function update(int|string $id, array $data, array $option = [])
     {
-        // TODO: Implement update() method.
+        try {
+            $post = $this->postRepository->find($id);
+            $post->update($data);
+            return PostResource::make($post);
+        } catch (QueryException $exception) {
+            if ($exception->getCode() === '23000') {
+                return response()->json(['message' => "The title or slug already exists. Please choose a different value."], 422);
+            }
+            return response()->json(['message' => "Something went wrong. Please try again later."], 500);
+        } catch (Exception $exception) {
+            return response()->json("An unexpected error occurred. Please try again.", 500);
+        }
     }
 
     function delete(int|string $id)
     {
-        $post = $this->postRepository->query()->find($id);
-        if ($post) {
-            $post->delete();
-        } else throw new Exception("Can't find post");
+        try {
+            $post = $this->postRepository->query()->find($id);
+            if ($post) {
+                $post->delete();
+                return response()->json(['message' => 'Post deleted successfully.'], 200);
+            } else {
+                throw new ModelNotFoundException("Can't find post");
+            }
+        } catch (ModelNotFoundException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 404);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'An error occurred while deleting the post.'], 500);
+        }
     }
 
     function restore(int|string $id)
     {
-        $post = $this->postRepository->query()->withTrashed()->find($id);
-        if ($post) {
-            $post->restore();
-        } else throw new Exception("Can't restore post");
+        try {
+            $post = $this->postRepository->query()->withTrashed()->find($id);
+            if ($post) {
+                $post->restore();
+                return response()->json(['message' => 'Post restored successfully.'], 200);
+            } else {
+                throw new ModelNotFoundException("Can't restore post");
+            }
+        } catch (ModelNotFoundException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 404);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'An error occurred while restoring the post.'], 500);
+        }
     }
 
     function forceDelete(int|string $id)
     {
-        $topic = $this->postRepository->query()->withTrashed()->find($id);
-        if ($topic) {
-            $topic->forceDelete();
-        } else throw new Exception("Can't force delete post");
+        try {
+            $post = $this->postRepository->query()->withTrashed()->where('id', $id)->first();
+            if ($post) {
+                $post->forceDelete();
+                return response()->json(['message' => 'Post permanently deleted successfully.'], 200);
+            } else {
+                return response()->json(["message"=>"Post not found"] , 500);
+            }
+        } catch (ModelNotFoundException $exception) {
+            return response()->json(['error' => $exception->getMessage()], 404);
+        } catch (Exception $exception) {
+            return response()->json(['error' => 'An error occurred while force deleting the post.'], 500);
+        }
     }
+
 }
