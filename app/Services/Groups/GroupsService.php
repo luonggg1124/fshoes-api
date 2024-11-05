@@ -79,7 +79,7 @@ class GroupsService implements GroupsServiceInterface
     {
         $group = $this->groupsRepository->query()->find($id);
         if ($group) {
-            $this->database->getReference('groups/'. $group->group_name)->remove();
+            $this->database->getReference('groups/'. $group->id)->remove();
              $group->delete();
         }
         else throw new Exception("Group not found");
@@ -98,7 +98,7 @@ class GroupsService implements GroupsServiceInterface
     {
         $group = $this->groupsRepository->query()->withTrashed()->find($id);
         if ($group) {
-            $this->database->getReference('groups/'. $group->group_name)->remove();
+            $this->database->getReference('groups/'. $group->id)->remove();
             $group->forceDelete();
         }
         else throw new Exception("Group not found");
