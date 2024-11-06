@@ -179,3 +179,4 @@ Route::post('export/product' ,[ExportController::class,'exportProduct']);
 
 
 //Statistics
+Route::get('profit', [\App\Http\Controllers\Api\StatisticsController::class , 'product']);
