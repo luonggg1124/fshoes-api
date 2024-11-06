@@ -28,15 +28,8 @@ class OrdersController extends Controller
      */
     public function store(CreateOrderRequest $request)
     {
-        try {
-            $newOrder = $this->orderService->create($request->all());
-            return response()->json([
-                'message' => 'Create order successfully',
-                'cart' => $newOrder
-            ],201);
-        }catch (\Exception $e){
-            return response()->json(['error' => $e->getMessage()], 500);
-        }
+      return  $this->orderService->create($request->all());
+
     }
 
     /**
