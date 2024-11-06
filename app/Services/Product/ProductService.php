@@ -55,6 +55,13 @@ class ProductService implements ProductServiceInterface
 
 
     }
+    public function productByCategory(int|string $categoryId)
+    {
+        $products = $this->productRepository->query()->whereHas('categories', function ($query) use ($categoryId) {
+           $query->where('category_id', $categoryId);
+        })->with(['categories'])->get();
+        return ProductResource::collection($products);
+    }
     public function thisWeekProducts(){
         $products = $this->productRepository->query()->with(['categories'])
             ->whereHas('categories',function ($query){

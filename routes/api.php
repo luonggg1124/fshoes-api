@@ -26,15 +26,16 @@ Route::get('/user', function (Request $request) {
 
 
 
-Route::get('auth/redirect-to/login',function(){
-    return redirect()->to('/login');
+Route::get('auth/unauthorized',function(){
+    return response()->json([
+        'status' => false,
+        'message' => 'Unauthorized!',
+    ],401);
 })->name('login');
 
 
 //Admin
 Route::group(['middleware' => ['auth:sanctum','is_admin']], function(){
-
-    Route::delete('user/{nickname}',[UserController::class,'destroy']);
 
 });
 
@@ -44,7 +45,8 @@ Route::get('user',[UserController::class,'index']);
 
 // Auth
 Route::group(['middleware' => ['auth:api']],function(){
-    Route::apiResource('user',UserController::class)->parameter('user','nickname')->except(['index','destroy']);
+    Route::apiResource('user',UserController::class)->parameter('user','id')->except('update');
+    Route::post('user/{id}',[UserController::class,'update'])->name('user.update');
     Route::post('logout',[\App\Http\Controllers\Api\User\AuthController::class,'logout']);
     Route::get('auth/me',[\App\Http\Controllers\Api\User\AuthController::class,'me']);
     Route::post('auth/refresh/token',[\App\Http\Controllers\Api\User\AuthController::class,'refresh']);
@@ -104,6 +106,8 @@ Route::post('product/restore/{id}',[ProductController::class,'restore'])->name('
 Route::delete('product/force-delete/{id}',[ProductController::class,'forceDestroy'])->name('product.force.delete');
 Route::get('product/detail/{id}',[ProductController::class,'productDetail'])->name('product.detail');
 Route::apiResource('product',ProductController::class)->parameter('product','id');
+Route::get('products/category/{categoryId}',[ProductController::class,'productsByCategory'])->name('products.category');
+
 
 Route::put('status/product/{id}',[ProductController::class,'updateProductStatus'])->name('product.update.status');
 Route::apiResource('product.variation',VariationController::class)->parameters(['product' => 'pid', 'variation'=>'id']);

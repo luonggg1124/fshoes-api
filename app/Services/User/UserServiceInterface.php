@@ -6,7 +6,8 @@ interface UserServiceInterface
 {
     public function create(array $data, array $options = []);
     public function findByNickname(string $nickname);
-    function update(string $nickname, array $data, array $options = []);
+    function update(string|int $id, array $data, array $options = []);
+    function delete(string|int $id);
     public function all();
     function getFavoriteProduct();
     function addFavoriteProduct(int|string $productId);

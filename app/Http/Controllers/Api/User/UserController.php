@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Http\Requests\User\CreateUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
 use BaconQrCode\Common\Mode;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -124,6 +125,8 @@ class UserController extends Controller
             $data = $request->all();
             $user = $this->userService->create($data);
             return response()->json([
+                'status' => true,
+                'message' => 'User created successfully!',
                 'user' => $user
             ],201);
         }catch(\Throwable $th){
@@ -142,11 +145,57 @@ class UserController extends Controller
             ],500);
         }
     }
-    public function update(Request $request, string $nickname) {
+    public function update(UpdateUserRequest $request, string|int $id) {
+        try{
+            $data = $request->all();
+            $user = $this->userService->update($id,$data,options: [
+                'avatar' => $request->avatar,
+                'profile' => $request->profile
+            ]);
+            return response()->json([
+                'status' => true,
+                'message' => 'User updated successfully!',
+                'user' => $user
+            ],201);
+        }catch(\Throwable $th){
+            Log::error(__CLASS__.'@'.__FUNCTION__,[
+                "line" => $th->getLine(),
+                "message" => $th->getMessage()
+            ]);
+            if($th instanceof ValidationException){
 
+                return response()->json([
+                    'error' => $th->getMessage()
+                ],422);
+            }
+            return response()->json([
+                'error' => $th->getMessage()
+            ],500);
+        }
     }
-    public function destroy(string $nickname){
-
+    public function destroy(string|int $id){
+        try {
+            $this->userService->delete($id);
+            return response()->json([
+                'status' => true,
+                'message' => 'User deleted successfully!',
+            ]);
+        }catch (\Throwable $throw) {
+            Log::error(__CLASS__.'@'.__FUNCTION__,[
+                "line" => $throw->getLine(),
+                "message" => $throw->getMessage()
+            ]);
+            if($throw instanceof ModelNotFoundException){
+                return response()->json([
+                    'status' => false,
+                    'message' => $throw->getMessage()
+                ],404);
+            }
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong!'
+            ],500);
+        }
     }
 
     public function test(){

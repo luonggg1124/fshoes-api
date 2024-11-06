@@ -71,7 +71,9 @@ class UserService implements UserServiceInterface
                 throw new \Exception('Could not create user');
 
             if (isset($options['avatar'])) {
-                $this->createAvatar($user->id, $options['avatar']);
+                $avatar =  $this->createAvatar($user->id, $options['avatar']);
+                $user->avatar_url = $avatar['avatar_url'];
+                $user->save();
             }
 
             $this->createProfile($user->id, $options['profile']);
@@ -128,9 +130,34 @@ class UserService implements UserServiceInterface
         return $nickname;
     }
 
-    public function update(string $nickname, array $data, array $options = [])
+    public function update(string|int $id, array $data, array $options = [
+            'avatar' => null,'profile' => null
+    ])
     {
+        $user = $this->userRepository->find($id);
+        if (!$user) throw new ModelNotFoundException("User not found");
+        $update = DB::transaction(function () use ($user,$data, $options) {
+            if(isset($data['email'])) unset($data['email']);
+            $user->update($data);
 
+            if (isset($options['avatar'])) {
+                $avatar =  $this->createAvatar($user->id, $options['avatar']);
+                $user->avatar_url = $avatar['avatar_url'];
+                $user->save();
+            }
+
+            if(isset($data['profile'])) {
+                $user->profile()->update($data['profile']);
+            };
+            return $user;
+        }, 3);
+        return new UserResource($this->loadRelationships($update));
+    }
+    public function delete(int|string $id){
+        $user = $this->userRepository->find($id);
+        if (!$user) throw new ModelNotFoundException("User not found");
+        $user->delete();
+        return true;
     }
     public function findByNickname(string $nickname)
     {

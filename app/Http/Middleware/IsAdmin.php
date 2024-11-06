@@ -15,7 +15,7 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth('sanctum')->check() && auth('sanctum')->user()->is_admin){
+        if(auth('api')->check() && auth('api')->user()->is_admin){
             return $next($request);
         }
         return response('You are not authorized',403);

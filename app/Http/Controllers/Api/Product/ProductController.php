@@ -206,6 +206,12 @@ class ProductController extends Controller
             ],500);
         }
     }
+    public function productsByCategory(int|string $categoryId){
+        return response()->json([
+            'status' => true,
+            'products' => $this->productService->productByCategory($categoryId),
+        ]);
+    }
     public function updateProductStatus(Request $request, string|int $id){
         try {
             $status = $request->status;
