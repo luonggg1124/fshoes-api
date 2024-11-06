@@ -6,6 +6,7 @@ use App\Http\Resources\ProductResource;
 use App\Repositories\Product\ProductRepositoryInterface;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Http\Traits\Paginate;
 use App\Http\Traits\Cloudinary;
@@ -65,6 +66,8 @@ class UserService implements UserServiceInterface
 
             $data['status'] = 'active';
             $data['nickname'] = $this->createNickname($data['name']);
+
+            $data['password'] = Hash::make($data['password']);
             $user = $this->userRepository->create($data);
 
             if (!$user)
@@ -137,7 +140,7 @@ class UserService implements UserServiceInterface
         $user = $this->userRepository->find($id);
         if (!$user) throw new ModelNotFoundException("User not found");
         $update = DB::transaction(function () use ($user,$data, $options) {
-            if(isset($data['email'])) unset($data['email']);
+            if(isset($data['password'])) unset($data['password']);
             $user->update($data);
 
             if (isset($options['avatar'])) {

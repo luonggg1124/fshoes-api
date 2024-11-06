@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Mockery\Exception;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use PHPUnit\Event\InvalidArgumentException;
+
 
 
 class AuthService extends UserService
@@ -33,6 +34,7 @@ class AuthService extends UserService
                     'email' => 'The email have already been taken'
                 ]);
             $data['status'] = 'active';
+            $data['password'] = Hash::make($data['password']);
             $data['nickname'] = $this->createNickname($data['name']);
             $user = $this->userRepository->create($data);
 
@@ -50,6 +52,7 @@ class AuthService extends UserService
         'password' => '',
     ])
     {
+
         $user = $this->userRepository->findByColumnOrEmail($credentials['email']);
         if(!$user) throw new ModelNotFoundException('User not found');
         if(!Hash::check($credentials['password'], $user->password)) throw new AuthenticationException('Wrong password');
@@ -75,5 +78,13 @@ class AuthService extends UserService
         return new UserResource(
             $this->loadRelationships($user)
         );
+    }
+    public function changePassword($currenPassword,$newPassword){
+        $user = auth()->user();
+        $isValid = Hash::check($user->getAuthPassword(), $currenPassword);
+        if(!$isValid) throw new InvalidArgumentException("Wrong current password");
+        $user->password = Hash::make($newPassword);
+        $user->save();
+        return true;
     }
 }

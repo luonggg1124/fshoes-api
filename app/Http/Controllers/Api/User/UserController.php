@@ -198,6 +198,9 @@ class UserController extends Controller
         }
     }
 
+    public function changePassword(Request $request){
+
+    }
     public function test(){
         // return [$this->userService->createNickname('Louis Nguyen'),$this->userService->createNickname(['Lương Nguyễn', 'Minh'])];
     }

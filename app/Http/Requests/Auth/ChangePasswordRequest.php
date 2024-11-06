@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\User;
+namespace App\Http\Requests\Auth;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UpdateUserRequest extends FormRequest
+class ChangePasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,8 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'password' => 'required|string|min:6',
-            'group' => 'nullable|integer|exists:groups,id',
-            'profile' => 'nullable|array'
+            'password' => 'required|string',
+            'newPassword' => 'required|string|min:6|confirmed',
         ];
     }
     protected function failedValidation(Validator $validator)
@@ -41,18 +39,10 @@ class UpdateUserRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'User name is required',
-            'name.string' => 'Product name must be a type of string',
-            'name.max' => 'Product name is too long,255 characters is maximum',
-
             'password.required' => 'Password is required',
-            'password.string' => 'Password must be a type of string',
-            'password.min' => 'Password must be at least 6 characters',
-
-
-
-            'group.exists' => 'Group does not exist',
-
+            'newPassword.required' => 'New Password is required',
+            'newPassword.min' => 'New Password must be at least 8 characters',
+            'newPassword.confirmed' => 'New Passwords do not match',
         ];
     }
 }

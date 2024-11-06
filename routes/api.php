@@ -20,9 +20,9 @@ use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+//Route::get('/user', function (Request $request) {
+//    return $request->user();
+//})->middleware('auth:sanctum');
 
 
 
@@ -30,7 +30,7 @@ Route::get('auth/unauthorized',function(){
     return response()->json([
         'status' => false,
         'message' => 'Unauthorized!',
-    ],401);
+    ],404);
 })->name('login');
 
 
@@ -47,6 +47,10 @@ Route::get('user',[UserController::class,'index']);
 Route::group(['middleware' => ['auth:api']],function(){
     Route::apiResource('user',UserController::class)->parameter('user','id')->except('update');
     Route::post('user/{id}',[UserController::class,'update'])->name('user.update');
+
+
+
+    Route::post('change-password',[\App\Http\Controllers\Api\User\AuthController::class,'changePassword'])->name('user.changePassword');
     Route::post('logout',[\App\Http\Controllers\Api\User\AuthController::class,'logout']);
     Route::get('auth/me',[\App\Http\Controllers\Api\User\AuthController::class,'me']);
     Route::post('auth/refresh/token',[\App\Http\Controllers\Api\User\AuthController::class,'refresh']);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\User\CreateUserRequest;
 use App\Services\User\AuthService;
 use Illuminate\Auth\AuthenticationException;
@@ -12,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use PHPUnit\Event\InvalidArgumentException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
@@ -180,5 +182,29 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60
         ]);
+    }
+    public function changePassword(ChangePasswordRequest $request){
+
+
+        try {
+            $this->service->changePassword($request->password, $request->newPassword);
+            return \response()->json([
+                'status' => true,
+                'message' => 'Password successfully changed!'
+            ],201);
+        }catch (\Throwable $throw)
+        {
+            if($throw instanceof InvalidArgumentException)
+            {
+                return response()->json([
+                    'status' => false,
+                    'message' => $throw->getMessage()
+                ],422);
+            }
+            return response()->json([
+                'status' => false,
+                'message' => "Something went wrong!"
+            ],500);
+        }
     }
 }
