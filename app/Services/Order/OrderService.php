@@ -87,12 +87,6 @@ class OrderService implements OrderServiceInterface
                 }
                 $item->stock_qty = $item->stock_qty - $detail["quantity"];
                 $item->qty_sold = $item->qty_sold + $detail["quantity"];
-                if ($item->stock_qty < 0) {
-                    if ($detail["product_id"]) {
-                        $message = "Product " . $item->name . " out of stock. There are only have " . $item->stock_qty . " units";
-                    } else  $message = "Variation " . $item->name . " out of stock. There are only have " . $item->stock_qty . " units";
-                    return response()->json(["message" => $message], 400);
-                }
                 $item->save();
             }
             $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => $data['user_id'], "description" => "Created Order"]);
@@ -117,7 +111,7 @@ class OrderService implements OrderServiceInterface
 
                 if ($data["status"] == 0 || $data["status"] == 7) {
                     $item->stock_qty = $item->stock_qty + $detail["quantity"];
-                    $item->qty_sold = $item->qty_sold - $detail["quantity"];
+                    $item->qty_sold = $item->qty_sold - $detail["quantity"] > 0 ? $item->qty_sold - $detail["quantity"] : 0;
                 }
                 $item->save();
             }
