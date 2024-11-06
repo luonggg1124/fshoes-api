@@ -176,3 +176,6 @@ Route::get('export/order/{id}' ,[ExportController::class,'exportInvoice']);
 Route::post('export/order' ,[ExportController::class,'exportOrder']);
 Route::post('export/user' ,[ExportController::class,'exportUser']);
 Route::post('export/product' ,[ExportController::class,'exportProduct']);
+
+
+//Statistics
