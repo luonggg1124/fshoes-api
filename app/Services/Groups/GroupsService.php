@@ -49,11 +49,12 @@ class GroupsService implements GroupsServiceInterface
                     'permissions' => Utils::jsonEncode($data['permissions'] ?? ""),
                 ]);
 
-                $this->database->getReference('groups/'. $group->id)->set(json_encode($data["permissions"]));
+                if($data["permissions"])  $this->database->getReference('groups/'. $group->id)->set(json_encode($data["permissions"]));
+
                 return response()->json(["message" => "Group created", "group"=>GroupResource::make($group)], 201);
             }catch (QueryException  $exception){
                 if ($exception->getCode() == '23000') {
-                    return response()->json(["message"=> "Error: Group with this name already exists."] , 500);
+                    return response()->json(["message"=> "Group with this name already exists."] , 500);
                 }
             }
     }
