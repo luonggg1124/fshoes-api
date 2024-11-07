@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ProductVariations;
 use App\Repositories\Order\OrderRepository;
+use App\Repositories\Post\PostRepository;
 use App\Repositories\Product\ProductRepository;
+use App\Repositories\Review\ReviewRepository;
+use App\Repositories\User\UserRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -15,6 +18,9 @@ class StatisticsController extends Controller
         private OrderRepository   $orderRepository,
         private ProductVariations $productVariations,
         private ProductRepository $productRepository,
+        private UserRepository    $userRepository,
+        private PostRepository    $postRepository,
+        private ReviewRepository   $reviewRepository,
     )
     {
 
@@ -82,21 +88,66 @@ class StatisticsController extends Controller
                     }),
                     "stock_qty" => sizeof($product->variations) == 0 ? $product->stock_qty : $totalStockPerVariation,
                     "qty_sold" => sizeof($product->variations) == 0 ? $product->qty_sold : $totalSoldPerVariation,
+                    "count_interested"=>sizeof($product->likedBy),
+                    "stars"=>round($this->reviewRepository->query()->where('product_id', $product->id)->average('rating') ,1),
                 ];
 
-                $totalStockQty +=(sizeof($product->variations) ==0 ?  $totalStockPerVariation : $product->stock_qty );
-                $totalSold += (sizeof($product->variations) ==0 ?  $totalSoldPerVariation : $product->qty_sold );
+                $totalStockQty += (sizeof($product->variations) == 0 ? $totalStockPerVariation : $product->stock_qty);
+                $totalSold += (sizeof($product->variations) == 0 ? $totalSoldPerVariation : $product->qty_sold);
                 return $arr;
             }),
-            "sold"=>$totalSold,
+            "sold" => $totalSold,
             "in_stock" => $totalStockQty,
         ], 200);
     }
+
     public function user()
     {
-
+        return response()->json(
+            [
+                $this->userRepository->all()->map(function ($user) {
+                    return [
+                        "id"=>$user->id,
+                        "name" => $user->name,
+                        "total_orders"=>$this->orderRepository->query()->where("user_id",$user->id)->count(),
+                        "spend_money"=>$this->orderRepository->query()->where("user_id",$user->id)->sum("total_amount"),
+                        "review"=>sizeof($user->reviews),
+                        "posts"=>$this->postRepository->query()->where("author_id",$user->id)->count(),
+                    ];
+                })
+            ]
+            ,
+            200);
     }
-    public function post(){
 
+    public function review()
+    {
+        $five =0;
+        $four =0;
+        $three =0;
+        $two =0;
+        $one =0;
+        return response()->json([
+           "data" =>  $this->reviewRepository->all()->map(function ($review) use (&$five, &$four, &$three, &$two, &$one) {
+               if($review->rating == 5) $five++;
+               else if($review->rating == 4) $four++;
+               else if($review->rating == 3) $three++;
+               else if($review->rating == 2) $two++;
+               else if($review->rating == 1) $one++;
+               return [
+                   "id"=>$review->id,
+                   "user"=>$review->user->name,
+                   "product_id"=>$review->product_id,
+                   "title"=>$review->title,
+                   "content"=>$review->content,
+                   "rating"=>$review->rating,
+               ];
+           }),
+            "five"=>$five,
+            "four"=>$four,
+            "three"=>$three,
+            "two"=>$two,
+            "one"=>$one,
+        ],200);
     }
 }
