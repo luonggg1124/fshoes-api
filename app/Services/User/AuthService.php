@@ -52,7 +52,6 @@ class AuthService extends UserService
         'password' => '',
     ])
     {
-
         $user = $this->userRepository->findByColumnOrEmail($credentials['email']);
         if(!$user) throw new ModelNotFoundException('User not found');
         if(!Hash::check($credentials['password'], $user->password)) throw new AuthenticationException('Wrong password');
@@ -81,7 +80,7 @@ class AuthService extends UserService
     }
     public function changePassword($currenPassword,$newPassword){
         $user = auth()->user();
-        $isValid = Hash::check($user->getAuthPassword(), $currenPassword);
+        $isValid = Hash::check( $currenPassword,$user->password);
         if(!$isValid) throw new InvalidArgumentException("Wrong current password");
         $user->password = Hash::make($newPassword);
         $user->save();

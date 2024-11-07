@@ -194,6 +194,12 @@ class AuthController extends Controller
             ],201);
         }catch (\Throwable $throw)
         {
+            Log::error(
+                message: __CLASS__.'@'.__FUNCTION__,context: [
+                'line' => $throw->getLine(),
+                'message' => $throw->getMessage()
+            ]
+            );
             if($throw instanceof InvalidArgumentException)
             {
                 return response()->json([

@@ -25,7 +25,7 @@ class ChangePasswordRequest extends FormRequest
     {
         return [
             'password' => 'required|string',
-            'newPassword' => 'required|string|min:6|confirmed',
+            'newPassword' => 'required|string|min:6',
         ];
     }
     protected function failedValidation(Validator $validator)
@@ -42,7 +42,7 @@ class ChangePasswordRequest extends FormRequest
             'password.required' => 'Password is required',
             'newPassword.required' => 'New Password is required',
             'newPassword.min' => 'New Password must be at least 8 characters',
-            'newPassword.confirmed' => 'New Passwords do not match',
+
         ];
     }
 }
