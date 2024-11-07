@@ -49,11 +49,12 @@ class GroupsService implements GroupsServiceInterface
                     'permissions' => Utils::jsonEncode($data['permissions'] ?? ""),
                 ]);
 
-                $this->database->getReference('groups/'. $group->id)->set(json_encode($data["permissions"]));
+                 $this->database->getReference('groups/'. $group->id)->set(json_encode($data["permissions"] ?? ""));
+
                 return response()->json(["message" => "Group created", "group"=>GroupResource::make($group)], 201);
             }catch (QueryException  $exception){
                 if ($exception->getCode() == '23000') {
-                    return response()->json(["message"=> "Error: Group with this name already exists."] , 500);
+                    return response()->json(["message"=> "Group with this name already exists."] , 500);
                 }
             }
     }
@@ -63,14 +64,18 @@ class GroupsService implements GroupsServiceInterface
         try{
             $group =  $this->groupsRepository->find($id);
             if($group){
-                $this->database->getReference('groups/')->getChild($group->id)->remove();
-                $this->database->getReference('groups/'. $id)->set(json_encode($data["permissions"]));
-
+                if(isset($data["permissions"])){
+                    $this->database->getReference('groups/')->getChild($group->id)->remove();
+                    $this->database->getReference('groups/'. $id)->set(json_encode($data["permissions"]));
+                }
                 $group->update($data);
                 return GroupResource::make($group);
             }else return response()->json(["message"=> "Group not found"], 404);
 
         }catch (QueryException $exception){
+            if ($exception->getCode() == '23000') {
+                return response()->json(["message"=> "Group with this name already exists."] , 500);
+            }
             return response()->json(["message"=> $exception->getMessage()], 500);
         }
     }

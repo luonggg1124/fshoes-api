@@ -26,6 +26,8 @@ class PostService implements PostServiceInterface
     {
         try{
             $post = $this->postRepository->query()->findOrFail($id);
+            $post->views++;
+            $post->save();
             return response()->json(PostResource::make($post), 200);
         }catch(ModelNotFoundException $e){
             return response()->json(['message' => "Post not found"], 404);

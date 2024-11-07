@@ -172,5 +172,15 @@ Route::post('vouchers/restore/{id}' , [VouchersController::class,'restore']);
 Route::get('vouchers/code/{code}' , [VouchersController::class,'getVoucherByCode']);
 Route::delete('vouchers/forceDelete/{id}' , [VouchersController::class,'forceDelete']);
 
-//Export
-Route::get('export/order/{id}' ,[ExportController::class,'exportOrder']);
+//Export Invoice
+Route::get('export/order/{id}' ,[ExportController::class,'exportInvoice']);
+
+
+//Export List Record
+Route::post('export/order' ,[ExportController::class,'exportOrder']);
+Route::post('export/user' ,[ExportController::class,'exportUser']);
+Route::post('export/product' ,[ExportController::class,'exportProduct']);
+
+
+//Statistics
+Route::get('profit', [\App\Http\Controllers\Api\StatisticsController::class , 'product']);
