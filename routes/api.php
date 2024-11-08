@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Attribute\Value\AttributeValueController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\Discount\SaleController;
@@ -33,11 +34,11 @@ Route::get('auth/unauthorized',function(){
     ],404);
 })->name('login');
 
-
 //Admin
 Route::group(['middleware' => ['auth:sanctum','is_admin']], function(){
 
 });
+
 
 // End Admin
 Route::apiResource('category',CategoryController::class)->parameter('category','id')->except(['index','show']);
@@ -61,7 +62,11 @@ Route::group(['middleware' => ['auth:api']],function(){
 
     Route::post('review/{id}/like', [ReviewController::class, 'toggleLike'])->name('review.like');
     Route::apiResource('review',ReviewController::class)->parameter('review','id');
+
+
+
 });
+Route::get('authorization', [\App\Http\Controllers\Api\StatisticsController::class , 'statistics']);
 
 
 Route::post('/check/email',[\App\Http\Controllers\Api\User\AuthController::class,'checkEmail']);
@@ -141,7 +146,7 @@ Route::get('product/{id}/reviews',[ReviewController::class,'reviewsByProduct'])-
 Route::apiResource('attribute',\App\Http\Controllers\Api\Attribute\AttributeController::class)->parameter('attribute','id');
 Route::get('get/attribute/values/product/{id}',[ProductController::class,'getAttributeValues'])->name('get.attribute.values');
 Route::post('add/attribute/values/product/{id}',[ProductController::class,'createAttributeValues'])->name('add.attribute.values');
-Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\AttributeValueController::class)->parameters(['attribute'=>'aid','value' => 'id'])->except('update');
+Route::apiResource('attribute.value', AttributeValueController::class)->parameters(['attribute'=>'aid','value' => 'id'])->except('update');
 //Attribute - Attribute Value End
 
 //Route::get('api/auth/google/redirect', [SocialiteController::class, 'googleRedirect']);
@@ -183,4 +188,7 @@ Route::post('export/product' ,[ExportController::class,'exportProduct']);
 
 
 //Statistics
-Route::get('profit', [\App\Http\Controllers\Api\StatisticsController::class , 'product']);
+Route::get('order', [\App\Http\Controllers\Api\StatisticsController::class , 'order']);
+Route::get('product', [\App\Http\Controllers\Api\StatisticsController::class , 'product']);
+Route::get('user', [\App\Http\Controllers\Api\StatisticsController::class , 'user']);
+Route::get('review', [\App\Http\Controllers\Api\StatisticsController::class , 'review']);

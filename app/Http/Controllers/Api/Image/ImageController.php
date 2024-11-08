@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\Services\Image\ImageServiceInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 
 
@@ -15,12 +16,20 @@ class ImageController extends Controller
         protected ImageServiceInterface $service
     ){}
     public function index(){
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('image.view'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         return response()->json(
             $this->service->all()
         );
     }
 
     public function store(Request $request){
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('image.create'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try {
             $images = $request->images;
             $list = [];
@@ -58,6 +67,10 @@ class ImageController extends Controller
         }
     }
     public function destroy(int|string $id){
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('image.delete'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try {
             $success = $this->service->destroy( $id);
             return \response()->json([
@@ -72,6 +85,10 @@ class ImageController extends Controller
         }
     }
     public function destroyMany(Request $request){
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('image.delete'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try {
             $images = $request->images;
             if(empty($images || count($images) < 1)){

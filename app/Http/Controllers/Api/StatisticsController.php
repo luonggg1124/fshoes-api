@@ -11,6 +11,7 @@ use App\Repositories\Review\ReviewRepository;
 use App\Repositories\User\UserRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class StatisticsController extends Controller
 {
@@ -26,9 +27,11 @@ class StatisticsController extends Controller
 
     }
 
-    public function statistics()
+    public function statistics(Request $request)
     {
 
+       if(auth('api')->check() && auth('api')->user()->group_id >1 && Gate::allows('user.view')) return "OK";
+       else return "MHO";
     }
 
     public function order()

@@ -7,6 +7,7 @@ namespace App\Models;
 
 use App\Models\User\UserAddress;
 use App\Models\User\UserProfile;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -95,5 +96,18 @@ class User extends Authenticatable implements JWTSubject
     public function likedReviews(): BelongsToMany
     {
         return $this->belongsToMany(Review::class, 'review_like', 'user_id', 'review_id');
+    }
+
+    public function group() : BelongsTo
+    {
+        return $this->belongsTo(Groups::class);
+    }
+    public function hasPermissions(string $module , string $action)
+    {
+        $permissions = json_decode($this->group->permissions ?? "[]" , true );
+        foreach ($permissions as $key => $value) {
+                if($key == $module && in_array($action , $value))return true;
+        }
+        return false;
     }
 }

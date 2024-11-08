@@ -10,6 +10,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Mockery\Exception;
 
@@ -24,6 +25,10 @@ class ReviewController extends Controller
      */
     public function index(): Response|JsonResponse
     {
+        if (auth('api')->check() && auth('api')->user()->group_id > 1 && !Gate::allows('review.view')) {
+            return response()->json(["message" => "You are not allowed to do this action."], 403);
+        }
+
         return \response()->json([
             "reviews" => $this->reviewService->all()
         ]);
@@ -34,6 +39,10 @@ class ReviewController extends Controller
      */
     public function store(CreateReviewRequest $request): JsonResponse
     {
+        if (auth('api')->check() && auth('api')->user()->group_id > 1 && !Gate::allows('review.create')) {
+            return response()->json(["message" => "You are not allowed to do this action."], 403);
+        }
+
         try {
             $review = $this->reviewService->create($request->validated());
             return response()->json([
@@ -91,6 +100,10 @@ class ReviewController extends Controller
      */
     public function update(UpdateReviewRequest $request, string|int $id)
     {
+        if (auth('api')->check() && auth('api')->user()->group_id > 1 && !Gate::allows('review.update')) {
+            return response()->json(["message" => "You are not allowed to do this action."], 403);
+        }
+
         try {
             $review = $this->reviewService->update($id, $request->validated());
             return response()->json([
@@ -115,6 +128,10 @@ class ReviewController extends Controller
      */
     public function destroy(int|string $id): JsonResponse
     {
+        if (auth('api')->check() && auth('api')->user()->group_id > 1 && !Gate::allows('review.delete')) {
+            return response()->json(["message" => "You are not allowed to do this action."], 403);
+        }
+
         try {
             $this->reviewService->delete($id);
             return response()->json([

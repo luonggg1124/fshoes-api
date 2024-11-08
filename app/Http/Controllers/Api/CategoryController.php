@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
@@ -21,6 +22,9 @@ class CategoryController extends Controller
     {}
     public function index():Response|JsonResponse
     {
+        if (auth('api')->check() && auth('api')->user()->group_id > 1 && !Gate::allows('category.view')) {
+            return response()->json(["message" => "You are not allowed to do this action."], 403);
+        }
 
         return response()->json([
                 'status' => true,
@@ -39,6 +43,9 @@ class CategoryController extends Controller
      */
     public function store(CreateCategoryRequest $request):Response|JsonResponse
     {
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('category.create'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
 
         try {
             $category = $this->categoryService->create($request->validated(),[
@@ -154,6 +161,10 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, int $id):Response|JsonResponse
     {
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('category.update'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try {
             $category = $this->categoryService->update($id,$request->validated(),[
                 'parents'=> $request->parents
@@ -188,6 +199,10 @@ class CategoryController extends Controller
      */
     public function destroy(string|int $id):Response|JsonResponse
     {
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('category.delete'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try {
             $this->categoryService->delete($id);
             return response()->json([
@@ -202,6 +217,10 @@ class CategoryController extends Controller
 
     public  function forceDelete(int|string $id):Response|JsonResponse
     {
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('category.forceDelete'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try {
             $this->categoryService->forceDelete($id);
             return response()->json([

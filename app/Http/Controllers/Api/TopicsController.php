@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Services\Topic\TopicsService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Mockery\Exception;
 
 class TopicsController extends Controller
@@ -18,6 +19,10 @@ class TopicsController extends Controller
      */
     public function index(Request $request)
     {
+        if(auth('api')->check() && auth('api')->user()->group_id >1 &&  !Gate::allows('topic.view'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         return response()->json(
             $this->topicsService->getAll($request->all()), 200
         );
@@ -28,6 +33,10 @@ class TopicsController extends Controller
      */
     public function store(Request $request)
     {
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('topic.create'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try {
             $topic = $this->topicsService->create($request->all());
             return response()->json(['message' => "Create topic successfully",
@@ -54,6 +63,9 @@ class TopicsController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('topic.update'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
         try {
             return response()->json([
                 "message"=>"Update topic successfully",
@@ -69,6 +81,10 @@ class TopicsController extends Controller
      */
     public function destroy(string $id)
     {
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('topic.delete'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try {
             $this->topicsService->delete($id);
             return response()->json(['message' => "Deleted topic"], 200);
@@ -79,6 +95,10 @@ class TopicsController extends Controller
 
     public function restore(string $id)
     {
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('topic.restore'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try {
             $this->topicsService->restore($id);
             return response()->json(['message' => "Restored topic"], 200);
@@ -89,6 +109,10 @@ class TopicsController extends Controller
 
     public function forceDelete(string $id)
     {
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('topic.forceDelete'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try {
             $this->topicsService->forceDelete($id);
             return response()->json(['message' => "Force deleted topic"], 200);

@@ -7,6 +7,7 @@ use App\Http\Requests\User\UpdateUserRequest;
 use BaconQrCode\Common\Mode;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\User\UserServiceInterface;
@@ -21,6 +22,10 @@ class UserController extends Controller
 
 
     public function index(){
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('user.view'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         return response()->json([
             'users' => $this->userService->all()
         ]);
@@ -110,6 +115,10 @@ class UserController extends Controller
         }
     }
     public function show(string $nickname) {
+        if(auth('api')->check() && auth('api')->user()->group_id >1  && !Gate::allows('user.detail'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try{
             $user = $this->userService->findByNickname($nickname);
             return response()->json([
@@ -121,6 +130,10 @@ class UserController extends Controller
     }
 
     public function store(CreateUserRequest $request){
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('user.create'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try{
             $data = $request->all();
             $user = $this->userService->create($data);
@@ -146,6 +159,10 @@ class UserController extends Controller
         }
     }
     public function update(UpdateUserRequest $request, string|int $id) {
+        if(auth('api')->check() && auth('api')->user()->group_id >1  && !Gate::allows('user.update'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try{
             $data = $request->all();
             $user = $this->userService->update($id,$data,options: [
@@ -174,6 +191,10 @@ class UserController extends Controller
         }
     }
     public function destroy(string|int $id){
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('user.delete'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try {
             $this->userService->delete($id);
             return response()->json([

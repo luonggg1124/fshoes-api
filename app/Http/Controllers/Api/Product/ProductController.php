@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -23,8 +24,10 @@ class ProductController extends Controller
      * Display a listing of the resource.
      */
     public function index():Response|JsonResponse
-
     {
+        if(auth('api')->check()  && auth('api')->user()->group_id >1 ||  !Gate::allows('product.view'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
         return response()->json(
             $this->productService->all()
         );
@@ -35,6 +38,9 @@ class ProductController extends Controller
      */
     public function store(CreateProductRequest $request)
     {
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('product.create'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
 
          try{
 
@@ -150,6 +156,9 @@ class ProductController extends Controller
      */
     public function show(string|int $id):Response|JsonResponse
     {
+        if(auth('api')->check()  && auth('api')->user()->group_id >1 ||  !Gate::allows('product.detail'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
         try {
             return response()->json($this->productService->findById($id));
         }catch (ModelNotFoundException $e){
@@ -160,6 +169,10 @@ class ProductController extends Controller
         }
     }
     public function productDetail(string|int $id){
+        if(auth('api')->check()  && auth('api')->user()->group_id >1 ||  !Gate::allows('product.detail'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try {
             return response()->json($this->productService->productDetail($id));
         }catch (\Throwable $throw){
@@ -180,6 +193,10 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, string|int $id)
     {
+        if(auth('api')->check()  && auth('api')->user()->group_id >1 ||  !Gate::allows('product.update'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try{
             $data = $request->all();
             $images = $request->images ?? [];
@@ -239,6 +256,10 @@ class ProductController extends Controller
      */
     public function destroy(int|string $id)
     {
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('product.delete'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try {
             $this->productService->destroy($id);
             return \response()->json([
@@ -288,6 +309,10 @@ class ProductController extends Controller
         }
     }
     public function restore(int|string $id){
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('product.restore'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try {
             $product = $this->productService->restore($id);
             return \response()->json([
@@ -303,6 +328,10 @@ class ProductController extends Controller
         }
     }
     public function forceDestroy(int|string $id){
+        if(!auth('api')->check() || auth('api')->user()->group_id <=1 ||  !Gate::allows('product.forceDelete'))      {
+            return response()->json(["message"=>"You are not allowed to do this action."],403);
+        }
+
         try {
             $sucess = $this->productService->forceDestroy($id);
             return \response()->json([
