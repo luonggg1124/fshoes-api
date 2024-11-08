@@ -25,6 +25,7 @@ class CreateProductRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'price' => 'required',
+            'import_price' => 'nullable',
             'description' => 'nullable',
             'short_description' => 'nullable',
             'image_url' => 'required|string',

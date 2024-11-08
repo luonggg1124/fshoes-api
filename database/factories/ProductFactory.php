@@ -51,6 +51,7 @@ class ProductFactory extends Factory
                 'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco,u_126ab356-44d8-4a06-89b4-fcdcc8df0245,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/835b240d-ffeb-4c4f-a19f-955b026a8bdd/W+J+CHICAGO+PANT+LTWT.png',
             ]),
             'price' => $this->faker->numberBetween(1000, 999999),
+            'import_price' => $this->faker->numberBetween(1000,999999),
             'description' => $this->faker->text(),
             'short_description' => $this->faker->text(),
             'status' => 1,

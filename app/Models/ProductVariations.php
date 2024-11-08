@@ -21,6 +21,7 @@ class ProductVariations extends Model
         'product_id',
         'slug',
         'price',
+        'import_price',
         'sku',
         'status',
         'qty_sold',

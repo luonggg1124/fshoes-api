@@ -26,6 +26,7 @@ class CreateVariationRequest extends FormRequest
         return [
             'variations' => 'array',
             'variations.*.price' => 'required',
+            'variations.*.import_price' => 'nullable',
             'variations.*.sku' => 'nullable|string',
             'variations.*.description' => 'nullable',
             'variations.*.short_description' => 'nullable',

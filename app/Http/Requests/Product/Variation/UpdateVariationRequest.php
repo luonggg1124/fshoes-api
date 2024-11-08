@@ -25,6 +25,7 @@ class UpdateVariationRequest extends FormRequest
     {
         return [
             'price' => 'required|number',
+            'variations.*.import_price' => 'nullable',
             'sku' => 'nullable|string',
             'description' => 'nullable',
             'short_description' => 'nullable',

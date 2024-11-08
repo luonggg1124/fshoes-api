@@ -26,6 +26,7 @@ class UpdateProductRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'price' => 'required',
+            'import_price' => 'nullable',
             'description' => 'nullable',
             'short_description' => 'nullable',
             'image_url' => 'required|string',
@@ -55,8 +56,8 @@ class UpdateProductRequest extends FormRequest
             'stock_qty.required' => 'Product stock quantity is required',
             'stock_qty.numeric' =>  'Product stock quantity  must be a type of number',
 
-            'image_id.required' => 'Product image is required',
-            'image_id.string' => 'Product image not found.Try again!',
+            'image_url.required' => 'Product image is required',
+            'image_url.string' => 'Product image not found.Try again!',
 
         ];
     }
