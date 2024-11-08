@@ -29,9 +29,25 @@ class StatisticsController extends Controller
 
     public function statistics(Request $request)
     {
-
-       if(auth('api')->check() && auth('api')->user()->group_id >1 && Gate::allows('user.view')) return "OK";
-       else return "MHO";
+        return response()->json([
+            "total_amount"=>$this->orderRepository->query()->sum('total_amount'),
+            "total_user"=>$this->userRepository->query()->count('id'),
+            "total_product"=>$this->productRepository->query()->count('id'),
+            "total_post"=>$this->postRepository->query()->count('id'),
+            "recent_order"=>$this->orderRepository->query()->orderBy('id' , 'DESC')->take(5)->get()->map(function($item){
+                    return[
+                        "user_id"=>$item->user->name,
+                        "total_amount"=>$item->total_amount,
+                    ];
+            }),
+            "recent_review"=>$this->reviewRepository->query()->orderBy('id' , 'DESC')->take(5)->get()->map(function($item){
+                return[
+                    "user_id"=>$item->user->name,
+                    "title"=>$item->title,
+                    "rating"=>$item->rating,
+                ];
+            }),
+        ],200);
     }
 
     public function order()

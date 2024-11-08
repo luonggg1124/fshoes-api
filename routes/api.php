@@ -192,3 +192,5 @@ Route::get('order', [\App\Http\Controllers\Api\StatisticsController::class , 'or
 Route::get('product', [\App\Http\Controllers\Api\StatisticsController::class , 'product']);
 Route::get('user', [\App\Http\Controllers\Api\StatisticsController::class , 'user']);
 Route::get('review', [\App\Http\Controllers\Api\StatisticsController::class , 'review']);
+
+Route::get('statistics', [\App\Http\Controllers\Api\StatisticsController::class , 'statistics']);
