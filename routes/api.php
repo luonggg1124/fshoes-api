@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\Discount\SaleController;
 use App\Http\Controllers\Api\ExportController;
+use App\Http\Controllers\Api\GeminiController;
 use App\Http\Controllers\Api\GroupsController;
 use App\Http\Controllers\Api\Image\ImageController;
 use App\Http\Controllers\Api\OrderDetailsController;
@@ -184,3 +185,7 @@ Route::post('export/product' ,[ExportController::class,'exportProduct']);
 
 //Statistics
 Route::get('profit', [\App\Http\Controllers\Api\StatisticsController::class , 'product']);
+
+
+//Gemini
+Route::post('/gemini/text', [GeminiController::class, 'text']);
