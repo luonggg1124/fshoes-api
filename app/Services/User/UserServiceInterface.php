@@ -12,4 +12,5 @@ interface UserServiceInterface
     function getFavoriteProduct();
     function addFavoriteProduct(int|string $productId);
     function removeFavoriteProduct(int|string $productId);
+    function updateProfile(array $data);
 }

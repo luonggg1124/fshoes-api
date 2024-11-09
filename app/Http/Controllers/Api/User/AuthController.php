@@ -184,8 +184,6 @@ class AuthController extends Controller
         ]);
     }
     public function changePassword(ChangePasswordRequest $request){
-
-
         try {
             $this->service->changePassword($request->password, $request->newPassword);
             return \response()->json([

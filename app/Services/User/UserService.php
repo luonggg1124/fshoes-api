@@ -194,4 +194,36 @@ class UserService implements UserServiceInterface
         $products = $user->favoriteProducts()->with(['categories'])->get();
         return ProductResource::collection($products);
     }
+    public function updateProfile(array $data){
+
+        $user = $this->userRepository->find(auth()->user()->id);
+        $profile = $user->profile;
+        $name = '';
+        if(!$user) throw new AuthorizationException('Unauthorized!');
+        $updatedUser = DB::transaction(function () use ($user, $data, $profile,$name) {
+            if(isset($data['given_name'])){
+                $profile->given_name = $data['given_name'];
+                $name = $name.$data['given_name'];
+            }
+            if(isset($data['family_name'])){
+                $name = $name.' '.$data['family_name'];
+                $profile->family_name = $data['family_name'];
+            }
+            if(isset($data['detail_address'])){
+                $profile->detail_address = $data['detail_address'];
+            }
+            if(isset( $data['birth_date'])){
+                $profile->birth_date = $data['birth_date'];
+            }
+            $profile->save();
+            if($name){
+                $user->name = $name;
+                $user->save();
+            }
+            return $user;
+        },3);
+
+
+        return new UserResource($this->loadRelationships($updatedUser));
+    }
 }

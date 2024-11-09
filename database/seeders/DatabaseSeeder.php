@@ -28,7 +28,11 @@ class DatabaseSeeder extends Seeder
             'nickname' => 'louis.ng',
             'group_id'=>'1'
         ]);
-
+        UserProfile::create([
+            'user_id' => 1,
+            'given_name' => 'Luong',
+            'family_name' => 'Nguyen'
+        ]);
         // User::factory(30)->create();
 //        UserProfile::create([
 //            'user_id' => 1,
