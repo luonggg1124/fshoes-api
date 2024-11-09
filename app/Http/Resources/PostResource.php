@@ -21,6 +21,7 @@ class PostResource extends JsonResource
             "title" => $this->topic_name,
             "slug" => $this->slug,
             "content" => $this->content,
+            "theme"=>$this->theme,
             "topic_id" =>  TopicsResource::make($this->topic),
             "author_id" =>  UserResource::make($this->user),
             'deleted_at' => $this->deleted_at ? (new Carbon($this->deleted_at))->format('d-m-Y H:i:s') : null,

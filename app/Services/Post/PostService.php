@@ -2,15 +2,16 @@
 
 namespace App\Services\Post;
 
-use App\Http\Resources\PostResource;
-use App\Repositories\Post\PostRepositoryInterface;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\QueryException;
 use Mockery\Exception;
+use App\Http\Traits\Cloudinary;
+use App\Http\Resources\PostResource;
+use Illuminate\Database\QueryException;
+use App\Repositories\Post\PostRepositoryInterface;
+use App\Repositories\Image\ImageRepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PostService implements PostServiceInterface
 {
-
     public function __construct(protected PostRepositoryInterface $postRepository)
     {
     }
@@ -53,6 +54,8 @@ class PostService implements PostServiceInterface
                 'content' => $data['content'],
                 'topic_id' => $data['topic_id'],
                 'author_id' => $data['author_id'],
+                "theme"=>$data['theme'],
+                "public_id" => $data['public_id']
             ]);
 
             return PostResource::make($post);

@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use Mockery\Exception;
+use Illuminate\Http\Request;
+use App\Http\Traits\Cloudinary;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Post\PostRequest;
 use App\Services\Post\PostServiceInterface;
-use Illuminate\Http\Request;
-use Mockery\Exception;
 
 class PostsController extends Controller
 {
-
+    use Cloudinary;
     public function __construct(protected PostServiceInterface $postService)
     {
     }
@@ -27,8 +28,18 @@ class PostsController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(PostRequest $request)
-    {
-       return  $this->postService->create($request->all());
+    {   
+       $infor =  $this->uploadImageCloudinary($request->file("theme") , 'posts');
+        $data =[
+            "title"=>$request->title,
+            "slug"=>$request->slug,
+            "content"=>$request->content,
+            "topic_id"=>$request->topic_id,
+            "author_id"=>$request->author_id,
+            "theme"=>$infor["path"],
+            "public_id"=>$infor["public_id"]
+        ];
+       return  $this->postService->create($data);
     }
 
     /**
@@ -43,10 +54,16 @@ class PostsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(PostRequest $request, string $id)
+    public function update(Request $request, string $id)
     {
-
-        return  $this->postService->update($id , $request->all());
+        $data = $request->all();
+        if($request->file("theme")){
+            $infor =  $this->uploadImageCloudinary($request->file("theme") , 'posts');
+            $data["theme"] = $infor["path"];
+            $data["public_id"] = $infor["public_id"];
+        }
+        
+        return  $this->postService->update($id , $data);
     }
 
     /**
