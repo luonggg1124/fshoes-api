@@ -50,7 +50,7 @@ Route::group(['middleware' => ['auth:api']],function(){
     Route::post('user/{id}',[UserController::class,'update'])->name('user.update');
 
 
-    Route::post('update-profile',[UserController::class,'updateProfile'])->name('update-profile');
+    Route::put('update-profile',[UserController::class,'updateProfile'])->name('update-profile');
     Route::post('change-password',[\App\Http\Controllers\Api\User\AuthController::class,'changePassword'])->name('user.changePassword');
     Route::post('logout',[\App\Http\Controllers\Api\User\AuthController::class,'logout']);
     Route::get('auth/me',[\App\Http\Controllers\Api\User\AuthController::class,'me']);

@@ -112,6 +112,7 @@ class UserController extends Controller
     public function updateProfile(Request $request){
         try {
             $data = $request->all();
+
             $user = $this->userService->updateProfile($data);
             return response()->json([
                 'status' => true,
