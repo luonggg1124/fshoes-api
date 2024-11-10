@@ -184,7 +184,10 @@ Route::post('export/product' ,[ExportController::class,'exportProduct']);
 
 
 //Statistics
-Route::get('profit', [\App\Http\Controllers\Api\StatisticsController::class , 'product']);
+Route::get('statistics/order', [\App\Http\Controllers\Api\StatisticsController::class , 'order']);
+Route::get('statistics/product', [\App\Http\Controllers\Api\StatisticsController::class , 'product']);
+Route::get('statistics/user', [\App\Http\Controllers\Api\StatisticsController::class , 'user']);
+Route::get('statistics/review', [\App\Http\Controllers\Api\StatisticsController::class , 'review']);
 
 
 //Gemini
