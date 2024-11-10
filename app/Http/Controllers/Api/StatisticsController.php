@@ -26,7 +26,7 @@ class StatisticsController extends Controller
 
     }
 
-    public function statistics(Request $request)
+    public function overall(Request $request)
     {
         return response()->json([
             "total_amount"=>$this->orderRepository->query()->sum('total_amount'),
