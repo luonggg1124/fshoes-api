@@ -88,6 +88,7 @@ Route::apiResource('cart' , CartController::class);
 //Order
 Route::apiResource('orders' , OrdersController::class);
 Route::get('me/orders' , [OrdersController::class , 'me']);
+Route::patch('cancel/order/{id}' , [OrdersController::class ,'cancelOrder']);
 
 
 //Order Detail
