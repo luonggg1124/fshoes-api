@@ -122,4 +122,11 @@ class OrderService implements OrderServiceInterface
         }
     }
 
+    public function me($params): AnonymousResourceCollection
+    {
+        $orders = $this->orderRepository->query()->with(['orderDetails', 'orderHistory', 'user', 'orderDetails.variation', 'orderDetails.product'])->where('user_id',auth()->user()->id );
+        return OrdersCollection::collection(
+            $orders->paginate()
+        );
+    }
 }

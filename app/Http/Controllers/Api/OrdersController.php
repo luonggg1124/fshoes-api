@@ -60,4 +60,9 @@ class OrdersController extends Controller
     {
 
     }
+    public function me(Request $request){
+        return response()->json(
+            $this->orderService->me($request) ,200
+        );
+    }
 }
