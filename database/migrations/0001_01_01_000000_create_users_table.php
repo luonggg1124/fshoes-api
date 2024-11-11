@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nickname')->nullable();
             $table->string('name');
             $table->string('avatar_url')->nullable();
+            $table->string('avatar_public_id')->nullable();
             $table->boolean('is_admin')->default(0);
             $table->enum('status',['active','banned'])->default('active');
             $table->string('email')->unique();

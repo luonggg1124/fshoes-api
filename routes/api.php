@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\Discount\SaleController;
 use App\Http\Controllers\Api\ExportController;
+use App\Http\Controllers\Api\GeminiController;
 use App\Http\Controllers\Api\GroupsController;
 use App\Http\Controllers\Api\Image\ImageController;
 use App\Http\Controllers\Api\OrderDetailsController;
@@ -50,7 +51,7 @@ Route::group(['middleware' => ['auth:api']],function(){
     Route::post('user/{id}',[UserController::class,'update'])->name('user.update');
 
 
-
+    Route::put('update-profile',[UserController::class,'updateProfile'])->name('update-profile');
     Route::post('change-password',[\App\Http\Controllers\Api\User\AuthController::class,'changePassword'])->name('user.changePassword');
     Route::post('logout',[\App\Http\Controllers\Api\User\AuthController::class,'logout']);
     Route::get('auth/me',[\App\Http\Controllers\Api\User\AuthController::class,'me']);
@@ -188,9 +189,12 @@ Route::post('export/product' ,[ExportController::class,'exportProduct']);
 
 
 //Statistics
-Route::get('order', [\App\Http\Controllers\Api\StatisticsController::class , 'order']);
-Route::get('product', [\App\Http\Controllers\Api\StatisticsController::class , 'product']);
-Route::get('user', [\App\Http\Controllers\Api\StatisticsController::class , 'user']);
-Route::get('review', [\App\Http\Controllers\Api\StatisticsController::class , 'review']);
+Route::get('statistics/order', [\App\Http\Controllers\Api\StatisticsController::class , 'order']);
+Route::get('statistics/product', [\App\Http\Controllers\Api\StatisticsController::class , 'product']);
+Route::get('statistics/user', [\App\Http\Controllers\Api\StatisticsController::class , 'user']);
+Route::get('statistics/review', [\App\Http\Controllers\Api\StatisticsController::class , 'review']);
+Route::get('statistics/overall', [\App\Http\Controllers\Api\StatisticsController::class , 'overall']);
 
-Route::get('statistics', [\App\Http\Controllers\Api\StatisticsController::class , 'statistics']);
+
+//Gemini
+Route::post('/gemini/text', [GeminiController::class, 'text']);

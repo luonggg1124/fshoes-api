@@ -17,7 +17,9 @@ class Posts extends Model
         "slug",
         "content",
         "topic_id",
-        "author_id"
+        "author_id",
+        "theme",
+        "public_id"
     ];
     public function topic(): BelongsTo
     {

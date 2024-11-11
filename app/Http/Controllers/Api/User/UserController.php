@@ -114,6 +114,32 @@ class UserController extends Controller
             ],500);
         }
     }
+    public function updateProfile(Request $request){
+        try {
+            $data = $request->all();
+
+            $user = $this->userService->updateProfile($data);
+            return response()->json([
+                'status' => true,
+                'user' => $user,
+                'message' => 'Profile updated successfully!'
+            ],201);
+        }catch (\Throwable $throw)
+        {
+            Log::error(__CLASS__.'@'.__FUNCTION__,[
+                "line" => $throw->getLine(),
+                "message" => $throw->getMessage()
+            ]);
+            if($throw instanceof AuthorizationException) return response()->json([
+                'status' => false,
+                'message' => $throw->getMessage()
+            ],401);
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong!'
+            ],500);
+        }
+    }
     public function show(string $nickname) {
         if(auth('api')->check() && auth('api')->user()->group_id >1  && !Gate::allows('user.detail'))      {
             return response()->json(["message"=>"You are not allowed to do this action."],403);

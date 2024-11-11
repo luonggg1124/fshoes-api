@@ -25,8 +25,8 @@ class UserProfileResource extends JsonResource
             'id' => $this->id,
             'given_name' => $this->given_name,
             'family_name' => $this->family_name,
-            'address_active_id' => $this->address_active_id ? new UserAddressResource($this->addressActive()) : null,
-            'birth_date' => $this->birth_date ? (new Carbon($this->birth_date))->format('d-m-Y') : null,
+            'detail_address' => $this->detail_address,
+            'birth_date' => $this->birth_date,
 
         ];
         if ($this->includeTimes($this->model))

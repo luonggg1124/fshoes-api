@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title')->unique();
             $table->string('slug')->unique();
+            $table->text('theme')->nullable();
+            $table->string('public_id')->nullable();
             $table->longText('content');
             $table->foreignId('topic_id')->constrained('topics');
             $table->foreignId('author_id')->constrained('users');
