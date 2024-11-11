@@ -188,6 +188,7 @@ Route::get('statistics/order', [\App\Http\Controllers\Api\StatisticsController::
 Route::get('statistics/product', [\App\Http\Controllers\Api\StatisticsController::class , 'product']);
 Route::get('statistics/user', [\App\Http\Controllers\Api\StatisticsController::class , 'user']);
 Route::get('statistics/review', [\App\Http\Controllers\Api\StatisticsController::class , 'review']);
+Route::get('statistics/overall', [\App\Http\Controllers\Api\StatisticsController::class , 'overall']);
 
 
 //Gemini
