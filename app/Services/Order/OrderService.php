@@ -127,14 +127,14 @@ class OrderService implements OrderServiceInterface
 
     public function me($params): AnonymousResourceCollection
     {
-        $orders = $this->orderRepository->query()->with(['orderDetails', 'orderHistory', 'user', 'orderDetails.variation', 'orderDetails.product'])->where('user_id',auth()->user()->id);
+        $orders = $this->orderRepository->query()->with(['orderDetails', 'orderHistory', 'user', 'orderDetails.variation', 'orderDetails.product'])->where('user_id',auth()->user()->id );
         if(isset($params["status"]))$orders->where('status',$params["status"]);
         return OrdersCollection::collection(
             $orders->paginate()
         );
     }
 
-    public function cancelOrder($id , $data){
+    public function cancelOrder( $id , $data){
         $order = $this->orderRepository->find($id);
         if($order->status>=3 && $data["status"] ==0)return response()->json(["message"=>"Can't cancel order"], 403);
         $order->status = $data["status"];

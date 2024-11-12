@@ -119,10 +119,10 @@ class StatisticsController extends Controller
         ], 200);
     }
 
-    public function user()
+     public function user()
     {
         return response()->json(
-            [
+            
                 $this->userRepository->all()->map(function ($user) {
                     return [
                         "id"=>$user->id,
@@ -133,10 +133,11 @@ class StatisticsController extends Controller
                         "posts"=>$this->postRepository->query()->where("author_id",$user->id)->count(),
                     ];
                 })
-            ]
+            
             ,
             200);
     }
+
 
     public function review()
     {
