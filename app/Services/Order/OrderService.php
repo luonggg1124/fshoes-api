@@ -18,8 +18,10 @@ use App\Services\Product\ProductServiceInterface;
 use App\Services\Product\Variation\VariationServiceInterface;
 use Cassandra\Exception\InvalidQueryException;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Symfony\Component\Process\Exception\InvalidArgumentException;
 
 
 class OrderService implements OrderServiceInterface
@@ -134,12 +136,15 @@ class OrderService implements OrderServiceInterface
         );
     }
 
-    public function cancelOrder( $id , $data){
+    public function cancelOrder( $id ){
         $order = $this->orderRepository->find($id);
-        if($order->status>=3 && $data["status"] ==0)return response()->json(["message"=>"Can't cancel order"], 403);
-        $order->status = $data["status"];
+        $user = request()->user();
+        if($order->user_id != $user->id) throw new AuthorizationException('Cannot cancel order!');
+        if(!$order) throw new ModelNotFoundException('Order not found');
+        if($order->status>=3 || $order->status === 0) throw new InvalidArgumentException('Cannot cancel order!');
+        $order->status = 0;
         $order->save();
-        return response()->json(["message"=>"Update order successfully"],200);
+        return new OrdersCollection($order);
     }
 
 }

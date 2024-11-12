@@ -19,9 +19,27 @@ class OrderSeeder extends Seeder
     {
         $users = User::all()->pluck('id');
         $user = User::query()->find(1);
+
         for($i = 1; $i <= 25; $i++){
            Order::query()->create([
                 'user_id' => fake()->randomElement($users),
+                'total_amount' => 1,
+                'payment_method' => 'Banking',
+                'payment_status' => 'paid',
+                'shipping_method' => 'test',
+                'shipping_cost' => 10000,
+                'amount_collected' => 100000,
+                'receiver_full_name' => $user->name,
+                'address' => 'VietNam',
+                'phone' => '0123456789',
+                'city' => 'Hanoi',
+                'country' => 'VietNam',
+                'status' => '1',
+                'created_at' => Carbon::now()->subDays(random_int(5,25)),
+                'updated_at' => Carbon::now()
+            ]);
+            Order::query()->create([
+                'user_id' => 1,
                 'total_amount' => 1,
                 'payment_method' => 'Banking',
                 'payment_status' => 'paid',

@@ -28,6 +28,7 @@ class VariationResource extends JsonResource
             'id' => $this->id,
             'slug' => $this->slug,
             'name' => $this->name,
+            'classify' => $this->classify,
             'price' => $this->price,
             'sale_price' => $this->salePrice(),
             'sku' => $this->sku,

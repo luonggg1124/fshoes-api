@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Order\CreateOrderRequest;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Order\OrderService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\Process\Exception\InvalidArgumentException;
 
 class OrdersController extends Controller
 {
@@ -65,7 +67,39 @@ class OrdersController extends Controller
             $this->orderService->me($request->all()) ,200
         );
     }
-    public function cancelOrder(Request $request , $id){
-        return $this->orderService->cancelOrder($id , $request->all());
+    public function cancelOrder($id){
+        try {
+            $order = $this->orderService->cancelOrder($id);
+            return response()->json([
+                'status'=> true,
+                'message'=> 'Order Cancelled Successfully!',
+                'order' => $order
+            ],201);
+        }catch (\Throwable $throw){
+            if($throw instanceof ModelNotFoundException){
+                return response()->json([
+                    'status'=> false,
+                    'message' => $throw->getMessage()
+                ],404);
+            }
+            if($throw instanceof AuthorizationException){
+                return response()->json([
+                    'status'=> false,
+                    'message' => $throw->getMessage()
+                ],403);
+            }
+            if($throw instanceof InvalidArgumentException){
+                return response()->json([
+                    'status'=> false,
+                    'message' => $throw->getMessage()
+                ],403);
+            }
+            return response()->json([
+                'status'=> false,
+                'message' => 'Something went wrong!'
+            ],500);
+
+        }
+
     }
 }

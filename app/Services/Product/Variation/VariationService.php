@@ -92,6 +92,7 @@ class VariationService implements VariationServiceInterface
         $strName = implode(' - ',$valuesName);
         $variation->name = $variation->product->name.'['.$strName.']';
         $variation->slug = $this->slug($variation->id);
+        $variation->classify = $strName;
         $variation->save();
         return new VariationResource($this->loadRelationships($variation));
     }

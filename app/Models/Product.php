@@ -57,11 +57,12 @@ class Product extends Model
     }
     public function salePrice(){
         $discount = $this->currentSale();
+
         if($discount){
             if($discount->value == 'percent') return $this->price - ($this->price*$discount->value/100);
             else return $this->price - $discount->value;
         }else{
-            return $this->price;
+            return null;
         }
     }
 

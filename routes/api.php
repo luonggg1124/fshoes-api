@@ -36,7 +36,7 @@ Route::get('auth/unauthorized',function(){
 
 
 //Admin
-Route::group(['middleware' => ['auth:sanctum','is_admin']], function(){
+Route::group(['middleware' => ['auth:api','is_admin']], function(){
 
 });
 
@@ -62,6 +62,10 @@ Route::group(['middleware' => ['auth:api']],function(){
 
     Route::post('review/{id}/like', [ReviewController::class, 'toggleLike'])->name('review.like');
     Route::apiResource('review',ReviewController::class)->parameter('review','id');
+
+
+    Route::get('me/orders' , [OrdersController::class , 'me']);
+    Route::patch('cancel/order/{id}' , [OrdersController::class ,'cancelOrder']);
 });
 
 
@@ -87,8 +91,7 @@ Route::apiResource('cart' , CartController::class);
 
 //Order
 Route::apiResource('orders' , OrdersController::class);
-Route::get('me/orders' , [OrdersController::class , 'me']);
-Route::patch('cancel/order/{id}' , [OrdersController::class ,'cancelOrder']);
+
 
 
 //Order Detail

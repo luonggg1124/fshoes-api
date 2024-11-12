@@ -57,7 +57,7 @@ class ProductVariations extends Model
             if($discount->type === 'percent') return $this->price - ($this->price*$discount->value/100);
             else return $this->price - $discount->value;
         }else{
-            return $this->price;
+            return null;
         }
 
     }

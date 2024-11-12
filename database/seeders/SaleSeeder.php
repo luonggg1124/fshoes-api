@@ -16,16 +16,19 @@ class SaleSeeder extends Seeder
     {
         //php artisan db:seed --class=DiscountSeeder
         $discounts = Sale::factory(3)->create();
-
+        $count = 15;
         foreach($discounts as $discount){
-            $count = 15;
             $products = Product::query()->where('id','<=',$count)->get();
             foreach ($products as $product){
                 if($product->variations){
                     $product->variations()->get()->pluck('id');
-                    $discount->variations()->attach($product->variations()->get()->pluck('id'));
+                    $discount->variations()->attach($product->variations()->get()->pluck('id'),[
+                        'quantity' => 10
+                    ]);
                 }else{
-                    $discount->products()->attach($product->id);
+                    $discount->products()->attach($product->id,[
+                        'quantity' => 7
+                    ]);
                 }
             }
             $count+=15;
