@@ -18,7 +18,7 @@ class VoucherService implements VoucherServiceInterface
 
     function getAll(array $params)
     {
-        $voucher = $this->vouchersRepository->query()->withTrashed();
+        $voucher = $this->vouchersRepository->query()->withTrashed()->get();
         return VoucherResource::collection(
             $voucher
         );
