@@ -44,16 +44,15 @@ class VoucherService implements VoucherServiceInterface
         try {
             $voucher = $this->vouchersRepository->create($data);
             return response()->json(VoucherResource::make($voucher) , 201);
-        }
-        // } catch (QueryException $exception) {
-        //     if ($exception->getCode() == 23000) {
-        //         return response()->json(["message" => "Voucher code already exists"], 400);
-        //     }
-        //     return response()->json(["message" => "Can't create new voucher"], 500);
-        // } 
+        
+        } catch (QueryException $exception) {
+            if ($exception->getCode() == 23000) {
+                return response()->json(["message" => "Voucher code already exists"], 400);
+            }
+            return response()->json(["message" => "Can't create new voucher"], 500);
+        } 
         catch (Exception $exception) {
-            return $exception->getMessage();
-            // return response()->json(["message" => "Can't create new voucher"], 500);
+            return response()->json(["message" => "Can't create new voucher"], 500);
         }
     }
 
