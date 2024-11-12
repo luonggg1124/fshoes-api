@@ -18,7 +18,7 @@ class VoucherService implements VoucherServiceInterface
 
     function getAll(array $params)
     {
-        $voucher = $this->vouchersRepository->query()->withTrashed()->withTrashed()->paginate(5);
+        $voucher = $this->vouchersRepository->query()->withTrashed()->get();
         return VoucherResource::collection(
             $voucher
         );
@@ -44,12 +44,14 @@ class VoucherService implements VoucherServiceInterface
         try {
             $voucher = $this->vouchersRepository->create($data);
             return response()->json(VoucherResource::make($voucher) , 201);
+        
         } catch (QueryException $exception) {
             if ($exception->getCode() == 23000) {
                 return response()->json(["message" => "Voucher code already exists"], 400);
             }
             return response()->json(["message" => "Can't create new voucher"], 500);
-        } catch (Exception $exception) {
+        } 
+        catch (Exception $exception) {
             return response()->json(["message" => "Can't create new voucher"], 500);
         }
     }
