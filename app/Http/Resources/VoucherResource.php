@@ -23,7 +23,8 @@ class VoucherResource extends JsonResource
             'date_end'=> (new Carbon($this->date_end))->format('d-m-Y H:i:s'),
             'quantity'=>$this->quantity,
             'status'=>$this->status,
-            'created_at' => (new Carbon($this->created_at))->format('d-m-Y H:i:s'),
+            'deleted_at' => $this->deleted_at?(new Carbon($this->deleted_at))->format('d-m-Y H:i:s') : null,
+            'created_at' => (new Carbon($this->created_at))->format('d-m-Y H:i:s'),            
         ];
     }
 }

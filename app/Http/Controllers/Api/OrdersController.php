@@ -77,4 +77,12 @@ class OrdersController extends Controller
     {
 
     }
+    public function me(Request $request){
+        return response()->json(
+            $this->orderService->me($request->all()) ,200
+        );
+    }
+    public function cancelOrder(Request $request , $id){
+        return $this->orderService->cancelOrder($id , $request->all());
+    }
 }

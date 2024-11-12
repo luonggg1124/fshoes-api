@@ -33,7 +33,7 @@ class StatisticsController extends Controller
             "total_amount"=>$this->orderRepository->query()->sum('total_amount'),
             "total_user"=>$this->userRepository->query()->count('id'),
             "total_product"=>$this->productRepository->query()->count('id'),
-            "total_post"=>$this->postRepository->query()->count('id'),
+             "total_order"=>$this->orderRepository->all()->count('id'),
             "recent_order"=>$this->orderRepository->query()->orderBy('id' , 'DESC')->take(5)->get()->map(function($item){
                     return[
                         "user_id"=>$item->user->name,
@@ -120,10 +120,10 @@ class StatisticsController extends Controller
         ], 200);
     }
 
-    public function user()
+     public function user()
     {
         return response()->json(
-            [
+            
                 $this->userRepository->all()->map(function ($user) {
                     return [
                         "id"=>$user->id,
@@ -134,10 +134,11 @@ class StatisticsController extends Controller
                         "posts"=>$this->postRepository->query()->where("author_id",$user->id)->count(),
                     ];
                 })
-            ]
+            
             ,
             200);
     }
+
 
     public function review()
     {
