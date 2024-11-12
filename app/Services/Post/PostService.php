@@ -19,7 +19,7 @@ class PostService implements PostServiceInterface
 
     function getAll(array $params)
     {
-        $posts = $this->postRepository->all();
+        $posts = $this->postRepository->query()->withTrashed()->get();
         return response()->json(PostResource::collection($posts), 200);
     }
 
