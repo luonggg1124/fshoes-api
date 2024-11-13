@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Order\OrderService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\Process\Exception\InvalidArgumentException;
 
 class OrdersController extends Controller
@@ -62,10 +63,25 @@ class OrdersController extends Controller
     {
 
     }
-    public function me(Request $request){
-        return response()->json(
-            $this->orderService->me($request->all()) ,200
-        );
+    public function me(){
+        try {
+            return response()->json(
+                $this->orderService->me() ,200
+            );
+        }catch (\Throwable $throw)
+        {
+            if($throw instanceof UnauthorizedException){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Unauthorized'
+                ], 401);
+            }
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong!'
+            ],500);
+        }
+
     }
     public function cancelOrder($id){
         try {

@@ -11,6 +11,7 @@ use App\Repositories\Order\OrderRepositoryInterface;
 use App\Repositories\OrderDetail\OrderDetailRepositoryInterface;
 use App\Repositories\Product\ProductRepositoryInterface;
 use App\Repositories\Product\Variation\VariationRepositoryInterface;
+use App\Repositories\User\UserRepositoryInterface;
 use App\Services\Cart\CartServiceInterface;
 use App\Services\OrderHistory\OrderHistoryService;
 use App\Services\OrderHistory\OrderHistoryServiceInterface;
@@ -21,6 +22,7 @@ use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\Process\Exception\InvalidArgumentException;
 
 
@@ -34,6 +36,7 @@ class OrderService implements OrderServiceInterface
         protected ProductRepositoryInterface     $productRepository,
         protected VariationRepositoryInterface   $variationRepository,
         protected CartRepositoryInterface        $cartRepository,
+        protected UserRepositoryInterface         $userRepository,
     )
     {
     }
@@ -127,10 +130,11 @@ class OrderService implements OrderServiceInterface
         }
     }
 
-    public function me($params): AnonymousResourceCollection
+    public function me()
     {
-        $orders = $this->orderRepository->query()->with(['orderDetails', 'orderHistory', 'user', 'orderDetails.variation', 'orderDetails.product'])->where('user_id', auth()->user()->id );
-        if(isset($params["status"]) && isset($orders)) $orders->where('status',$params["status"] );
+        $user = $this->userRepository->find(auth()->user()->id);
+        if(!$user) throw  new UnauthorizedException('Unauthorized!');
+        $orders = $user->orders()->with(['orderDetails', 'orderHistory', 'user', 'orderDetails.variation', 'orderDetails.product']);
         return OrdersCollection::collection(
             $orders->paginate()
         );
