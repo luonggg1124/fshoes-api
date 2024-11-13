@@ -138,6 +138,7 @@ class OrderService implements OrderServiceInterface
 
     public function me()
     {
+
         $user = $this->userRepository->find(auth()->user()->id);
         if(!$user) throw  new UnauthorizedException('Unauthorized!');
         $orders = $user->orders()->with(['orderDetails', 'orderHistory', 'orderDetails.variation', 'orderDetails.product'])->orderBy('created_at', 'desc');
@@ -146,7 +147,7 @@ class OrderService implements OrderServiceInterface
         );
     }
 
-    public function cancelOrder( $id ){
+    public function cancelOrder($id){
         $order = $this->orderRepository->find($id);
         $user = request()->user();
         if($order->user_id != $user->id) throw new AuthorizationException('Cannot cancel order!');
