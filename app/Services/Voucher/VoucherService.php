@@ -35,7 +35,7 @@ class VoucherService implements VoucherServiceInterface
     function findByCode(int|string $code)
     {
         $voucher = $this->vouchersRepository->query()->withTrashed()->where('code', $code)->first();
-        if ($voucher) return response()->json(VoucherResource::make($voucher) , 200);
+        if ($voucher && $voucher->quantity > 0 ) return response()->json(VoucherResource::make($voucher) , 200);
         else return response()->json(["message"=>"Voucher Not Found"] , 404);
     }
 
@@ -44,13 +44,13 @@ class VoucherService implements VoucherServiceInterface
         try {
             $voucher = $this->vouchersRepository->create($data);
             return response()->json(VoucherResource::make($voucher) , 201);
-        
+
         } catch (QueryException $exception) {
             if ($exception->getCode() == 23000) {
                 return response()->json(["message" => "Voucher code already exists"], 400);
             }
             return response()->json(["message" => "Can't create new voucher"], 500);
-        } 
+        }
         catch (Exception $exception) {
             return response()->json(["message" => "Can't create new voucher"], 500);
         }
@@ -65,13 +65,13 @@ class VoucherService implements VoucherServiceInterface
     } catch (ModelNotFoundException $exception) {
         return response()->json(["message" => "Voucher not found"], 404);
     } catch (QueryException $exception) {
-        if ($exception->getCode() == 23000) { 
+        if ($exception->getCode() == 23000) {
             return response()->json([
                 "message" => "Update failed",
                 "error" => $exception->getMessage(),
             ], 400);
         }
-        
+
         return response()->json([
             "message" => "Update failed",
             "error" => $exception->getMessage(),
