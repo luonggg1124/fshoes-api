@@ -36,7 +36,7 @@ Route::get('auth/unauthorized',function(){
 })->name('login');
 
 //Admin
-Route::group(['middleware' => ['auth:sanctum','is_admin']], function(){
+Route::group(['middleware' => ['auth:api','is_admin']], function(){
 
 });
 
@@ -65,7 +65,8 @@ Route::group(['middleware' => ['auth:api']],function(){
     Route::apiResource('review',ReviewController::class)->parameter('review','id');
 
 
-
+    Route::get('me/orders' , [OrdersController::class , 'me']);
+    Route::patch('cancel/order/{id}' , [OrdersController::class ,'cancelOrder']);
 });
 Route::get('authorization', [\App\Http\Controllers\Api\StatisticsController::class , 'statistics']);
 
@@ -95,6 +96,7 @@ Route::apiResource('orders' , OrdersController::class);
 Route::get('me/orders' , [OrdersController::class , 'me']);
 Route::patch('cancel/order/{id}' , [OrdersController::class ,'cancelOrder']);
 Route::get('search/order' , [OrdersController::class ,'search']);
+
 
 
 //Order Detail

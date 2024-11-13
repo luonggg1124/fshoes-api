@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Order\CreateOrderRequest;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Order\OrderService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\Process\Exception\InvalidArgumentException;
 use Illuminate\Support\Facades\Gate;
 
 class OrdersController extends Controller
@@ -20,12 +22,10 @@ class OrdersController extends Controller
 
     public function index(Request $request)
     {
-        if (auth('api')->check() && auth('api')->user()->group_id > 1 && !Gate::allows('order.view')) {
-            return response()->json(["message" => "You are not allowed to do this action."], 403);
-        }
+
         return response()->json(
-            $this->orderService->getAll($request), 200
-        );
+            $this->orderService->getAll($request) ,200
+         );
     }
 
     /**
@@ -33,12 +33,8 @@ class OrdersController extends Controller
      */
     public function store(CreateOrderRequest $request)
     {
+      return  $this->orderService->create($request->all());
 
-        if (auth('api')->check() && auth('api')->user()->group_id > 1 && !Gate::allows('order.create')) {
-            return response()->json(["message" => "You are not allowed to do this action."], 403);
-        }
-
-        return $this->orderService->create($request->all());
     }
 
     /**
@@ -46,10 +42,6 @@ class OrdersController extends Controller
      */
     public function show(string $id)
     {
-        if (auth('api')->check() && auth('api')->user()->group_id > 1 && !Gate::allows('order.detail')) {
-            return response()->json(["message" => "You are not allowed to do this action."], 403);
-        }
-
         try {
             return response()->json($this->orderService->findById($id), 200);
         } catch (ModelNotFoundException $e) {
@@ -63,10 +55,6 @@ class OrdersController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        if (auth('api')->check() && auth('api')->user()->group_id > 1 && !Gate::allows('order.update')) {
-            return response()->json(["message" => "You are not allowed to do this action."], 403);
-        }
-
         return $this->orderService->update($id, $request->all());
     }
 
@@ -82,8 +70,40 @@ class OrdersController extends Controller
             $this->orderService->me($request->all()) ,200
         );
     }
-    public function cancelOrder(Request $request , $id){
-        return $this->orderService->cancelOrder($id , $request->all());
+    public function cancelOrder($id){
+        try {
+            $order = $this->orderService->cancelOrder($id);
+            return response()->json([
+                'status'=> true,
+                'message'=> 'Order Cancelled Successfully!',
+                'order' => $order
+            ],201);
+        }catch (\Throwable $throw){
+            if($throw instanceof ModelNotFoundException){
+                return response()->json([
+                    'status'=> false,
+                    'message' => $throw->getMessage()
+                ],404);
+            }
+            if($throw instanceof AuthorizationException){
+                return response()->json([
+                    'status'=> false,
+                    'message' => $throw->getMessage()
+                ],403);
+            }
+            if($throw instanceof InvalidArgumentException){
+                return response()->json([
+                    'status'=> false,
+                    'message' => $throw->getMessage()
+                ],403);
+            }
+            return response()->json([
+                'status'=> false,
+                'message' => 'Something went wrong!'
+            ],500);
+
+        }
+
     }
     public function search(Request $request)
     {
