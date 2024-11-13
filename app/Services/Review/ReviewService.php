@@ -53,10 +53,10 @@ class ReviewService implements ReviewServiceInterface
         }
 
         $user = \request()->user();
-        $alreadyReview = $user->reviews()->where('product_id', $data['product_id'])->first();
-        if($alreadyReview){
-            throw new Exception("You already have a review for this product");
-        }
+//        $alreadyReview = $user->reviews()->where('product_id', $data['product_id'])->first();
+//        if($alreadyReview){
+//            throw new Exception("You already have a review for this product");
+//        }
         $data['user_id'] = $user->id;
         $review = $this->reviewRepository->create($data);
         return new ReviewResource($this->loadRelationships($review));
