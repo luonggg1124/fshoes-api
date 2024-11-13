@@ -145,6 +145,8 @@ class OrderService implements OrderServiceInterface
 
     public function search($data)
     {
-        return response()->json(Order::search($data["key"])->get() , 200);
+        return response()->json(Order::search($data["key"])->query(function ($query){
+            $query->with(["orderDetails", 'orderHistory', 'user', 'orderDetails.variation', 'orderDetails.product', 'voucher']);
+        })->get() , 200);
     }
 }
