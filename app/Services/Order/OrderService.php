@@ -6,6 +6,7 @@ namespace App\Services\Order;
 use App\Http\Resources\OrdersCollection;
 use App\Models\Order;
 use App\Models\ProductVariations;
+use App\Models\Voucher;
 use App\Repositories\Cart\CartRepositoryInterface;
 use App\Repositories\Order\OrderRepositoryInterface;
 use App\Repositories\OrderDetail\OrderDetailRepositoryInterface;
@@ -105,7 +106,12 @@ class OrderService implements OrderServiceInterface
         try {
             $order = $this->orderRepository->find($id);
             $orderDetails = $this->orderDetailRepository->query()->where('order_id', $id)->get();
-
+            if($data["status"] == 4 && $order->voucher_id){
+                $voucher = Voucher::find( $order->voucher_id);
+                $voucher->quanlity--;
+                if($voucher->quanlity<0)$voucher->quanlity = 0;
+                $voucher->save();
+            }
             foreach ($orderDetails as $detail) {
                 if ($detail['product_id']) {
                     $item = $this->productRepository->query()->where('id', $detail["product_id"])->first();
