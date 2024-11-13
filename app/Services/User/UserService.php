@@ -20,7 +20,8 @@ use App\Repositories\User\UserRepositoryInterface;
 class UserService implements UserServiceInterface
 {
     use CanLoadRelationships, Cloudinary, Paginate;
-    protected array $relations = ['profile', 'interestingCategories', 'addresses', 'allAvatars','favoriteProducts'];
+
+    protected array $relations = ['profile', 'interestingCategories', 'addresses', 'allAvatars', 'favoriteProducts'];
     private array $columns = [
         'nickname',
         'name',
@@ -34,16 +35,18 @@ class UserService implements UserServiceInterface
         'created_at',
         'updated_at',
     ];
+
     public function __construct(
-        public UserRepositoryInterface $userRepository,
+        public UserRepositoryInterface       $userRepository,
         protected ProductRepositoryInterface $productRepository
-    ) {
+    )
+    {
     }
 
     public function all()
     {
         $column = request()->query('column') ?? 'id';
-        if(!in_array($column,$this->columns)) $column = 'id';
+        if (!in_array($column, $this->columns)) $column = 'id';
         $sort = request()->query('sort') ?? 'desc';
         if ($sort !== 'desc' && $sort !== 'asc')
             $sort = 'asc';
@@ -54,15 +57,16 @@ class UserService implements UserServiceInterface
             'data' => UserResource::collection($users->items())
         ];
     }
+
     public function create(array $data, array $options = ['avatar' => null, 'profile' => []])
     {
 
-            $user = DB::transaction(function () use ($data, $options) {
+        $user = DB::transaction(function () use ($data, $options) {
             if ($this->userRepository->query()->where('email', $data['email'])->exists())
                 throw \Illuminate\Validation\ValidationException::withMessages([
                     'email' => 'The email have already been taken'
                 ]);
-            if(isset($data) && empty($data['group_id'])) $data['group_id'] = 1;
+            if (isset($data) && empty($data['group_id'])) $data['group_id'] = 1;
 
             $data['status'] = 'active';
             $data['nickname'] = $this->createNickname($data['name']);
@@ -74,7 +78,7 @@ class UserService implements UserServiceInterface
                 throw new \Exception('Could not create user');
 
             if (isset($options['avatar'])) {
-                $avatar =  $this->createAvatar($user->id, $options['avatar']);
+                $avatar = $this->createAvatar($user->id, $options['avatar']);
                 $user->avatar_url = $avatar['avatar_url'];
                 $user->save();
             }
@@ -105,6 +109,7 @@ class UserService implements UserServiceInterface
         }
         return $this->userRepository->createAvatar($dataAvatar);
     }
+
     protected function createProfile(string|int $userId, array $data = [])
     {
         $data['user_id'] = $userId;
@@ -134,94 +139,101 @@ class UserService implements UserServiceInterface
     }
 
     public function update(string|int $id, array $data, array $options = [
-            'avatar' => null,'profile' => null
+        'avatar' => null, 'profile' => null
     ])
     {
         $user = $this->userRepository->find($id);
         if (!$user) throw new ModelNotFoundException("User not found");
-        $update = DB::transaction(function () use ($user,$data, $options) {
-            if(isset($data['password'])) unset($data['password']);
+        $update = DB::transaction(function () use ($user, $data, $options) {
+            if (isset($data['password'])) unset($data['password']);
             $user->update($data);
 
             if (isset($options['avatar'])) {
-                $avatar =  $this->createAvatar($user->id, $options['avatar']);
+                $avatar = $this->createAvatar($user->id, $options['avatar']);
                 $user->avatar_url = $avatar['avatar_url'];
                 $user->save();
             }
 
-            if(isset($data['profile'])) {
+            if (isset($data['profile'])) {
                 $user->profile()->update($data['profile']);
             };
             return $user;
         }, 3);
         return new UserResource($this->loadRelationships($update));
     }
-    public function delete(int|string $id){
+
+    public function delete(int|string $id)
+    {
         $user = $this->userRepository->find($id);
         if (!$user) throw new ModelNotFoundException("User not found");
         $user->delete();
         return true;
     }
+
     public function findByNickname(string $nickname)
     {
         $user = $this->userRepository->findByNickname($nickname);
         return new UserResource($this->loadRelationships($user));
     }
+
     public function getFavoriteProduct()
     {
         $user = auth()->user();
-        if(!$user) throw new AuthorizationException('Unauthorized');
+        if (!$user) throw new AuthorizationException('Unauthorized');
         $products = $user->favoriteProducts()->with(['categories'])->get();
         return ProductResource::collection($products);
     }
+
     public function addFavoriteProduct(int|string $productId)
     {
         $user = request()->user();
-        if(!$user) throw new AuthorizationException('Unauthorized!');
+        if (!$user) throw new AuthorizationException('Unauthorized!');
         $product = $this->productRepository->find($productId);
-        if(!$product) throw new ModelNotFoundException('Product not found!');
+        if (!$product) throw new ModelNotFoundException('Product not found!');
         $user->favoriteProducts()->syncWithoutDetaching($productId);
         $products = $user->favoriteProducts()->with(['categories'])->get();
         return ProductResource::collection($products);
     }
+
     public function removeFavoriteProduct(int|string $productId)
     {
         $user = request()->user();
-        if(!$user) throw new AuthorizationException('Unauthorized!');
+        if (!$user) throw new AuthorizationException('Unauthorized!');
         $product = $this->productRepository->find($productId);
-        if(!$product) throw new ModelNotFoundException('Product not found!');
+        if (!$product) throw new ModelNotFoundException('Product not found!');
         $user->favoriteProducts()->detach($productId);
         $products = $user->favoriteProducts()->with(['categories'])->get();
         return ProductResource::collection($products);
     }
-    public function updateProfile(array $data){
+
+    public function updateProfile(array $data)
+    {
 
         $user = $this->userRepository->find(auth()->user()->id);
         $profile = $user->profile;
-        $name = '';
-        if(!$user) throw new AuthorizationException('Unauthorized!');
-        $updatedUser = DB::transaction(function () use ($user, $data, $profile,$name) {
-            if(isset($data['given_name'])){
+
+        if (!$user) throw new AuthorizationException('Unauthorized!');
+        $updatedUser = DB::transaction(function () use ($user, $data, $profile) {
+            if (isset($data['given_name'])) {
                 $profile->given_name = $data['given_name'];
-                $name = $name.$data['given_name'];
+
             }
-            if(isset($data['family_name'])){
-                $name = $name.' '.$data['family_name'];
+            if (isset($data['family_name'])) {
                 $profile->family_name = $data['family_name'];
             }
-            if(isset($data['detail_address'])){
+            if (isset($data['detail_address'])) {
                 $profile->detail_address = $data['detail_address'];
             }
-            if(isset( $data['birth_date'])){
+            if (isset($data['birth_date'])) {
                 $profile->birth_date = $data['birth_date'];
             }
             $profile->save();
-            if($name){
-                $user->name = $name;
-                $user->save();
-            }
+
+            $user->name = $profile->given_name . ' ' . $profile->family_name;
+            $user->save();
+
             return $user;
-        },3);
+        }, 3);
 
 
         return new UserResource($this->loadRelationships($updatedUser));
