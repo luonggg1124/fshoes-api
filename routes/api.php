@@ -46,6 +46,15 @@ Route::get('user',[UserController::class,'index']);
 
 // Auth
 Route::group(['middleware' => ['auth:api']],function(){
+    Route::apiResource('product',ProductController::class)->parameter('product','id')->except('index','show');
+    Route::get('product/with/trashed',[ProductController::class,'productWithTrashed'])->name('product.with.trashed');
+    Route::get('product/trashed',[ProductController::class,'productTrashed'])->name('product.list.trashed');
+    Route::get('product/trashed/{id}',[ProductController::class,'getOneTrashed'])->name('product.one.trashed');
+    Route::post('product/restore/{id}',[ProductController::class,'restore'])->name('product.restore');
+    Route::delete('product/force-delete/{id}',[ProductController::class,'forceDestroy'])->name('product.force.delete');
+    Route::put('status/product/{id}',[ProductController::class,'updateProductStatus'])->name('product.update.status');
+    Route::apiResource('product.variation',VariationController::class)->parameters(['product' => 'pid', 'variation'=>'id']);
+
     Route::apiResource('user',UserController::class)->parameter('user','id')->except('update');
     Route::post('user/{id}',[UserController::class,'update'])->name('user.update');
 
@@ -66,6 +75,29 @@ Route::group(['middleware' => ['auth:api']],function(){
 
     Route::get('me/orders' , [OrdersController::class , 'me']);
     Route::patch('cancel/order/{id}' , [OrdersController::class ,'cancelOrder']);
+
+
+//Discount
+
+    Route::apiResource('sale',SaleController::class)->parameters(['sale' => 'id']);
+//Discount End
+//Image
+    Route::apiResource('image',ImageController::class)->parameter('image','id')->only(['index','store','destroy']);
+    Route::delete('image/delete-many',[ImageController::class,'deleteMany'])->name('image.delete.many');
+//End Image
+
+    Route::post('category/{id}/products',[CategoryController::class,'addProducts'])->name('category.add.products');
+    Route::delete('category/{id}/products',[CategoryController::class,'deleteProducts'])->name('category.delete.products');
+    Route::get('main/categories',[CategoryController::class,'mains'])->name('main.categories');
+
+
+    // Attribute - Attribute Value Start
+    Route::apiResource('attribute',\App\Http\Controllers\Api\Attribute\AttributeController::class)->parameter('attribute','id');
+    Route::get('get/attribute/values/product/{id}',[ProductController::class,'getAttributeValues'])->name('get.attribute.values');
+    Route::post('add/attribute/values/product/{id}',[ProductController::class,'createAttributeValues'])->name('add.attribute.values');
+    Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\AttributeValueController::class)->parameters(['attribute'=>'aid','value' => 'id'])->except('update');
+//Attribute - Attribute Value End
+
 });
 
 
@@ -79,9 +111,7 @@ Route::post('register',[\App\Http\Controllers\Api\User\AuthController::class,'re
 
 Route::apiResource('category', CategoryController::class)
     ->parameter('category', 'id')->only(['index','show']);
-Route::post('category/{id}/products',[CategoryController::class,'addProducts'])->name('category.add.products');
-Route::delete('category/{id}/products',[CategoryController::class,'deleteProducts'])->name('category.delete.products');
-Route::get('main/categories',[CategoryController::class,'mains'])->name('main.categories');
+
 
 // Category End
 
@@ -109,28 +139,13 @@ Route::post('paypal' , [PaymentOnline::class , 'paypal']);
 Route::get('trend/this-week/products',[ProductController::class,'thisWeekProducts'])->name('this.week.products');
 Route::get('best-selling/products',[ProductController::class,'bestSellingProducts'])->name('best.selling.products');
 Route::get('shop-by-sports/products',[ProductController::class,'shopBySports'])->name('shop.by.sports');
-Route::get('product/with/trashed',[ProductController::class,'productWithTrashed'])->name('product.with.trashed');
-Route::get('product/trashed',[ProductController::class,'productTrashed'])->name('product.list.trashed');
-Route::get('product/trashed/{id}',[ProductController::class,'getOneTrashed'])->name('product.one.trashed');
-Route::post('product/restore/{id}',[ProductController::class,'restore'])->name('product.restore');
-Route::delete('product/force-delete/{id}',[ProductController::class,'forceDestroy'])->name('product.force.delete');
 Route::get('product/detail/{id}',[ProductController::class,'productDetail'])->name('product.detail');
-Route::apiResource('product',ProductController::class)->parameter('product','id');
+Route::apiResource('product',ProductController::class)->parameter('product','id')->only('index','show');
 Route::get('products/category/{categoryId}',[ProductController::class,'productsByCategory'])->name('products.category');
 
 
-Route::put('status/product/{id}',[ProductController::class,'updateProductStatus'])->name('product.update.status');
-Route::apiResource('product.variation',VariationController::class)->parameters(['product' => 'pid', 'variation'=>'id']);
 //Product End
 
-//Discount
-
-Route::apiResource('sale',SaleController::class)->parameters(['sale' => 'id']);
-//Discount End
-//Image
-Route::apiResource('image',ImageController::class)->parameter('image','id')->only(['index','store','destroy']);
-Route::delete('image/delete-many',[ImageController::class,'deleteMany'])->name('image.delete.many');
-//End Image
 
 
 // Review
@@ -143,12 +158,6 @@ Route::get('product/{id}/reviews',[ReviewController::class,'reviewsByProduct'])-
 // End Review
 
 
-// Attribute - Attribute Value Start
-Route::apiResource('attribute',\App\Http\Controllers\Api\Attribute\AttributeController::class)->parameter('attribute','id');
-Route::get('get/attribute/values/product/{id}',[ProductController::class,'getAttributeValues'])->name('get.attribute.values');
-Route::post('add/attribute/values/product/{id}',[ProductController::class,'createAttributeValues'])->name('add.attribute.values');
-Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\AttributeValueController::class)->parameters(['attribute'=>'aid','value' => 'id'])->except('update');
-//Attribute - Attribute Value End
 
 //Route::get('api/auth/google/redirect', [SocialiteController::class, 'googleRedirect']);
 //Route::post('auth/google/callback', [SocialiteController::class, 'googleCallback']);
