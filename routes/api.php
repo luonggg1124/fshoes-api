@@ -94,6 +94,7 @@ Route::apiResource('cart' , CartController::class);
 Route::apiResource('orders' , OrdersController::class);
 Route::get('me/orders' , [OrdersController::class , 'me']);
 Route::patch('cancel/order/{id}' , [OrdersController::class ,'cancelOrder']);
+Route::get('search/order' , [OrdersController::class ,'search']);
 
 
 //Order Detail

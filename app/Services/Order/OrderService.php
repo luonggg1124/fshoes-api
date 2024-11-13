@@ -128,7 +128,7 @@ class OrderService implements OrderServiceInterface
     public function me($params): AnonymousResourceCollection
     {
         $orders = $this->orderRepository->query()->with(['orderDetails', 'orderHistory', 'user', 'orderDetails.variation', 'orderDetails.product'])->where('user_id',auth()->user()->id );
-        if(isset($params["status"])$orders->where('status',$params["status"] ?? "");
+        if(isset($params["status"])) $orders->where('status',$params["status"] ?? "");
         return OrdersCollection::collection(
             $orders->paginate()
         );
@@ -141,5 +141,10 @@ class OrderService implements OrderServiceInterface
         $order->save();
         return response()->json(["message"=>"Update order successfully"],200);
     }
-    
+
+
+    public function search($data)
+    {
+        return response()->json(Order::search($data["key"])->get() , 200);
+    }
 }

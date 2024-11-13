@@ -85,4 +85,8 @@ class OrdersController extends Controller
     public function cancelOrder(Request $request , $id){
         return $this->orderService->cancelOrder($id , $request->all());
     }
+    public function search(Request $request)
+    {
+        return $this->orderService->search($request->all());
+    }
 }
