@@ -75,15 +75,16 @@ class PostService implements PostServiceInterface
     {
         try {
             $post = $this->postRepository->find($id);
-            $post->update($data);
+            if($post) $post->update($data);
+            else throw new ModelNotFoundException("Could not found post");
             return PostResource::make($post);
         } catch (QueryException $exception) {
             if ($exception->getCode() === '23000') {
                 return response()->json(['message' => "The title or slug already exists. Please choose a different value."], 422);
             }
             return response()->json(['message' => "Something went wrong. Please try again later."], 500);
-        } catch (Exception $exception) {
-            return response()->json("An unexpected error occurred. Please try again.", 500);
+        } catch (ModelNotFoundException $exception) {
+            return response()->json(['message' => "Post not found"], 404);
         }
     }
 
