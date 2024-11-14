@@ -4,6 +4,7 @@ namespace App\Services\Order;
 
 
 use App\Http\Resources\OrdersCollection;
+use App\Mail\CreateOrder;
 use App\Models\Order;
 use App\Models\ProductVariations;
 use App\Models\Voucher;
@@ -23,6 +24,7 @@ use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\Process\Exception\InvalidArgumentException;
 
@@ -96,8 +98,12 @@ class OrderService implements OrderServiceInterface
                 $item->qty_sold = $item->qty_sold + $detail["quantity"];
                 $item->save();
             }
-            $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => null, "description" => auth()->user()->id? auth()->user()->id : "Guess". " created order" ]);
+            if(auth()->user()){
+                $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => null, "description" => auth()->user()->name. " created order" ]);
+            }else $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => null, "description" =>"Guess". " created order" ]);
+
             $this->cartRepository->query()->where("user_id", $data['user_id'])->delete();
+//            Mail::to($order->receiver_email)->send(new CreateOrder($order->id));
             return response()->json(["message" => "Order created"], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);

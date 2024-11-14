@@ -24,7 +24,6 @@ class CreateOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => "required",
             "total_amount" => "required",
             "payment_method" => "required",
             "payment_status" => "required",
@@ -42,7 +41,6 @@ class CreateOrderRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'user_id.required' => 'User is required',
             'total_amount.required' => 'Total amount is required',
             'payment_method.required' => 'Payment method is required',
             'payment_status.required' => 'Payment status is required',

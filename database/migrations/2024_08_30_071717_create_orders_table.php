@@ -22,6 +22,7 @@ return new class extends Migration
             $table->decimal('tax_amount')->nullable();
             $table->integer('amount_collected');
             $table->string('receiver_full_name');
+            $table->string('receiver_email');
             $table->string('address');
             $table->string('phone');
             $table->string('city');

@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Order;
 use App\Models\Voucher;
 use App\Repositories\Order\OrderRepositoryInterface;
 use App\Services\Order\OrderServiceInterface;
@@ -22,11 +23,10 @@ class CreateOrder extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(  int|string $idOrder ,  OrderServiceInterface $orderService)
+    public function __construct(  int|string $idOrder)
     {
 
         $this->idOrder = $idOrder;
-        $this->orderService = $orderService;
     }
 
     /**
@@ -45,8 +45,8 @@ class CreateOrder extends Mailable
      */
     public function content(): Content
     {
-        $order = $this->orderService->findById($this->idOrder);
-        if($order->voucher_id)$voucher = Voucher::where('id', $order->voucher_id)->first();
+        $order = Order::where('id' , $this->idOrder)->with(["orderDetails", 'orderHistory', 'user', 'orderDetails.variation', 'orderDetails.product', 'voucher'])->first();
+        if(isset($order->voucher_id))$voucher = Voucher::where('id', $order->voucher_id)->first();
         return new Content(
             view: 'mail.order-success',
             with: [

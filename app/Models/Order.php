@@ -14,6 +14,7 @@ class Order extends Model
     use HasFactory;
     protected $table='orders';
     protected $fillable=[
+        "id",
         "user_id",
         "payment_method",
         "payment_status",
@@ -23,6 +24,7 @@ class Order extends Model
         "amount_collected",
         "note",
         "receiver_full_name",
+        "receiver_email",
         "phone",
         "city",
         "country",
