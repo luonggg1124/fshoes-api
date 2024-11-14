@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
     <title>Invoice: #{{$order->id}}</title>
 
@@ -124,12 +123,13 @@
                 <table>
                     <tr>
                         <td class="title">
-                            <img src="https://sparksuite.github.io/simple-html-invoice-template/images/logo.png" alt="Fshoes logo" style="width: 100%; max-width: 300px" />
+                            <img src="https://sparksuite.github.io/simple-html-invoice-template/images/logo.png"
+                                 alt="Fshoes logo" style="width: 100%; max-width: 300px"/>
                         </td>
 
                         <td>
-                            Invoice #: {{$order->id}}<br />
-                            Created: {{\Carbon\Carbon::parse($order->created_at)->format('d/m/Y H:i')}}<br />
+                            Invoice #: {{$order->id}}<br/>
+                            Created: {{\Carbon\Carbon::parse($order->created_at)->format('d/m/Y H:i')}}<br/>
                         </td>
                     </tr>
                 </table>
@@ -147,7 +147,7 @@
                         </td>
 
                         <td>
-                            {{$order->receiver_full_name}}.<br />
+                            {{$order->receiver_full_name}}.<br/>
                             {{$order->phone}}
                         </td>
                     </tr>
@@ -170,37 +170,40 @@
 
             <td>Price</td>
         </tr>
-        <?php $sum =0; ?>
-        @foreach($order->orderDetails as $item):
+        <?php $sum = 0; ?>
+        @if($order->orderDetails)
 
-        <tr class="item">
-            <td>{{$item->product_id ? $item->product->name  : $item->variation->name}}  (x{{$item->quantity}})</td>
-                <?php $sum+=$item->price ?>
-            <td>  {{ number_format($item->price, 2, '.', ',') }} VND</td>
-        </tr>
-        @endforeach
+            @foreach($order->orderDetails as $item)
+                :
+                <tr class="item">
+                    <td>{{$item->product_id ? $item->product->name  : $item->variation->name}} (x{{$item->quantity}})
+                    </td>
+                        <?php $sum += $item->price ?>
+                    <td>  {{ number_format($item->price, 2, '.', ',') }} VND</td>
+                </tr>
+            @endforeach
+        @endif
 
-
-        <tr class="total" >
+        <tr class="total">
             <td></td>
-            <td >
+            <td>
                 <div class="label-value" style="display: flex; justify-content: space-around">
                     <span class="label" style="text-align: left">Subtotal:</span>
                     <span class="value">{{ number_format($sum, 2, '.', ',') }} VND</span>
                 </div>
-                <div class="label-value"  style="display: flex; justify-content: space-between">
+                <div class="label-value" style="display: flex; justify-content: space-between">
                     <span class="label" style="text-align: left">Delivery Fee:</span>
-                    <span class="value">+{{ number_format($item->shipping_cost, 2, '.', ',') }} VND</span>
+                    <span class="value">+{{ number_format($order->shipping_cost, 2, '.', ',') }} VND</span>
                 </div>
                 @if($order->voucher_id)
-                    <div class="label-value"  style="display: flex; justify-content: space-between">
+                    <div class="label-value" style="display: flex; justify-content: space-between">
                         <span class="label" style="margin-right: 10px">Voucher:</span>
-                        <span class="value">-{{ number_format(($sum + $item->shipping_cost) * $voucher->discount / 100, 2, '.', ',') }} VND</span>
+                        <span class="value">-{{ number_format(($sum + $order->shipping_cost) * $voucher->discount / 100, 2, '.', ',') }} VND</span>
                     </div>
                 @endif
-                <div class="label-value"  style="display: flex; justify-content: space-between">
+                <div class="label-value" style="display: flex; justify-content: space-between">
                     <span class="label" style="margin-right: 10px">Total:</span>
-                    <span class="value">{{ number_format($item->total_amount, 2, '.', ',') }} VND</span>
+                    <span class="value">{{ number_format($order->total_amount, 2, '.', ',') }} VND</span>
                 </div>
             </td>
         </tr>
