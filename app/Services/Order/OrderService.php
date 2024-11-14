@@ -96,7 +96,7 @@ class OrderService implements OrderServiceInterface
                 $item->qty_sold = $item->qty_sold + $detail["quantity"];
                 $item->save();
             }
-            $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => $data['user_id'], "description" => "Created Order"]);
+            $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => null, "description" => auth()->user()->id? auth()->user()->id : "Guess". " created order" ]);
             $this->cartRepository->query()->where("user_id", $data['user_id'])->delete();
             return response()->json(["message" => "Order created"], 201);
         } catch (\Exception $e) {
@@ -127,7 +127,16 @@ class OrderService implements OrderServiceInterface
                 $item->save();
             }
             $order = $this->orderRepository->update($id, $data);
-            $this->orderHistoryService->create(["order_id" => $id, "user_id" => 1, "description" => "Update Status Order"]);
+            switch ($data["status"]) {
+                case 0: $message = auth()->user()->name ? auth()->user()->name :  "Guess"." cancelled order";break;
+                case 2: $message = "Admin confirmed order";break;
+                case 3: $message = "Order is being delivered";break;
+                case 4: $message = "Order was delivered";break;
+                case 5: $message = "Return order processing";break;
+                case 6: $message = "Order returned processing";break;
+                case 7: $message = "Order is returned";break;
+            }
+            $this->orderHistoryService->create(["order_id" => $id, "user_id" => null, "description" => $message]);
             return response()->json(["message" => "Update order successful"], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => "Can't update order"], 500);
