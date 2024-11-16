@@ -57,12 +57,10 @@ class PostsController extends Controller
      public function update(Request $request, string $id)
     {
         $data = $request->all();
-        if($request->hasFile("theme")){
-            $infor =  $this->uploadImageCloudinary($request->file("theme") , 'posts');
-            $data["theme"] = $infor["path"];
-            $data["public_id"] = $infor["public_id"];
-        }
-        
+        $infor =  $this->uploadImageCloudinary($request->file("theme") , 'posts');
+        $data["theme"] = $infor["path"];
+        $data["public_id"] = $infor["public_id"];
+
         return  $this->postService->update($id , $data);
     }
 
