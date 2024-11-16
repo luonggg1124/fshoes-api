@@ -54,16 +54,35 @@ class PostsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+   public function update(Request $request, string $id)
     {
-        $data = $request->except('theme');
-        if($request->file("theme")){
-            $infor =  $this->uploadImageCloudinary($request->file("theme") , 'posts');
-            $data["theme"] = $infor["path"];
-            $data["public_id"] = $infor["public_id"];
+        
+        $data = [];
+
+        // Kiểm tra từng trường trong $request
+        if ($request->has('title')) {
+            $data['title'] = $request->path('title');
+        }
+        if ($request->has('slug')) {
+            $data['slug'] = $request->path('slug');
+        }
+        if ($request->has('content')) {
+            $data['content'] = $request->path('content');
+        }
+        if ($request->has('topic_id')) {
+            $data['topic_id'] = $request->path('topic_id');
+        }
+        if ($request->has('author_id')) {
+            $data['author_id'] = $request->path('author_id');
         }
         
-        return  $this->postService->update($id , $data);
+        if($request->hasFile('theme')){
+            $infor = $this->uploadImageCloudinary($request->file("theme"), 'posts');
+            $data["theme"] = $infor["path"];
+              $data["public_id"] = $infor["public_id"];
+        }
+
+        return $this->postService->update($id, $data);
     }
 
     /**
