@@ -95,6 +95,7 @@ class StatisticsController extends Controller
                 $totalStockPerVariation = 0;
                 $arr = [
                     "name" => $product->name,
+                    "image_url"=>$product->image_url,
                     "price" => $product->price,
                     "variant" => $product->variations->map(function ($variation) use (&$totalStockPerVariation, &$totalSoldPerVariation) {
                         $totalSoldPerVariation += floatval($variation->qty_sold);
