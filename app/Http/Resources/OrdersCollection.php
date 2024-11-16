@@ -31,7 +31,7 @@ class OrdersCollection extends JsonResource
             "country"=>$this->country,
             "voucher_id"=>  VoucherResource::make($this->whenLoaded('voucher')),
             "order_details"=> OrderDetailsCollection::collection($this->whenLoaded('orderDetails')),
-            "order_history"=> $this->orderHistory,
+            "order_history"=> $this->whenLoaded('orderHistory'),
             "status"=>$this->status,
             "note"=>$this->note,
             "created_at" => $this->created_at,

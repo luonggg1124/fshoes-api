@@ -150,7 +150,7 @@ class OrderService implements OrderServiceInterface
 
         $user = $this->userRepository->find(auth()->user()->id);
         if(!$user) throw  new UnauthorizedException('Unauthorized!');
-        $orders = $user->orders()->with(['orderDetails', 'orderHistory', 'orderDetails.variation', 'orderDetails.product'])->orderBy('created_at', 'desc');
+        $orders = $user->orders()->with(['orderDetails', 'orderHistory'])->orderBy('created_at', 'desc');
         return OrdersCollection::collection(
             $orders->paginate()
         );
