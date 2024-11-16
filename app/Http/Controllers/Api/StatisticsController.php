@@ -29,15 +29,19 @@ class StatisticsController extends Controller
     public function overall(Request $request)
     {
         return response()->json([
-            "total_amount"=>$this->orderRepository->query()->whereMonth("created_at" , Carbon::now()->month)->whereYear("created_at" , Carbon::now()->year)->sum('total_amount'),
+            "total_amount"=>$this->orderRepository->query()->sum('total_amount'),
             "total_user"=>$this->userRepository->query()->count('id'),
             "total_product"=>$this->productRepository->query()->count('id'),
-             "total_order"=>$this->orderRepository->query()->whereMonth("created_at" , Carbon::now()->month)->whereYear("created_at" , Carbon::now()->year)->count('id'),
-            "recent_order"=>$this->orderRepository->query()->orderBy('id' , 'DESC')->take(5)->get()->map(function ($item){
-                    return[
-                        "user_id"=>$item->user->name,
-                        "total_amount"=>$item->total_amount,
-                    ];
+             "total_order"=>$this->orderRepository->all()->count('id'),
+            "recent_order"=>$this->orderRepository->query()->orderBy('id' , 'DESC')->take(5)->get()->map(function($item){
+                    $price_input = 0;
+                    foreach($item->orderDetails ?? [] as $detail){
+                        $price_input += (($detail->product->import_price ?? $detail->variation->import_price) * $detail->quantity);
+                    }
+                    return [
+                            "user_id"=>$item->user->name,
+                            "total_amount"=>$item->total_amount  - $price_input >= 0 ? $item->total_amount  - $price_input : 0 ,
+                        ];
             }),
             "recent_review"=>$this->reviewRepository->query()->orderBy('id' , 'DESC')->take(5)->get()->map(function($item){
                 return[
@@ -123,7 +127,7 @@ class StatisticsController extends Controller
      public function user()
     {
         return response()->json(
-
+            
                 $this->userRepository->all()->map(function ($user) {
                     return [
                         "id"=>$user->id,
@@ -134,7 +138,7 @@ class StatisticsController extends Controller
                         "posts"=>$this->postRepository->query()->where("author_id",$user->id)->count(),
                     ];
                 })
-
+            
             ,
             200);
     }
