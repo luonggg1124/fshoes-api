@@ -54,10 +54,10 @@ class PostsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+   public function update(Request $request, string $id)
     {
         $data = $request->all();
-        if($request->file("theme")){
+        if($request->hasFile("theme")){
             $infor =  $this->uploadImageCloudinary($request->file("theme") , 'posts');
             $data["theme"] = $infor["path"];
             $data["public_id"] = $infor["public_id"];

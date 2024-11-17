@@ -118,4 +118,9 @@ class OrdersController extends Controller
         }
 
     }
+
+    public function reOrder($id){
+            $this->orderService->reOrder($id);
+            return response()->json(["message"=>"Reorder created"] , 200);
+    }
 }

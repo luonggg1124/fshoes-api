@@ -34,10 +34,14 @@ class StatisticsController extends Controller
             "total_product"=>$this->productRepository->query()->count('id'),
              "total_order"=>$this->orderRepository->all()->count('id'),
             "recent_order"=>$this->orderRepository->query()->orderBy('id' , 'DESC')->take(5)->get()->map(function($item){
-                    return[
-                        "user_id"=>$item->user->name,
-                        "total_amount"=>$item->total_amount,
-                    ];
+                    $price_input = 0;
+                    foreach($item->orderDetails ?? [] as $detail){
+                        $price_input += (($detail->product->import_price ?? $detail->variation->import_price) * $detail->quantity);
+                    }
+                    return [
+                            "user_id"=>$item->user->name,
+                            "total_amount"=>$item->total_amount  - $price_input >= 0 ? $item->total_amount  - $price_input : 0 ,
+                        ];
             }),
             "recent_review"=>$this->reviewRepository->query()->orderBy('id' , 'DESC')->take(5)->get()->map(function($item){
                 return[
@@ -95,6 +99,7 @@ class StatisticsController extends Controller
                 $totalStockPerVariation = 0;
                 $arr = [
                     "name" => $product->name,
+                    "image_url"=>$product->image_url,
                     "price" => $product->price,
                     "variant" => $product->variations->map(function ($variation) use (&$totalStockPerVariation, &$totalSoldPerVariation) {
                         $totalSoldPerVariation += floatval($variation->qty_sold);

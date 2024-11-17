@@ -75,6 +75,7 @@ Route::group(['middleware' => ['auth:api']],function(){
 
     Route::get('me/orders' , [OrdersController::class , 'me']);
     Route::patch('cancel/order/{id}' , [OrdersController::class ,'cancelOrder']);
+    Route::post('reorder/order/{id}' , [OrdersController::class ,'reOrder']);
 
 
 //Discount
