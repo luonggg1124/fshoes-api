@@ -3,30 +3,31 @@
 namespace App\Services\Order;
 
 
-use App\Http\Resources\OrdersCollection;
-use App\Mail\CreateOrder;
-use App\Models\Order;
-use App\Models\ProductVariations;
-use App\Models\Voucher;
-use App\Repositories\Cart\CartRepositoryInterface;
-use App\Repositories\Order\OrderRepositoryInterface;
-use App\Repositories\OrderDetail\OrderDetailRepositoryInterface;
-use App\Repositories\Product\ProductRepositoryInterface;
-use App\Repositories\Product\Variation\VariationRepositoryInterface;
-use App\Repositories\User\UserRepositoryInterface;
-use App\Services\Cart\CartServiceInterface;
-use App\Services\OrderHistory\OrderHistoryService;
-use App\Services\OrderHistory\OrderHistoryServiceInterface;
-use App\Services\Product\ProductServiceInterface;
-use App\Services\Product\Variation\VariationServiceInterface;
-use Cassandra\Exception\InvalidQueryException;
 use Exception;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use App\Models\Cart;
+use App\Models\Order;
+use App\Models\Voucher;
+use App\Mail\CreateOrder;
+use App\Models\ProductVariations;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Resources\OrdersCollection;
+use App\Services\Cart\CartServiceInterface;
+use Cassandra\Exception\InvalidQueryException;
 use Illuminate\Validation\UnauthorizedException;
+use App\Services\Product\ProductServiceInterface;
+use App\Repositories\Cart\CartRepositoryInterface;
+use App\Repositories\User\UserRepositoryInterface;
+use App\Services\OrderHistory\OrderHistoryService;
+use Illuminate\Auth\Access\AuthorizationException;
+use App\Repositories\Order\OrderRepositoryInterface;
+use App\Repositories\Product\ProductRepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Services\OrderHistory\OrderHistoryServiceInterface;
+use App\Services\Product\Variation\VariationServiceInterface;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use App\Repositories\OrderDetail\OrderDetailRepositoryInterface;
 use Symfony\Component\Process\Exception\InvalidArgumentException;
+use App\Repositories\Product\Variation\VariationRepositoryInterface;
 
 
 class OrderService implements OrderServiceInterface
@@ -171,6 +172,18 @@ class OrderService implements OrderServiceInterface
         $order->status = 0;
         $order->save();
         return new OrdersCollection($order);
+    }
+
+    public function reOrder($id){
+        $details = $this->orderRepository->find($id)->orderDetails;
+        foreach($details as $item){
+            Cart::create([
+                "user_id"=>auth()->user()->id,
+                "product_variation_id"=>$item->product_variation_id ?? null,
+                "product_id"=>$item->product_id ?? null,
+                "quantity"=>$item->quantity
+            ]);
+        }
     }
 
 }
