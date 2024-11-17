@@ -78,7 +78,6 @@ Route::group(['middleware' => ['auth:api']],function(){
 
 
 //Discount
-
     Route::apiResource('sale',SaleController::class)->parameters(['sale' => 'id']);
 //Discount End
 //Image
@@ -89,8 +88,6 @@ Route::group(['middleware' => ['auth:api']],function(){
     Route::post('category/{id}/products',[CategoryController::class,'addProducts'])->name('category.add.products');
     Route::delete('category/{id}/products',[CategoryController::class,'deleteProducts'])->name('category.delete.products');
     Route::get('main/categories',[CategoryController::class,'mains'])->name('main.categories');
-
-
     // Attribute - Attribute Value Start
     Route::apiResource('attribute',\App\Http\Controllers\Api\Attribute\AttributeController::class)->parameter('attribute','id');
     Route::get('get/attribute/values/product/{id}',[ProductController::class,'getAttributeValues'])->name('get.attribute.values');
@@ -104,7 +101,7 @@ Route::group(['middleware' => ['auth:api']],function(){
 Route::post('/check/email',[\App\Http\Controllers\Api\User\AuthController::class,'checkEmail']);
 Route::post('login',[\App\Http\Controllers\Api\User\AuthController::class,'login']);
 Route::post('register',[\App\Http\Controllers\Api\User\AuthController::class,'register']);
-
+Route::get('attributes/fixed',[\App\Http\Controllers\Api\Attribute\AttributeController::class,'fixedAttributes']);
 // End Auth
 
 // Category Start

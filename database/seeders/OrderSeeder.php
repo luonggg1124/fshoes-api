@@ -51,14 +51,14 @@ class OrderSeeder extends Seeder
                 'phone' => '0123456789',
                 'city' => 'Hanoi',
                 'country' => 'VietNam',
-                'status' => '1',
+                'status' => random_int(1,4),
                 'created_at' => Carbon::now()->subDays(random_int(5,25)),
                 'updated_at' => Carbon::now()
             ]);
         }
         $orders = Order::all();
         foreach ($orders as $order){
-            $products = Product::all()->pluck('id');
+            $products = Product::query()->where('id','>=',$order->id+3)->take(3)->get()->pluck('id');
             $total = 0;
             foreach ($products as $p) {
                 $pro = Product::query()->find(random_int(1,count($products)));
@@ -69,7 +69,6 @@ class OrderSeeder extends Seeder
                     'price' => $pro->variations()->first()->price ?? $pro->price,
                     'quantity' => 1,
                     'total_amount' => $pro->variations()->first()->price,
-
                 ]);
                 $total += $orderDetail->total_amount;
             }

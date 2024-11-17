@@ -7,7 +7,7 @@ interface AttributeServiceInterface
     function all();
 
     function create(array $data);
-
+    function fixedAttributes();
 
 
     function update(string|int $id, array $data);

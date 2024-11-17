@@ -140,4 +140,19 @@ class AttributeController extends Controller
             ],500);
         }
     }
+
+    public function fixedAttributes() {
+        try {
+            $attributes = $this->attributeService->fixedAttributes();
+            return \response()->json([
+                'status' => true,
+                'attributes' => $attributes
+            ]);
+        }catch (\Exception $e){
+            return \response()->json([
+                'status' => false,
+                'error' => 'Something went wrong.Please try later!'
+            ],500);
+        }
+    }
 }
