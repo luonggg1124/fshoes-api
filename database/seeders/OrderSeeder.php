@@ -22,7 +22,7 @@ class OrderSeeder extends Seeder
 
         for($i = 1; $i <= 25; $i++){
            Order::query()->create([
-                'user_id' => fake()->randomElement($users),
+                'user_id' => 1,
                 'total_amount' => 1,
                 'payment_method' => 'Banking',
                 'payment_status' => 'paid',

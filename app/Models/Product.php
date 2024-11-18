@@ -50,9 +50,10 @@ class Product extends Model
     }
     public function currentSale()
     {
-      return $this->sales()->wherePivot('quantity','>',0)->where('is_active', true)
+      $sales = $this->sales()->wherePivot('quantity','>',0)->where('is_active', true)
             ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now())->orderBy('created_at','desc')->first();
+            ->where('end_date', '>=', now())->orderBy('created_at','desc')->get();
+      
 
     }
     public function salePrice(){

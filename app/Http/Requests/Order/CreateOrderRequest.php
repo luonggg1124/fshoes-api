@@ -24,23 +24,26 @@ class CreateOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "total_amount" => "required",
-            "payment_method" => "required",
-            "payment_status" => "required",
-            "shipping_method" => "required",
-            "shipping_cost" => "required",
-            "amount_collected" => "required",
-            "receiver_full_name"=>"required",
-            "phone"=>"required",
-            "city"=>"required",
-            "country"=>"required",
-            "address"=>"required",
+            "total_amount" => "required|numeric",
+            "payment_method" => "required|string",
+            "payment_status" => "required|numeric",
+            'receiver_email' => 'required|email',
+            "shipping_method" => "required|string",
+            "shipping_cost" => "required|numeric",
+            "amount_collected" => "required|numeric",
+            "receiver_full_name"=>"required|string",
+            "phone"=>"required|string",
+            "city"=>"required|string",
+            "country"=>"required|string",
+            "address"=>"required|string",
             "status"=>"required"
         ];
     }
     public function messages(): array
     {
         return [
+            'receiver_email.required' => 'Receiver email is required',
+            'receiver_email.email' => 'Invalid Email',
             'total_amount.required' => 'Total amount is required',
             'payment_method.required' => 'Payment method is required',
             'payment_status.required' => 'Payment status is required',
