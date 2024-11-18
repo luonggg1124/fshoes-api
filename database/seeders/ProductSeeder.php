@@ -19,8 +19,6 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         // php artisan db:seed --class=ProductSeeder
-
-
         Product::factory(50)->create();
         $allPs = Product::all();
         foreach ($allPs as $p) {

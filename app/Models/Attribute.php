@@ -12,7 +12,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 
 class Attribute extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name','is_filter'];
     use HasFactory,SoftDeletes;
 
 

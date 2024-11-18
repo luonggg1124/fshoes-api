@@ -141,9 +141,9 @@ class AttributeController extends Controller
         }
     }
 
-    public function fixedAttributes() {
+    public function isFilterAttributes() {
         try {
-            $attributes = $this->attributeService->fixedAttributes();
+            $attributes = $this->attributeService->isFilterAttributes();
             return \response()->json([
                 'status' => true,
                 'attributes' => $attributes

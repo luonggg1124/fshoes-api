@@ -56,8 +56,8 @@ class AttributeService implements AttributeServiceInterface
         $attribute->delete();
             return true;
     }
-    public function fixedAttributes(){
-        $attributes = $this->attributeRepository->query()->where('id','<=',3)->get();
+    public function isFilterAttributes(){
+        $attributes = $this->attributeRepository->query()->where('is_filter',true)->get();
         $attributes->load(['values']);
         return AttributeResource::collection($attributes);
     }

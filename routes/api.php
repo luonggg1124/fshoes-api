@@ -95,14 +95,13 @@ Route::group(['middleware' => ['auth:api']],function(){
     Route::post('add/attribute/values/product/{id}',[ProductController::class,'createAttributeValues'])->name('add.attribute.values');
     Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\AttributeValueController::class)->parameters(['attribute'=>'aid','value' => 'id'])->except('update');
 //Attribute - Attribute Value End
-
 });
 
 
 Route::post('/check/email',[\App\Http\Controllers\Api\User\AuthController::class,'checkEmail']);
 Route::post('login',[\App\Http\Controllers\Api\User\AuthController::class,'login']);
 Route::post('register',[\App\Http\Controllers\Api\User\AuthController::class,'register']);
-Route::get('attributes/fixed',[\App\Http\Controllers\Api\Attribute\AttributeController::class,'fixedAttributes']);
+Route::get('attributes/isFilter',[\App\Http\Controllers\Api\Attribute\AttributeController::class,'isFilterAttributes']);
 // End Auth
 
 // Category Start
@@ -140,7 +139,7 @@ Route::get('shop-by-sports/products',[ProductController::class,'shopBySports'])-
 Route::get('product/detail/{id}',[ProductController::class,'productDetail'])->name('product.detail');
 Route::apiResource('product',ProductController::class)->parameter('product','id')->only('index','show');
 Route::get('products/category/{categoryId}',[ProductController::class,'productsByCategory'])->name('products.category');
-
+Route::get('product/by/attribute-values',[ProductController::class,'productsByAttributeValues'])->name('product.by.attribute.values');
 
 //Product End
 

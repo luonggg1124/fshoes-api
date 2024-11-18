@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->nullable()->constrained('products');
             $table->string('name');
+            $table->boolean('is_filter')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

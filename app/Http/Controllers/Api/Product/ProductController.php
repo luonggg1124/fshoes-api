@@ -329,6 +329,13 @@ class ProductController extends Controller
             ],500);
         }
     }
+
+    public function productsByAttributeValues(){
+        return \response()->json([
+            'status' => true,
+            'products' => $this->productService->findByAttributeValues()
+        ]);
+    }
     public function generateQRProduct(string|int $id)
     {
         $product = $this->productService->findById($id);
