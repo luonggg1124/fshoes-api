@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('discount');
             $table->timestamp('date_start')->nullable();
             $table->timestamp('date_end')->nullable();
-            $table->integer('min_total_amount')->default(null);
+            $table->integer('min_total_amount')->nullable();
             $table->integer('quantity');
             $table->boolean('status');
             $table->softDeletes();
