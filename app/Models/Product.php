@@ -12,11 +12,11 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-
 class Product extends Model
 {
-    use HasFactory,SoftDeletes;
-    protected $fillable=[
+    use HasFactory, SoftDeletes;
+
+    protected $fillable = [
         'name',
         'slug',
         'price',
@@ -30,60 +30,76 @@ class Product extends Model
         'stock_qty',
 
     ];
-    public function categories():BelongsToMany
+
+    public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class,'category_product','product_id','category_id');
+        return $this->belongsToMany(Category::class, 'category_product', 'product_id', 'category_id');
     }
-    public function images():BelongsToMany
+
+    public function images(): BelongsToMany
     {
-        return $this->belongsToMany(Image::class,'product_image','product_id','image_id');
+        return $this->belongsToMany(Image::class, 'product_image', 'product_id', 'image_id');
     }
-    public function sales():BelongsToMany
+
+    public function sales(): BelongsToMany
     {
-        return $this->belongsToMany(Sale::class,'product_sale','product_id','sale_id')->withPivot('quantity');
+        return $this->belongsToMany(Sale::class, 'product_sale', 'product_id', 'sale_id')->withPivot('quantity');
     }
+
     public function saleQuantity()
     {
         $discount = $this->currentSale();
-        if($discount)  return $discount->original['pivot_quantity'];
+        if ($discount) return $discount->original['pivot_quantity'];
         return 0;
     }
+
     public function currentSale()
     {
-      $sales = $this->sales()->wherePivot('quantity','>',0)->where('is_active', true)
+        return $this->sales()->wherePivot('quantity', '>', 0)->where('is_active', true)
             ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now())->orderBy('created_at','desc')->get();
-      
-
+            ->where('end_date', '>=', now())->orderByRaw("CASE
+                    WHEN type = 'percent' THEN value* ? / 100
+                    WHEN type = 'fixed' THEN value
+                  END DESC", [$this->price])
+            ->first();
     }
-    public function salePrice(){
+
+    public function salePrice()
+    {
         $discount = $this->currentSale();
 
-        if($discount){
-            if($discount->value == 'percent') return $this->price - ($this->price*$discount->value/100);
-            else return $this->price - $discount->value;
-        }else{
+        if ($discount) {
+            if ($discount->type == 'percent') {
+                return $this->price - ($this->price * $discount->value / 100);
+            }
+            else{
+                return $this->price - $discount->value;}
+        } else {
             return null;
         }
     }
 
-    public function variations():HasMany
+    public function variations(): HasMany
     {
         return $this->hasMany(ProductVariations::class);
     }
-    public function ownAttributes():HasMany
+
+    public function ownAttributes(): HasMany
     {
         return $this->hasMany(Attribute::class);
     }
-    public function likedBy():BelongsToMany
+
+    public function likedBy(): BelongsToMany
     {
-        return $this->belongsToMany(User::class,'user_product','product_id','user_id');
+        return $this->belongsToMany(User::class, 'user_product', 'product_id', 'user_id');
     }
-    public function orderDetails():HasMany
+
+    public function orderDetails(): HasMany
     {
         return $this->hasMany(OrderDetails::class);
     }
-    public function orders():HasManyThrough
+
+    public function orders(): HasManyThrough
     {
         return $this->hasManyThrough(
             Order::class,
@@ -94,17 +110,18 @@ class Product extends Model
             'order_id'
         );
     }
-    public function reviews():HasMany
+
+    public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
     }
 
-    public function scopeSortByColumn(QueryBuilder|EloquentBuilder $query,array $columns = [],string $defaultColumn = 'updated_at',string $defaultSort = 'desc'):QueryBuilder|EloquentBuilder
+    public function scopeSortByColumn(QueryBuilder|EloquentBuilder $query, array $columns = [], string $defaultColumn = 'updated_at', string $defaultSort = 'desc'): QueryBuilder|EloquentBuilder
     {
         $sort = request()->query('sort');
         $column = request()->query('column');
-        if(!in_array($sort,['asc','desc'])) $sort = $defaultSort;
-        if(!in_array($column,$columns)) $column = $defaultColumn;
-       return $query->orderBy($column,$sort);
+        if (!in_array($sort, ['asc', 'desc'])) $sort = $defaultSort;
+        if (!in_array($column, $columns)) $column = $defaultColumn;
+        return $query->orderBy($column, $sort);
     }
 }

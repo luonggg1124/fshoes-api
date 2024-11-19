@@ -10,6 +10,7 @@ use App\Http\Traits\Cloudinary;
 use App\Http\Traits\Paginate;
 use App\Repositories\Category\CategoryRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 
@@ -25,7 +26,7 @@ class CategoryService implements CategoryServiceInterface
         $perPage = request()->query('per_page');
 
         $categories = $this->loadRelationships($this->categoryRepository->query()->where('is_main','!=',1)->sortByColumn(columns:$this->columns))->paginate($perPage);
-        //return $categories;
+
         return [
             'paginator' => $this->paginate($categories),
             'data' => CategoryResource::collection(

@@ -17,11 +17,23 @@ class SaleController extends Controller
     {
     }
 
-    public function index():Response|JsonResponse
+    public function index()
     {
-        return response()->json([
-            'status' => true,
-            ...$this->service->all()
+        return response()->stream(function (){
+            while (true){
+                $sales = $this->service->all();
+                echo json_encode($sales);
+                ob_flush();
+                flush();
+                sleep(1);
+                if(connection_aborted()){
+                    break;
+                }
+            }
+        },200,[
+            'Content-Type' => 'text/event-stream',
+            'Cache-Control' => 'no-cache',
+            'Connection' => 'keep-alive',
         ]);
     }
 

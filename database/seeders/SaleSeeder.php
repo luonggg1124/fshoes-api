@@ -18,20 +18,23 @@ class SaleSeeder extends Seeder
         $discounts = Sale::factory(3)->create();
         $count = 15;
         foreach($discounts as $discount){
-            $products = Product::query()->where('id','<=',$count)->get();
+            $products = Product::all();
             foreach ($products as $product){
                 if($product->variations){
+                    $product->sales()->syncWithPivotValues([$discount->id],[
+                        'quantity' => 40
+                    ],false);
                     $product->variations()->get()->pluck('id');
-                    $discount->variations()->attach($product->variations()->get()->pluck('id'),[
+                    $discount->variations()->syncWithPivotValues($product->variations()->get()->pluck('id'),[
                         'quantity' => 10
-                    ]);
+                    ],false);
                 }else{
-                    $discount->products()->attach($product->id,[
-                        'quantity' => 7
-                    ]);
+                    $discount->products()->syncWithPivotValues($product->id,[
+                        'quantity' => 8
+                    ],false);
                 }
             }
-            $count+=15;
+
         }
     }
 }

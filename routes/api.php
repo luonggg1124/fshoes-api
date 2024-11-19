@@ -79,7 +79,7 @@ Route::group(['middleware' => ['auth:api']],function(){
 
 
 //Discount
-    Route::apiResource('sale',SaleController::class)->parameters(['sale' => 'id']);
+    Route::apiResource('sale',SaleController::class)->parameters(['sale' => 'id'])->except('index');
 //Discount End
 //Image
     Route::apiResource('image',ImageController::class)->parameter('image','id')->only(['index','store','destroy']);
@@ -88,7 +88,7 @@ Route::group(['middleware' => ['auth:api']],function(){
 
     Route::post('category/{id}/products',[CategoryController::class,'addProducts'])->name('category.add.products');
     Route::delete('category/{id}/products',[CategoryController::class,'deleteProducts'])->name('category.delete.products');
-    Route::get('main/categories',[CategoryController::class,'mains'])->name('main.categories');
+
     // Attribute - Attribute Value Start
     Route::apiResource('attribute',\App\Http\Controllers\Api\Attribute\AttributeController::class)->parameter('attribute','id');
     Route::get('get/attribute/values/product/{id}',[ProductController::class,'getAttributeValues'])->name('get.attribute.values');
@@ -108,16 +108,17 @@ Route::get('attributes/isFilter',[\App\Http\Controllers\Api\Attribute\AttributeC
 
 Route::apiResource('category', CategoryController::class)
     ->parameter('category', 'id')->only(['index','show']);
-
+Route::get('main/categories',[CategoryController::class,'mains'])->name('main.categories');
 
 // Category End
-
+Route::apiResource('sale',SaleController::class)->parameters(['sale' => 'id'])->only('index');
 
 //Cart
 Route::apiResource('cart' , CartController::class);
 
 //Order
 Route::apiResource('orders' , OrdersController::class);
+
 
 
 

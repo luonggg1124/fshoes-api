@@ -46,20 +46,27 @@ class ProductVariations extends Model
     }
     public function currentSale()
     {
-
-        return $this->sales()->wherePivot('quantity','>',0)->where('is_active', true)
+        return $this->sales()->wherePivot('quantity', '>', 0)->where('is_active', true)
             ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now())->orderBy('created_at','desc')->first();
+            ->where('end_date', '>=', now())->orderByRaw("CASE
+                    WHEN type = 'percent' THEN value* ? / 100
+                    WHEN type = 'fixed' THEN value
+                  END DESC", [$this->price])
+            ->first();
     }
-    public function salePrice(){
+    public function salePrice()
+    {
         $discount = $this->currentSale();
-        if($discount){
-            if($discount->type === 'percent') return $this->price - ($this->price*$discount->value/100);
-            else return $this->price - $discount->value;
-        }else{
+
+        if ($discount) {
+            if ($discount->type == 'percent') {
+                return $this->price - ($this->price * $discount->value / 100);
+            }
+            else{
+                return $this->price - $discount->value;}
+        } else {
             return null;
         }
-
     }
     public function saleQuantity()
     {
