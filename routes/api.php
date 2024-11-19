@@ -79,6 +79,7 @@ Route::group(['middleware' => ['auth:api']],function(){
 
 
 //Discount
+    Route::put('sale/switch/active/{id}' , [SaleController::class ,'switchActive']);
     Route::apiResource('sale',SaleController::class)->parameters(['sale' => 'id'])->except('index');
 //Discount End
 //Image
@@ -112,6 +113,7 @@ Route::get('main/categories',[CategoryController::class,'mains'])->name('main.ca
 
 // Category End
 Route::apiResource('sale',SaleController::class)->parameters(['sale' => 'id'])->only('index');
+Route::get('sales/stream',[SaleController::class,'stream'])->name('sale.stream');
 
 //Cart
 Route::apiResource('cart' , CartController::class);

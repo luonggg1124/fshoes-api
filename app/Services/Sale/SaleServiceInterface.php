@@ -9,4 +9,5 @@ interface SaleServiceInterface
     function store(array $data, array $options = []);
     function update(int|string $id,array $data, array $options = []);
     function destroy(int|string $id);
+    function switchActive(int|string $id,int|string $active);
 }
