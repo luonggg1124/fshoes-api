@@ -119,7 +119,7 @@ class OrderService implements OrderServiceInterface
             if($data["status"] == 4 && $order->voucher_id){
                 $voucher = Voucher::find( $order->voucher_id);
                 $voucher->quanlity--;
-                if($voucher->quanlity<0)$voucher->quanlity = 0;
+                if($voucher->quanlity<0) return response()->json(["message" => "Voucher is out of uses"], 500);
                 $voucher->save();
             }
             foreach ($orderDetails as $detail) {
