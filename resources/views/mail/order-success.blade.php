@@ -130,6 +130,16 @@
                         <td>
                             Invoice #: {{$order->id}}<br/>
                             Created: {{\Carbon\Carbon::parse($order->created_at)->format('d/m/Y H:i')}}<br/>
+                            Status: @switch($order->status)
+                                @case(0)Cancelled @break
+                                @case(1)Waiting Confirm @break
+                                @case(2) Confirmed@break
+                                @case(3) Delivering"@break
+                                @case(4) Delivered"@break
+                                @case(5) Return Processing@break
+                                @case(6) Denied Return@break
+                                @case(7) Returned@break
+                            @endswitch
                         </td>
                     </tr>
                 </table>
