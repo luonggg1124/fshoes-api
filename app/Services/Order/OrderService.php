@@ -86,6 +86,12 @@ class OrderService implements OrderServiceInterface
                 }
             }
 
+            if(isset($data["voucher_id"])){
+                $voucher = Voucher::find( $data["voucher_id"]);
+                $voucher->quanlity--;
+                if($voucher->quanlity<0) return response()->json(["message" => "Voucher is out of uses"], 500);
+                $voucher->save();
+            }
             $order = $this->orderRepository->create($data);
             foreach ($data['order_details'] ?? [] as $detail) {
                 $detail['order_id'] = $order->id;
@@ -104,7 +110,7 @@ class OrderService implements OrderServiceInterface
             }else $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => null, "description" =>"Guess". " created order" ]);
 
             $this->cartRepository->query()->where("user_id", $data['user_id'])->delete();
-//            Mail::to($order->receiver_email)->send(new CreateOrder($order->id));
+            Mail::to($order->receiver_email)->send(new CreateOrder($order->id));
             return response()->json(["message" => "Order created"], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -116,12 +122,7 @@ class OrderService implements OrderServiceInterface
         try {
             $order = $this->orderRepository->find($id);
             $orderDetails = $this->orderDetailRepository->query()->where('order_id', $id)->get();
-            if($data["status"] == 4 && $order->voucher_id){
-                $voucher = Voucher::find( $order->voucher_id);
-                $voucher->quanlity--;
-                if($voucher->quanlity<0) return response()->json(["message" => "Voucher is out of uses"], 500);
-                $voucher->save();
-            }
+
             foreach ($orderDetails as $detail) {
                 if ($detail['product_id']) {
                     $item = $this->productRepository->query()->where('id', $detail["product_id"])->first();
