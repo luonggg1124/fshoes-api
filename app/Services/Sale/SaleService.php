@@ -78,11 +78,14 @@ class SaleService implements SaleServiceInterface
         $sale->delete();
         return true;
     }
-    public function switchActive(int|string $id,int|string $active){
+    public function switchActive(int|string $id,bool|null $active){
         $sale = $this->repository->find($id);
         if(!$sale) throw new ModelNotFoundException('Sale not found');
         if($active){
             $sale->is_active = $active;
+            $sale->save();
+        }else{
+            $sale->is_active = false;
             $sale->save();
         }
     }

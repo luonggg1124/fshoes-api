@@ -31,7 +31,7 @@ Route::get('auth/unauthorized',function(){
     return response()->json([
         'status' => false,
         'message' => 'Unauthorized!',
-    ],404);
+    ],401);
 })->name('login');
 
 
@@ -43,6 +43,7 @@ Route::group(['middleware' => ['auth:api','is_admin']], function(){
 // End Admin
 Route::apiResource('category',CategoryController::class)->parameter('category','id')->except(['index','show']);
 Route::get('user',[UserController::class,'index']);
+Route::get('count/user/has/orders',[UserController::class,'userHasOrderCount']);
 
 // Auth
 Route::group(['middleware' => ['auth:api']],function(){
@@ -143,6 +144,7 @@ Route::get('product/detail/{id}',[ProductController::class,'productDetail'])->na
 Route::apiResource('product',ProductController::class)->parameter('product','id')->only('index','show');
 Route::get('products/category/{categoryId}',[ProductController::class,'productsByCategory'])->name('products.category');
 Route::get('product/by/attribute-values',[ProductController::class,'productsByAttributeValues'])->name('product.by.attribute.values');
+Route::get('products/all/summary',[ProductController::class,'allSummary'])->name('product.all.summary');
 
 //Product End
 

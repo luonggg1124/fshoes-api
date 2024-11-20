@@ -40,6 +40,7 @@ class VariationResource extends JsonResource
             'product' => new ProductResource($this->whenLoaded('product')),
             'images' => ImageResource::collection($this->whenLoaded('images')),
             'values' => ValueResource::collection($this->whenLoaded('values')),
+            'image_url' => $this->images[0]['url']
         ];
         if($this->shouldSummaryRelation($this->model)) $resource = [
             'id' => $this->id,

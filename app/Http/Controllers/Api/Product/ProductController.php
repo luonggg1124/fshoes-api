@@ -30,9 +30,7 @@ class ProductController extends Controller
         );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(CreateProductRequest $request)
     {
 
@@ -334,6 +332,13 @@ class ProductController extends Controller
         return \response()->json([
             'status' => true,
             'products' => $this->productService->findByAttributeValues()
+        ]);
+    }
+
+    public function allSummary(){
+        return \response()->json([
+            'status' => true,
+            'products' => $this->productService->allSummary()
         ]);
     }
     public function generateQRProduct(string|int $id)

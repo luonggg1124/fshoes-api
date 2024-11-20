@@ -238,4 +238,8 @@ class UserService implements UserServiceInterface
 
         return new UserResource($this->loadRelationships($updatedUser));
     }
+    public function userHasOrderCount(){
+        $count = $this->userRepository->query()->whereHas('orders')->count();
+        return $count;
+    }
 }

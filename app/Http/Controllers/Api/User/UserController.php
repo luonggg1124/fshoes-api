@@ -224,8 +224,11 @@ class UserController extends Controller
         }
     }
 
-    public function changePassword(Request $request){
 
+    public function userHasOrderCount(){
+        return response()->json([
+            'count' => $this->userService->userHasOrderCount()
+        ]);
     }
     public function test(){
         // return [$this->userService->createNickname('Louis Nguyen'),$this->userService->createNickname(['Lương Nguyễn', 'Minh'])];

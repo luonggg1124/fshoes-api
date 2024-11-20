@@ -4,6 +4,7 @@ namespace App\Services\Product;
 
 use App\Http\Resources\Attribute\AttributeResource;
 use App\Http\Resources\Product\ProductDetailResource;
+use App\Http\Resources\Product\ProductSummary;
 use App\Http\Traits\Paginate;
 use App\Http\Traits\Cloudinary;
 
@@ -328,6 +329,10 @@ class ProductService implements ProductServiceInterface
             });
         })->with(['categories'])->sortByColumn(columns: $this->columns)->get();
         return ProductResource::collection($products);
+    }
+    public function allSummary(){
+        $products = $this->productRepository->query()->orderBy('updated_at','desc')->get();
+        return ProductSummary::collection($products);
     }
 }
 

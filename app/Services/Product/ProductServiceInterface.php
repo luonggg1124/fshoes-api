@@ -22,4 +22,5 @@ interface ProductServiceInterface
     public function destroy(int|string $id);
     function productByCategory(int|string $categoryId);
     function findByAttributeValues();
+    function allSummary();
 }
