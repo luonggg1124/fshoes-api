@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('country');
             $table->foreignId('voucher_id')->nullable();
             $table->integer("status")->comment("0: Cancelled, 1: Waiting Confirm, 2: Confirmed, 3: Delivering , 4: Delivered , 5: Return Processing, 6: Denied Return, 7: Returned");
+            $table->text("reason_cancelled")->nullable();
             $table->text('note')->nullable();
             $table->timestamps();
         });

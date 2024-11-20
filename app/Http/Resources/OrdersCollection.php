@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\User\UserResource;
 
 class OrdersCollection extends JsonResource
    {
@@ -17,6 +18,8 @@ class OrdersCollection extends JsonResource
         return [
             "id"=>$this->id,
             "user_id"=>$this->user_id,
+                        "user"=>  UserResource::make($this->whenLoaded('user')),
+
             "total_amount"=> $this->total_amount,
             "payment_method"=>$this->payment_method,
             "payment_status"=>$this->payment_status,
@@ -33,6 +36,7 @@ class OrdersCollection extends JsonResource
             "order_details"=> OrderDetailsCollection::collection($this->whenLoaded('orderDetails')),
             "order_history"=> $this->whenLoaded('orderHistory'),
             "status"=>$this->status,
+            "reason_cancelled"=>$this->reason_cancelled,
             "note"=>$this->note,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at
