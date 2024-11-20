@@ -13,4 +13,5 @@ interface ReviewServiceInterface{
     public function getByLikes();
     public function toggleLike(int $review_id, int $user_id);
     public function reviewsByProduct(int|string $productId);
+    public function canReview(int $userId, int $productId);
 }

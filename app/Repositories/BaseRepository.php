@@ -29,7 +29,7 @@ class BaseRepository implements BaseRepositoryInterface
     public function update($id, array $data)
     {
         $record = $this->model->query()->find($id);
-        if(!$record){
+        if (!$record) {
             throw new ModelNotFoundException('Record not found');
         }
         $record->update($data);
@@ -38,7 +38,7 @@ class BaseRepository implements BaseRepositoryInterface
     public function delete(int|string $id)
     {
         $record = $this->model->query()->find($id);
-        if($record){
+        if ($record) {
             return $record->delete();
         }
         return false;
@@ -46,5 +46,9 @@ class BaseRepository implements BaseRepositoryInterface
     public function query()
     {
         return $this->model;
+    }
+    public function findByUserAndProduct(int $userId, int $productId)
+    {
+        return $this->model->where('user_id', $userId)->where('product_id', $productId)->first();
     }
 }
