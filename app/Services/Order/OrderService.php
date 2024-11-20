@@ -138,8 +138,9 @@ class OrderService implements OrderServiceInterface
                 $item->save();
             }
             $order = $this->orderRepository->update($id, $data);
+            $message="";
             switch ($data["status"]) {
-                case 0: $message = auth()->user()->name ? auth()->user()->name :  "Guess"." cancelled order";break;
+                case 0: $message = (auth()->user()->name ?"User ". auth()->user()->name :  "Guess" )." cancelled order";break;
                 case 2: $message = "Admin confirmed order";break;
                 case 3: $message = "Order is being delivered";break;
                 case 4: $message = "Order was delivered";break;
