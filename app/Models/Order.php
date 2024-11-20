@@ -31,7 +31,8 @@ class Order extends Model
         "voucher_id",
         "address",
         "total_amount",
-        "status"
+        "status",
+        "reason_cancelled"
     ];
 
 

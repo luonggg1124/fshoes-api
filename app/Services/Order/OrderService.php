@@ -119,6 +119,9 @@ class OrderService implements OrderServiceInterface
 
     public function update(int|string $id, array $data, array $option = [])
     {
+        if(isset($data["status"]) && $data["status"] == "0" && !isset($data["reason_cancelled"])){
+            return response()->json(["message" => "Please provide specific reason."] , 403  );
+        }
         try {
             $order = $this->orderRepository->find($id);
             $orderDetails = $this->orderDetailRepository->query()->where('order_id', $id)->get();
@@ -149,7 +152,7 @@ class OrderService implements OrderServiceInterface
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => "Can't update order"], 500);
         } catch (Exception $e) {
-
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
