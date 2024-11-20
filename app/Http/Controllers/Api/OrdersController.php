@@ -83,9 +83,10 @@ class OrdersController extends Controller
         }
 
     }
-    public function cancelOrder($id){
+    public function cancelOrder($id ,Request $request){
+        if(!isset($request->reason_cancelled))return response()->json(["message"=>"Please provide more detail."],403);
         try {
-            $order = $this->orderService->cancelOrder($id);
+            $order = $this->orderService->cancelOrder($id , $request->all());
             return response()->json([
                 'status'=> true,
                 'message'=> 'Order Cancelled Successfully!',

@@ -181,7 +181,7 @@ class OrderService implements OrderServiceInterface
         );
     }
 
-    public function cancelOrder($id)
+    public function cancelOrder($id, $data)
     {
         $order = $this->orderRepository->find($id);
         $user = request()->user();
@@ -189,6 +189,7 @@ class OrderService implements OrderServiceInterface
         if (!$order) throw new ModelNotFoundException('Order not found');
         if ($order->status >= 3 || $order->status === 0) throw new InvalidArgumentException('Cannot cancel order!');
         $order->status = 0;
+        $order->reason_cancelled = $data["reason_cancelled"];
         $order->save();
         return new OrdersCollection($order);
     }
