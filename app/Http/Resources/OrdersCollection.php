@@ -36,6 +36,7 @@ class OrdersCollection extends JsonResource
             "order_details"=> OrderDetailsCollection::collection($this->whenLoaded('orderDetails')),
             "order_history"=> $this->whenLoaded('orderHistory'),
             "status"=>$this->status,
+            "reason_cancelled"=>$this->reason_cancelled,
             "note"=>$this->note,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at
