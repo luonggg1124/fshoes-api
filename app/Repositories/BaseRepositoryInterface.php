@@ -13,4 +13,5 @@ interface BaseRepositoryInterface
     function update($id, array $data);
     function delete(int|string $id);
     function query();
+    public function findByUserAndProduct(int $userId, int $productId);
 }

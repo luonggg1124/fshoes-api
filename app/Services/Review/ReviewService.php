@@ -6,6 +6,7 @@ use App\Http\Traits\CanLoadRelationships;
 use App\Http\Traits\Paginate;
 use App\Repositories\Product\ProductRepositoryInterface;
 use App\Repositories\Review\ReviewRepositoryInterface;
+use App\Models\OrderDetails;
 
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -28,8 +29,7 @@ class ReviewService implements ReviewServiceInterface
     public function __construct(
         protected ReviewRepositoryInterface $reviewRepository,
         private ProductRepositoryInterface $productRepository
-    )
-    {
+    ) {
 
     }
 
@@ -37,7 +37,7 @@ class ReviewService implements ReviewServiceInterface
     public function all()
     {
         $perPage = request()->query('per_page');
-        $reviews = $this->loadRelationships($this->reviewRepository->query()->sortByColumn(columns:$this->columns))->paginate($perPage);
+        $reviews = $this->loadRelationships($this->reviewRepository->query()->sortByColumn(columns: $this->columns))->paginate($perPage);
         return [
             'paginator' => $this->paginate($reviews),
             'data' => ReviewResource::collection($reviews->items())
@@ -45,20 +45,26 @@ class ReviewService implements ReviewServiceInterface
     }
 
     // Thêm review
+
     public function create(array $data)
     {
-        if($data['product_id']){
-            $product = $this->productRepository->find($data['product_id']);
-            if(!$product) throw  new ModelNotFoundException('Product not found');
+        $user = \request()->user();
+        $productId = $data['product_id'];
+
+        // Kiểm tra xem người dùng có thể đánh giá sản phẩm này không
+        if (!$this->canReview($user->id, $productId)) {
+            throw new \Exception("You can only review a product after purchasing it and only once per product.");
         }
 
-        $user = \request()->user();
-//        $alreadyReview = $user->reviews()->where('product_id', $data['product_id'])->first();
-//        if($alreadyReview){
-//            throw new Exception("You already have a review for this product");
-//        }
+        // Kiểm tra sản phẩm tồn tại
+        $product = $this->productRepository->find($productId);
+        if (!$product) {
+            throw new ModelNotFoundException('Product not found');
+        }
+
         $data['user_id'] = $user->id;
         $review = $this->reviewRepository->create($data);
+
         return new ReviewResource($this->loadRelationships($review));
     }
 
@@ -92,7 +98,7 @@ class ReviewService implements ReviewServiceInterface
         $review = $this->reviewRepository->find($id);
         if (!$review)
             throw new ModelNotFoundException('Review not found');
-//        $requestUser = \request()->user();
+        //        $requestUser = \request()->user();
 //        if($requestUser->id != $review->user_id) throw new AuthorizationException("Unauthorized!");
         $review->delete();
         return true;
@@ -100,7 +106,8 @@ class ReviewService implements ReviewServiceInterface
     public function reviewsByProduct(int|string $productId)
     {
         $product = $this->productRepository->find($productId);
-        if (!$product) throw new ModelNotFoundException('Product not found');
+        if (!$product)
+            throw new ModelNotFoundException('Product not found');
         $reviews = $product->reviews()->with(['user'])->get();
         return ReviewResource::collection($reviews);
     }
@@ -128,5 +135,20 @@ class ReviewService implements ReviewServiceInterface
         }
 
         return $this->reviewRepository->toggleLike($review_id, $user_id);
+    }
+
+    public function canReview(int $userId, int $productId)
+    {
+        
+        $hasBought = OrderDetails::where('product_id', $productId)
+            ->whereHas('order', function ($query) use ($userId) {
+                $query->where('user_id', $userId)->where('status', 'confirmed');
+            })->exists();
+
+       
+        $alreadyReviewed = $this->reviewRepository->findByUserAndProduct($userId, $productId);
+
+        // Người dùng cần phải mua sản phẩm và chưa đánh giá sản phẩm này
+        return $hasBought && !$alreadyReviewed;
     }
 }
