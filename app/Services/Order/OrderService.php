@@ -41,9 +41,7 @@ class OrderService implements OrderServiceInterface
         protected VariationRepositoryInterface   $variationRepository,
         protected CartRepositoryInterface        $cartRepository,
         protected UserRepositoryInterface        $userRepository,
-    )
-    {
-    }
+    ) {}
 
     public function getAll($params): AnonymousResourceCollection
     {
@@ -111,7 +109,7 @@ class OrderService implements OrderServiceInterface
 
             $this->cartRepository->query()->where("user_id", $data['user_id'])->delete();
             Mail::to($order->receiver_email)->send(new CreateOrder($order->id));
-            dispatch(new \App\Jobs\CreateOrder($order->id , $order->receiver_email))->delay(now()->addSeconds(5));
+            dispatch(new \App\Jobs\CreateOrder($order->id, $order->receiver_email))->delay(now()->addSeconds(5));
             return response()->json(["message" => "Order created"], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -174,9 +172,15 @@ class OrderService implements OrderServiceInterface
 
     public function me()
     {
+        $status = request()->query('status');
         $user = $this->userRepository->find(auth()->user()->id);
         if (!$user) throw  new UnauthorizedException('Unauthorized!');
-        $orders = $user->orders()->with(['orderHistory'])->orderBy('created_at', 'desc');
+        $orders = $user->orders()->when(
+            $status != null,
+            function ($query) use ($status) {
+                $query->where('status', $status);
+            }
+        )->with(['orderHistory'])->orderBy('created_at', 'desc');
         return OrdersCollection::collection(
             $orders->paginate()
         );
@@ -207,5 +211,4 @@ class OrderService implements OrderServiceInterface
             ]);
         }
     }
-
 }
