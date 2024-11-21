@@ -88,8 +88,8 @@ class OrderService implements OrderServiceInterface
 
             if (isset($data["voucher_id"])) {
                 $voucher = Voucher::find($data["voucher_id"]);
-                $voucher->quanlity--;
-                if ($voucher->quanlity < 0) return response()->json(["message" => "Voucher is out of uses"], 500);
+                $voucher->quantity--;
+                if ($voucher->quantity < 0) return response()->json(["message" => "Voucher is out of uses"], 500);
                 $voucher->save();
             }
             $order = $this->orderRepository->create($data);
