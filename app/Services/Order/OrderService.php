@@ -88,8 +88,8 @@ class OrderService implements OrderServiceInterface
 
             if (isset($data["voucher_id"])) {
                 $voucher = Voucher::find($data["voucher_id"]);
-                $voucher->quanlity--;
-                if ($voucher->quanlity < 0) return response()->json(["message" => "Voucher is out of uses"], 500);
+                $voucher->quantity--;
+                if ($voucher->quantity < 0) return response()->json(["message" => "Voucher is out of uses"], 500);
                 $voucher->save();
             }
             $order = $this->orderRepository->create($data);
@@ -111,6 +111,7 @@ class OrderService implements OrderServiceInterface
 
             $this->cartRepository->query()->where("user_id", $data['user_id'])->delete();
             Mail::to($order->receiver_email)->send(new CreateOrder($order->id));
+            dispatch(new \App\Jobs\CreateOrder($order->id , $order->receiver_email))->delay(now()->addSeconds(5));
             return response()->json(["message" => "Order created"], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
