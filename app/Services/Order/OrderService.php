@@ -3,6 +3,7 @@
 namespace App\Services\Order;
 
 
+use App\Http\Traits\Paginate;
 use Exception;
 use App\Models\Cart;
 use App\Models\Order;
@@ -32,7 +33,7 @@ use App\Repositories\Product\Variation\VariationRepositoryInterface;
 
 class OrderService implements OrderServiceInterface
 {
-
+    use Paginate;
     public function __construct(
         protected OrderRepositoryInterface       $orderRepository,
         protected OrderDetailRepositoryInterface $orderDetailRepository,
@@ -173,22 +174,34 @@ class OrderService implements OrderServiceInterface
     public function me()
     {
         $status = request()->query('status');
+        $perPage = request()->query('per_page');
+        
+        if(!is_int((int)$perPage) || $perPage < 0){
+            $perPage = 10;
+        }
+       
         $user = $this->userRepository->find(auth()->user()->id);
         if (!$user) throw  new UnauthorizedException('Unauthorized!');
         $orders = $user->orders()->when(
             $status != null,
             function ($query) use ($status) {
+            
                 $query->where('status', $status);
             }
-        )->with(['orderHistory'])->orderBy('created_at', 'desc');
-        return OrdersCollection::collection(
-            $orders->paginate()
-        );
+        )->with(['orderHistory'])->orderBy('created_at', 'desc')->paginate($perPage);
+        return 
+        [
+            'paginator' => $this->paginate($orders),
+            'data' => OrdersCollection::collection(
+                $orders->items()
+            ),
+        ];
     }
 
     public function cancelOrder($id, $data)
     {
         $order = $this->orderRepository->find($id);
+        
         $user = request()->user();
         if ($order->user_id != $user->id) throw new AuthorizationException('Cannot cancel order!');
         if (!$order) throw new ModelNotFoundException('Order not found');

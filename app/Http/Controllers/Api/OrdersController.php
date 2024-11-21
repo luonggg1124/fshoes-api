@@ -78,7 +78,7 @@ class OrdersController extends Controller
             }
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong!'
+                'message' => $throw->getMessage(),
             ],500);
         }
 
