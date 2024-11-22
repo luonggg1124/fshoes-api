@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\VouchersController;
 use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Sabberworm\CSS\Property\Import;
 
 //Route::get('/user', function (Request $request) {
 //    return $request->user();
@@ -209,3 +210,7 @@ Route::get('statistics/overall', [\App\Http\Controllers\Api\StatisticsController
 
 //Gemini
 Route::post('/gemini/text', [GeminiController::class, 'text']);
+
+
+//Import
+Route::post('import/voucher' , [\App\Http\Controllers\Api\ImportVoucher::class, 'import']);
