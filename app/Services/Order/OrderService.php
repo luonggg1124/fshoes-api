@@ -173,9 +173,12 @@ class OrderService implements OrderServiceInterface
 
     public function me()
     {
+        $listStatus = [0,1,2,3,4,5,6,7,8];
         $status = request()->query('status');
         $perPage = request()->query('per_page');
-        
+        if(!in_array((int)$status,$listStatus)){
+            $status=null;
+        }
         if(!is_int((int)$perPage) || $perPage < 0){
             $perPage = 10;
         }
@@ -183,7 +186,7 @@ class OrderService implements OrderServiceInterface
         $user = $this->userRepository->find(auth()->user()->id);
         if (!$user) throw  new UnauthorizedException('Unauthorized!');
         $orders = $user->orders()->when(
-            $status != null,
+            $status !== null,
             function ($query) use ($status) {
             
                 $query->where('status', $status);
