@@ -5,17 +5,19 @@ namespace App\Services\Cart;
 use App\Http\Resources\CartCollection;
 use App\Repositories\Cart\CartRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\UnauthorizedException;
 
 class CartService implements CartServiceInterface {
 
     public function __construct(protected CartRepositoryInterface $cartRepository){}
 
-    function getAll($params){
+    function getAll(){
         $allCart = $this->cartRepository->query()->with(['product' , 'product_variation' , 'product_variation.product']);
-        if(isset($params['user_id'])){
-
-            $allCart->where('user_id' , $params['user_id']);
+        $user = request()->user();
+        if(!$user){
+           throw new UnauthorizedException('Unauthorized!');
         }
+        $allCart->where('user_id' , $user->id);
         $allCart->latest();
         return CartCollection::collection(
             $allCart->paginate()

@@ -6,7 +6,9 @@ use App\Http\Requests\Cart\AddCartRequest;
 use Illuminate\Http\Request;
 use App\Services\Cart\CartService;
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\UnauthorizedException;
 
 class CartController extends Controller
 {
@@ -17,11 +19,24 @@ class CartController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        return response()->json(
-            $this->cartService->getAll($request) ,200
-         );
+        try {
+            return response()->json(
+                $this->cartService->getAll() ,200
+             );
+        } catch (UnauthorizedException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ],401);
+        }catch (Exception $e){
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong!'
+            ], 500);
+        }
+       
     }
 
     /**

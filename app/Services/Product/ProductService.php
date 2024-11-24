@@ -305,6 +305,7 @@ class ProductService implements ProductServiceInterface
 
     public function findByAttributeValues()
     {
+        $perPage = request()->query('per_page');
         $attributeQuery = request()->query('attributes');
         $categoryId = request()->query('categoryId');
         $arrAttrVal = [];
@@ -333,8 +334,14 @@ class ProductService implements ProductServiceInterface
             $q->whereHas('categories', function ($query) use ($categoryId) {
                 $query->where('category_id', $categoryId);
             });
-        })->with(['categories'])->sortByColumn(columns: $this->columns)->get();
-        return ProductResource::collection($products);
+        })->with(['categories'])->sortByColumn(columns: $this->columns)->paginate($perPage);
+        return [
+            'paginator' => $this->paginate($products),
+            'data' => ProductResource::collection(
+                $products->items()
+            ),
+        ];
+       
     }
     public function allSummary(){
         $products = $this->productRepository->query()->orderBy('updated_at','desc')->get();
