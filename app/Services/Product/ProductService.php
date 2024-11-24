@@ -12,6 +12,7 @@ use App\Repositories\Product\Variation\VariationRepositoryInterface;
 use App\Services\Image\ImageServiceInterface;
 use App\Http\Resources\ProductResource;
 use App\Http\Traits\CanLoadRelationships;
+use App\Repositories\Category\CategoryRepositoryInterface;
 use App\Repositories\Product\ProductRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
@@ -40,6 +41,7 @@ class ProductService implements ProductServiceInterface
         protected ProductRepositoryInterface   $productRepository,
         protected VariationRepositoryInterface $variationRepository,
         protected ImageServiceInterface        $imageService,
+        protected CategoryRepositoryInterface $categoryRepository
 
     )
     {
@@ -92,7 +94,7 @@ class ProductService implements ProductServiceInterface
             ->whereHas('categories', function ($query) {
                 $query->where('categories.name', 'Best Selling');
             });
-        return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns: $this->columns))->take(5)->get());
+        return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns: $this->columns))->take(15)->get());
     }
 
     public function findById(int|string $id)
@@ -306,24 +308,28 @@ class ProductService implements ProductServiceInterface
         $attributeQuery = request()->query('attributes');
         $categoryId = request()->query('categoryId');
         $arrAttrVal = [];
-
+        if(empty($categoryId)){
+            $categoryId = '';
+        }
+        $category = $this->categoryRepository->find($categoryId);
+      
         if ($attributeQuery) {
-            $intElements = array_filter(explode(',', $attributeQuery), function($value) {
+            $intElements = array_filter(explode('-', $attributeQuery), function($value) {
                 return ctype_digit($value);
             });
             $intElements = array_map('intval', $intElements);
             $arrAttrVal = $intElements;
 
         }
-
+       
         $products = $this->productRepository->query()->
         when(count($arrAttrVal) > 0, function ($q) use ($arrAttrVal) {
             $q->whereHas('variations', function ($q) use ($arrAttrVal) {
                 $q->whereHas('values', function ($q) use ($arrAttrVal) {
-                   $q->whereIn('attribute_value_id', $arrAttrVal);
+                   $q->whereIn('attribute_value_id', $arrAttrVal); 
                 });
             });
-        })->when($categoryId, function ($q) use ($categoryId) {
+        })->when($category, function ($q) use ($categoryId) {
             $q->whereHas('categories', function ($query) use ($categoryId) {
                 $query->where('category_id', $categoryId);
             });
