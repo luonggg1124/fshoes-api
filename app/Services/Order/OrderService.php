@@ -183,7 +183,7 @@ class OrderService implements OrderServiceInterface
             $perPage = 10;
         }
        
-        $user = $this->userRepository->find(auth()->user()->id);
+        $user = $this->userRepository->find(request()->user()->id);
         if (!$user) throw  new UnauthorizedException('Unauthorized!');
         $orders = $user->orders()->when(
             $status !== null,
