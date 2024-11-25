@@ -14,6 +14,7 @@ use App\Http\Resources\ProductResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Repositories\Category\CategoryRepositoryInterface;
 use App\Repositories\Product\ProductRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -346,6 +347,15 @@ class ProductService implements ProductServiceInterface
     public function allSummary(){
         $products = $this->productRepository->query()->orderBy('updated_at','desc')->get();
         return ProductSummary::collection($products);
+    }
+    //Just for statistics
+    public function countByDateForStatistics($from, $to):int
+    {
+        $count = $this->productRepository->query()->whereBetween('created_at',[
+            Carbon::parse($from)->startOfDay(),
+            Carbon::parse($to)->endOfDay()
+        ])->count();
+        return $count;
     }
 }
 

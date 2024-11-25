@@ -142,13 +142,13 @@ class ReviewService implements ReviewServiceInterface
         
         $hasBought = OrderDetails::where('product_id', $productId)
             ->whereHas('order', function ($query) use ($userId) {
-                $query->where('user_id', $userId)->where('status', 'confirmed');
+                $query->where('user_id', $userId)->where('status', '>=',4);
             })->exists();
 
        
         $alreadyReviewed = $this->reviewRepository->findByUserAndProduct($userId, $productId);
 
-        // Người dùng cần phải mua sản phẩm và chưa đánh giá sản phẩm này
+        
         return $hasBought && !$alreadyReviewed;
     }
 }

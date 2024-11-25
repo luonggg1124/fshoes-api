@@ -23,4 +23,5 @@ interface ProductServiceInterface
     function productByCategory(int|string $categoryId);
     function findByAttributeValues();
     function allSummary();
+    function countByDateForStatistics($from, $to);
 }

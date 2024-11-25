@@ -82,6 +82,10 @@ class AppServiceProvider extends ServiceProvider
             'vouchers' => [
                 \App\Services\Voucher\VoucherServiceInterface::class,
                 \App\Services\Voucher\VoucherService::class
+            ],
+            'statistics' => [
+                \App\Services\Statistics\StatisticsServiceInterface::class,
+                \App\Services\Statistics\StatisticsService::class
             ]
         ];
 

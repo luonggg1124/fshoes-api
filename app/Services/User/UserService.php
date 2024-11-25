@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Resources\User\UserResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Repositories\User\UserRepositoryInterface;
-
+use Carbon\Carbon;
 
 class UserService implements UserServiceInterface
 {
@@ -178,7 +178,7 @@ class UserService implements UserServiceInterface
 
     public function getFavoriteProduct()
     {
-        $user = auth()->user();
+        $user = request()->user();
         if (!$user) throw new AuthorizationException('Unauthorized');
         $products = $user->favoriteProducts()->with(['categories'])->get();
         return ProductResource::collection($products);
@@ -209,7 +209,7 @@ class UserService implements UserServiceInterface
     public function updateProfile(array $data)
     {
 
-        $user = $this->userRepository->find(auth()->user()->id);
+        $user = $this->userRepository->find(request()->user()->id);
         $profile = $user->profile;
 
         if (!$user) throw new AuthorizationException('Unauthorized!');
@@ -228,7 +228,6 @@ class UserService implements UserServiceInterface
                 $profile->birth_date = $data['birth_date'];
             }
             $profile->save();
-
             $user->name = $profile->given_name . ' ' . $profile->family_name;
             $user->save();
 
@@ -242,4 +241,6 @@ class UserService implements UserServiceInterface
         $count = $this->userRepository->query()->whereHas('orders')->count();
         return $count;
     }
+
+    
 }

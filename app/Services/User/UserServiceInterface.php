@@ -14,4 +14,5 @@ interface UserServiceInterface
     function removeFavoriteProduct(int|string $productId);
     function updateProfile(array $data);
     function userHasOrderCount();
+    
 }
