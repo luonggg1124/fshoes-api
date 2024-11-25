@@ -1,6 +1,7 @@
 <?php 
 namespace App\Services\Statistics;
 
+use App\Http\Resources\OrdersCollection;
 use App\Http\Traits\HandleTime;
 use App\Repositories\BaseRepository;
 use App\Repositories\BaseRepositoryInterface;
@@ -42,7 +43,7 @@ class StatisticsService implements StatisticsServiceInterface{
         $totalNewUsers = $this->countByDateForStatistics($startDate, $endDate, $this->userRepository);
         $totalNewProducts = $this->countByDateForStatistics($startDate, $endDate,$this->productRepository);
         $totalNewOrders = $this->countByDateForStatistics($startDate, $endDate,$this->orderRepository);
-        $totalAmountOrder = $this->calculatorSumRecordsGetByDateForStatistics($startDate, $endDate,$this->orderRepository);
+        $totalAmountOrder = $this->calculatorSumRecordsGetByDateForStatistics('total_amount',$startDate, $endDate,$this->orderRepository);
 
         return [
             'total_products' => $totalNewProducts,
@@ -66,11 +67,33 @@ class StatisticsService implements StatisticsServiceInterface{
             ])->get();
         return $records;
     }
-    private function calculatorSumRecordsGetByDateForStatistics(string $from,string $to ,BaseRepositoryInterface|BaseRepository $repository){
+    private function calculatorSumRecordsGetByDateForStatistics(string $column = 'id',string $from,string $to ,BaseRepositoryInterface|BaseRepository $repository){
         $sum = $repository->query()->whereBetween('created_at', [
             Carbon::createFromFormat('Y-m-d', $from)->startOfDay(),
             Carbon::createFromFormat('Y-m-d', $to)->endOfDay()
-            ])->sum('total_amount');
+            ])->sum($column);
         return $sum;
+    }
+    public function forDiagram(){
+        $startDate = request()->query('from');
+        $endDate = request()->query('to');
+        
+        if(!$this->isValidTime($startDate)){
+            $startDate = $this->oneMonthAgo();
+        }
+       
+        if(!$this->isValidTime($endDate)){
+            $endDate = $this->now();
+            
+        }
+        if(!$this->isGreaterDate($startDate,$endDate))
+        {
+            $startDate = $this->oneMonthAgo();
+            $endDate = $this->now();
+        }
+        $orders = $this->getByDateForStatistics($startDate, $endDate,$this->orderRepository);
+        return [
+            'orders' => OrdersCollection::collection($orders)
+        ];
     }
 }
