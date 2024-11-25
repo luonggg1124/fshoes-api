@@ -4,5 +4,6 @@ namespace App\Services\Statistics;
 
 interface StatisticsServiceInterface{
     function overall();
-    function forDiagram();
+    function ordersForDiagram();
+    function productBestSelling();
 }
