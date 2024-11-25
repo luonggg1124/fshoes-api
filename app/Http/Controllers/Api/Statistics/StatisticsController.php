@@ -37,7 +37,29 @@ class StatisticsController extends Controller
     public function forDiagram(){
        
         try {
-         $statistics = $this->statisticsService->forDiagram();
+         $statistics = $this->statisticsService->ordersForDiagram();
+         return response()->json([
+             'status' => true,
+             'data' => $statistics
+         ]);
+        } catch (Exception $e) {
+             logger()->error($e->getMessage());
+             return response()->json([
+                 'status' => false,
+                 'message' => 'Something went wrong!',
+             ],500);
+        }catch(\Throwable $th){
+         logger()->error($th->getMessage());
+             return response()->json([
+                 'status' => false,
+                 'message' => 'Error system!',
+             ],500);
+        }
+     }
+     public function bestSellingProduct(){
+       
+        try {
+         $statistics = $this->statisticsService->productBestSelling();
          return response()->json([
              'status' => true,
              'data' => $statistics
