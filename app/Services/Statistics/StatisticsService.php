@@ -51,7 +51,7 @@ class StatisticsService implements StatisticsServiceInterface{
 
         return [
             'users' => $totalNewUsers,
-            'products' => $totalNewUsers,
+            'products' => $totalNewProducts,
             'orders' => $totalNewOrders,
             'total_amount_orders' => $totalAmountOrder
         ];
