@@ -117,7 +117,7 @@ class Product extends Model
     }
     public function averageRating(){
         $rating = $this->reviews()->average('rating');
-        return $rating ? round($rating) : 0;
+        return $rating ? round($rating,1) : 0;
     }
 
     public function scopeSortByColumn(QueryBuilder|EloquentBuilder $query, array $columns = [], string $defaultColumn = 'updated_at', string $defaultSort = 'desc'): QueryBuilder|EloquentBuilder

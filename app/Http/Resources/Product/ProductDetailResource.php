@@ -33,6 +33,7 @@ class ProductDetailResource extends JsonResource
             'sale_price' => $this->salePrice(),
             'stock_qty' => $this->stock_qty,
             'qty_sold' => $this->qty_sold,
+            'rating' => $this->averageRating(),
             'description' => $this->description,
             'short_description' => $this->short_description,
             'attributes' => $this->attributes,
