@@ -2,6 +2,7 @@
 namespace App\Services\Statistics;
 
 use App\Http\Resources\OrdersCollection;
+use App\Http\Resources\Product\BestSellingProductResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Traits\HandleTime;
 use App\Repositories\BaseRepository;
@@ -142,16 +143,16 @@ class StatisticsService implements StatisticsServiceInterface{
             $endDate = $this->now();
         }
         $bestSellingProducts = $this->orderDetailRepository->query()->with('product')
-        ->select('product_id', DB::raw('SUM(quantity) as total_quantity'))
+        ->select('product_id', DB::raw('SUM(quantity) as total_sold_quantity'))
         ->whereHas('order',function($q) use($startDate,$endDate){
             $q->whereBetween('created_at', [
                 Carbon::createFromFormat('Y-m-d', $startDate)->startOfDay(),
                 Carbon::createFromFormat('Y-m-d', $endDate)->endOfDay()
             ]);
         })->groupBy('product_id')
-        ->orderByDesc('total_quantity')
+        ->orderByDesc('total_sold_quantity')
         ->get();
-        return $bestSellingProducts;
+        return BestSellingProductResource::collection($bestSellingProducts);
     }
 
     public function revenueOfYear(){
@@ -160,13 +161,10 @@ class StatisticsService implements StatisticsServiceInterface{
         if(!$isValidYear || !$year){
             $year = now()->year;
         }
-        
         $months = range(1,12);
-
-       
         $revenues = [];
         foreach($months as $month){
-            $revenues[] = $this->revenueOfMonths($month, $year);
+            $revenues[] = $this->revenueOfMonths($month, $year,true);
             
         }
        
