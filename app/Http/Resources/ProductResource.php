@@ -36,6 +36,7 @@ class ProductResource extends JsonResource
             'qty_sold' => $this->qty_sold,
             'qty_sale' => $this->saleQuantity(),
             'image_url' => $this->image_url,
+            'rating' => $this->averageRating(),
             'currentSale' => new SaleResource($this->currentSale()),
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'images' => ImageResource::collection($this->whenLoaded('images')),
