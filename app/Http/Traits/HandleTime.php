@@ -80,5 +80,7 @@ trait HandleTime
         }
         return $formatted;
     }
-   
+    function isValidYear($year) {
+        return is_numeric($year) && (int)$year == $year && $year > 0 && $year <= 9999;
+    }
 }

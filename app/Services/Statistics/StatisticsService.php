@@ -84,13 +84,13 @@ class StatisticsService implements StatisticsServiceInterface{
         return $count;
     }
 
-    private function getByDateForStatistics(string $from = '',string $to = '',BaseRepositoryInterface|BaseRepository $repository){
+    private function getByDateForStatistics(string $from = '',string $to = '',BaseRepositoryInterface|BaseRepository $repository,string $orderByColumn = 'created_at',string $direction = 'asc'){
         $records = $repository->query()->when($from && $to, function ($q)use ($from, $to){
             $q->whereBetween('created_at', [
                 Carbon::createFromFormat('Y-m-d', $from)->startOfDay(),
                 Carbon::createFromFormat('Y-m-d', $to)->endOfDay()
             ]);
-        })->get();
+        })->orderBy($orderByColumn,$direction)->get();
         return $records;
     }
     private function calculatorSumRecordsGetByDateForStatistics(string $column = 'id',string $from = '',string $to = '',BaseRepositoryInterface|BaseRepository $repository){
@@ -152,5 +152,33 @@ class StatisticsService implements StatisticsServiceInterface{
         ->orderByDesc('total_quantity')
         ->get();
         return $bestSellingProducts;
+    }
+
+    public function revenueOfYear(){
+        $year = request()->query('year');
+        $isValidYear = $this->isValidYear($year);
+        if(!$isValidYear || !$year){
+            $year = now()->year;
+        }
+        
+        $months = range(1,12);
+
+       
+        $revenues = [];
+        foreach($months as $month){
+            $revenues[] = $this->revenueOfMonths($month, $year);
+            
+        }
+       
+        return [...$revenues];
+    }
+    public function revenueOfMonths($month = 1,$year = null,bool $intval = false)
+    {
+        $year = $year ?? now()->year;
+        $sum = $this->orderRepository->query()->whereYear('created_at',$year)->whereMonth('created_at',$month)->sum('total_amount');
+        if($intval){
+            return intval($sum);
+        }
+        return $sum;
     }
 }
