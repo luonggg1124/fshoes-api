@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Services\User\UserServiceInterface;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\UploadedFile;
 
 class UserController extends Controller
 {
@@ -20,7 +21,8 @@ class UserController extends Controller
     ) {}
 
 
-    public function index(){
+    public function index()
+    {
         return response()->json([
             'users' => $this->userService->all()
         ]);
@@ -33,83 +35,83 @@ class UserController extends Controller
                 'status' => true,
                 'products' => $products
             ]);
-        }catch (\Throwable $throw)
-        {
-            Log::error(__CLASS__.'@'.__FUNCTION__,[
+        } catch (\Throwable $throw) {
+            Log::error(__CLASS__ . '@' . __FUNCTION__, [
                 "line" => $throw->getLine(),
                 "message" => $throw->getMessage()
             ]);
-            if($throw instanceof AuthorizationException) return response()->json([
+            if ($throw instanceof AuthorizationException) return response()->json([
                 'status' => false,
                 'message' => $throw->getMessage()
-            ],401);
-            if($throw instanceof ModelNotFoundException) return response()->json([
+            ], 401);
+            if ($throw instanceof ModelNotFoundException) return response()->json([
                 'status' => false,
                 'message' => $throw->getMessage()
-            ],404);
+            ], 404);
             return response()->json([
                 'status' => false,
                 'message' => 'Something went wrong!'
-            ],500);
+            ], 500);
         }
     }
-    public function addFavoriteProduct(int|string $product_id){
+    public function addFavoriteProduct(int|string $product_id)
+    {
         try {
             $products = $this->userService->addFavoriteProduct($product_id);
             return response()->json([
                 'status' => true,
                 'message' => 'Add favorite product successfully!',
                 'products' => $products
-            ],201);
-        }catch (\Throwable $throw)
-        {
-            Log::error(__CLASS__.'@'.__FUNCTION__,[
+            ], 201);
+        } catch (\Throwable $throw) {
+            Log::error(__CLASS__ . '@' . __FUNCTION__, [
                 "line" => $throw->getLine(),
                 "message" => $throw->getMessage()
             ]);
-            if($throw instanceof AuthorizationException) return response()->json([
+            if ($throw instanceof AuthorizationException) return response()->json([
                 'status' => false,
                 'message' => $throw->getMessage()
-            ],401);
-            if($throw instanceof ModelNotFoundException) return response()->json([
+            ], 401);
+            if ($throw instanceof ModelNotFoundException) return response()->json([
                 'status' => false,
                 'message' => $throw->getMessage()
-            ],404);
+            ], 404);
             return response()->json([
                 'status' => false,
                 'message' => 'Something went wrong!'
-            ],500);
+            ], 500);
         }
     }
-    public function removeFavoriteProduct(int|string $product_id){
+    public function removeFavoriteProduct(int|string $product_id)
+    {
         try {
             $products = $this->userService->removeFavoriteProduct($product_id);
             return response()->json([
                 'status' => true,
                 'message' => 'Add favorite product successfully!',
                 'products' => $products
-            ],200);
-        }catch (\Throwable $throw)
-        {
-            Log::error(__CLASS__.'@'.__FUNCTION__,[
+            ], 200);
+        } catch (\Throwable $throw) {
+            Log::error(__CLASS__ . '@' . __FUNCTION__, [
                 "line" => $throw->getLine(),
                 "message" => $throw->getMessage()
             ]);
-            if($throw instanceof AuthorizationException) return response()->json([
+            if ($throw instanceof AuthorizationException) return response()->json([
                 'status' => false,
                 'message' => $throw->getMessage()
-            ],401);
-            if($throw instanceof ModelNotFoundException) return response()->json([
+            ], 401);
+            if ($throw instanceof ModelNotFoundException) return response()->json([
                 'status' => false,
                 'message' => $throw->getMessage()
-            ],404);
+            ], 404);
             return response()->json([
                 'status' => false,
                 'message' => 'Something went wrong!'
-            ],500);
+            ], 500);
         }
     }
-    public function updateProfile(Request $request){
+    public function updateProfile(Request $request)
+    {
         try {
             $data = $request->all();
 
@@ -118,63 +120,65 @@ class UserController extends Controller
                 'status' => true,
                 'user' => $user,
                 'message' => 'Profile updated successfully!'
-            ],201);
-        }catch (\Throwable $throw)
-        {
-            Log::error(__CLASS__.'@'.__FUNCTION__,[
+            ], 201);
+        } catch (\Throwable $throw) {
+            Log::error(__CLASS__ . '@' . __FUNCTION__, [
                 "line" => $throw->getLine(),
                 "message" => $throw->getMessage()
             ]);
-            if($throw instanceof AuthorizationException) return response()->json([
+            if ($throw instanceof AuthorizationException) return response()->json([
                 'status' => false,
                 'message' => $throw->getMessage()
-            ],401);
+            ], 401);
             return response()->json([
                 'status' => false,
                 'message' => 'Something went wrong!'
-            ],500);
+            ], 500);
         }
     }
-    public function show(string $nickname) {
-        try{
+    public function show(string $nickname)
+    {
+        try {
             $user = $this->userService->findByNickname($nickname);
             return response()->json([
                 'user' => $user
             ]);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()]);
         }
     }
 
-    public function store(CreateUserRequest $request){
-        try{
+    public function store(CreateUserRequest $request)
+    {
+        try {
             $data = $request->all();
             $user = $this->userService->create($data);
             return response()->json([
                 'status' => true,
                 'message' => 'User created successfully!',
                 'user' => $user
-            ],201);
-        }catch(\Throwable $th){
-            Log::error(__CLASS__.'@'.__FUNCTION__,[
+            ], 201);
+        } catch (\Throwable $th) {
+            Log::error(__CLASS__ . '@' . __FUNCTION__, [
                 "line" => $th->getLine(),
                 "message" => $th->getMessage()
             ]);
-            if($th instanceof ValidationException){
+            if ($th instanceof ValidationException) {
 
                 return response()->json([
                     'error' => $th->getMessage()
-                ],422);
+                ], 422);
             }
             return response()->json([
                 'error' => $th->getMessage()
-            ],500);
+            ], 500);
         }
     }
-    public function update(UpdateUserRequest $request, string|int $id) {
-        try{
+    public function update(UpdateUserRequest $request, string|int $id)
+    {
+        try {
             $data = $request->all();
-            $user = $this->userService->update($id,$data,options: [
+            $user = $this->userService->update($id, $data, options: [
                 'avatar' => $request->avatar,
                 'profile' => $request->profile
             ]);
@@ -182,55 +186,84 @@ class UserController extends Controller
                 'status' => true,
                 'message' => 'User updated successfully!',
                 'user' => $user
-            ],201);
-        }catch(\Throwable $th){
-            Log::error(__CLASS__.'@'.__FUNCTION__,[
+            ], 201);
+        } catch (\Throwable $th) {
+            Log::error(__CLASS__ . '@' . __FUNCTION__, [
                 "line" => $th->getLine(),
                 "message" => $th->getMessage()
             ]);
-            if($th instanceof ValidationException){
+            if ($th instanceof ValidationException) {
 
                 return response()->json([
                     'error' => $th->getMessage()
-                ],422);
+                ], 422);
             }
             return response()->json([
                 'error' => $th->getMessage()
-            ],500);
+            ], 500);
         }
     }
-    public function destroy(string|int $id){
+    public function destroy(string|int $id)
+    {
         try {
             $this->userService->delete($id);
             return response()->json([
                 'status' => true,
                 'message' => 'User deleted successfully!',
             ]);
-        }catch (\Throwable $throw) {
-            Log::error(__CLASS__.'@'.__FUNCTION__,[
+        } catch (\Throwable $throw) {
+            Log::error(__CLASS__ . '@' . __FUNCTION__, [
                 "line" => $throw->getLine(),
                 "message" => $throw->getMessage()
             ]);
-            if($throw instanceof ModelNotFoundException){
+            if ($throw instanceof ModelNotFoundException) {
                 return response()->json([
                     'status' => false,
                     'message' => $throw->getMessage()
-                ],404);
+                ], 404);
             }
             return response()->json([
                 'status' => false,
                 'message' => 'Something went wrong!'
-            ],500);
+            ], 500);
         }
     }
 
 
-    public function userHasOrderCount(){
+    public function userHasOrderCount()
+    {
         return response()->json([
             'count' => $this->userService->userHasOrderCount()
         ]);
     }
-    public function test(){
+
+    public function updateAvatar(Request $request)
+    {
+        $file = $request->avatar;
+        if ($file instanceof UploadedFile) {
+            $user = $this->userService->updateAvatar($file);
+            return response()->json([
+                'status' => true,
+                'message' => 'Avatar updated successfully!',
+                'user' => $user
+            ], 201);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Could not find any files to upload'
+            ], 422);
+        }
+        // try {
+        // } catch (\Exception $e) {
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => 'Something went wrong'
+        //     ], 500);
+        // }
+    }
+
+    public function test()
+    {
         // return [$this->userService->createNickname('Louis Nguyen'),$this->userService->createNickname(['Lương Nguyễn', 'Minh'])];
     }
 }

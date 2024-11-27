@@ -67,8 +67,8 @@ class ReviewService implements ReviewServiceInterface
 
         return new ReviewResource($this->loadRelationships($review));
     }
+    
 
-    // Lấy review theo ID
     public function find(int|string $id)
     {
         $review = $this->reviewRepository->find($id);

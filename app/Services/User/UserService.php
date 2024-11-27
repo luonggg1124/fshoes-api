@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Resources\User\UserResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Repositories\User\UserRepositoryInterface;
-use Carbon\Carbon;
+
 
 class UserService implements UserServiceInterface
 {
@@ -237,10 +237,24 @@ class UserService implements UserServiceInterface
 
         return new UserResource($this->loadRelationships($updatedUser));
     }
+
+   
     public function userHasOrderCount(){
         $count = $this->userRepository->query()->whereHas('orders')->count();
         return $count;
     }
 
-    
+    public function updateAvatar(UploadedFile $file){
+        $userRequest = request()->user();
+        $userModel = $this->userRepository->find($userRequest->id);
+        if(!$userModel) throw new ModelNotFoundException('User not found');
+        if($userModel->avatar_public_id)
+        $this->deleteImageCloudinary($userModel->avatar_public_id);
+        $avatar = $this->uploadImageCloudinary( $file,'avatars');
+        
+        $userModel->avatar_url = $avatar['path'];
+        $userModel->avatar_public_id = $avatar['public_id'];
+        $userModel->save();
+        return new UserResource($this->loadRelationships($userModel));
+    }
 }

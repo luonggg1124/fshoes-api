@@ -85,6 +85,7 @@ Route::group(['middleware' => ['auth:api']],function(){
     Route::apiResource('sale',SaleController::class)->parameters(['sale' => 'id'])->except('index');
 //Discount End
 //Image
+    Route::post('update/user/avatar',[UserController::class,'updateAvatar']);
     Route::apiResource('image',ImageController::class)->parameter('image','id')->only(['index','store','destroy']);
     Route::delete('image/delete-many',[ImageController::class,'deleteMany'])->name('image.delete.many');
 //End Image
@@ -98,6 +99,7 @@ Route::group(['middleware' => ['auth:api']],function(){
     Route::post('add/attribute/values/product/{id}',[ProductController::class,'createAttributeValues'])->name('add.attribute.values');
     Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\AttributeValueController::class)->parameters(['attribute'=>'aid','value' => 'id'])->except('update');
 //Attribute - Attribute Value End
+    
 });
 
 Route::post('auth/refresh/token',[\App\Http\Controllers\Api\User\AuthController::class,'refresh']);

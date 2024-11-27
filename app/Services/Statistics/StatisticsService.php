@@ -179,4 +179,8 @@ class StatisticsService implements StatisticsServiceInterface{
         }
         return $sum;
     }
+
+    public function statisticsOrders(){
+        
+    }
 }

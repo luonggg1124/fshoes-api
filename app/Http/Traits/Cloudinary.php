@@ -12,6 +12,8 @@ trait Cloudinary
         $upload = $file->storeOnCloudinary($folder);
         $path = $upload->getSecurePath();
         $public_id = $upload->getPublicId();
+
+        
         return [
             'path' => $path,
             'public_id' => $public_id,

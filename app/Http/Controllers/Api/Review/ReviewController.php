@@ -145,12 +145,8 @@ class ReviewController extends Controller
     public function toggleLike(int $review_id): JsonResponse
     {
         try {
-            $user_id = request()->user()->id;  // Lấy ID người dùng hiện tại
-            // $user_id = 1;
-
-            // Gọi đến service để xử lý toggle like
+            $user_id = request()->user()->id; 
             $likesCount = $this->reviewService->toggleLike($review_id, $user_id);
-
             return response()->json([
                 'status' => true,
                 'message' => 'Like status toggled',

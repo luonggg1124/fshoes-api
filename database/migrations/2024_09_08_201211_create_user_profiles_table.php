@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->unique()->constrained('users');
             $table->foreignId('address_active_id')->nullable()->constrained('user_addresses');
+            $table->string('phone')->nullable();
             $table->string('nation')->nullable();
             $table->string('city')->nullable();
             $table->string('province')->nullable();

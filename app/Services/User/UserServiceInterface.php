@@ -2,6 +2,8 @@
 
 namespace App\Services\User;
 
+use Illuminate\Http\UploadedFile;
+
 interface UserServiceInterface
 {
     public function create(array $data, array $options = []);
@@ -14,5 +16,6 @@ interface UserServiceInterface
     function removeFavoriteProduct(int|string $productId);
     function updateProfile(array $data);
     function userHasOrderCount();
+    function updateAvatar(UploadedFile $file);
     
 }
