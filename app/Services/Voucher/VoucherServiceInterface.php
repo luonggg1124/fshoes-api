@@ -10,4 +10,5 @@ interface VoucherServiceInterface {
     function delete(int|string $id);
     function restore(int|string $id);
     function forceDelete(int|string $id);
+    function myVoucher();
 }

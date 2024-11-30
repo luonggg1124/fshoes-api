@@ -88,6 +88,7 @@ class OrderService implements OrderServiceInterface
             if (isset($data["voucher_id"])) {
                 $voucher = Voucher::find($data["voucher_id"]);
                 $voucher->quantity--;
+                $voucher->users()->attach(request()->user()->id);
                 if ($voucher->quantity < 0) return response()->json(["message" => "Voucher is out of uses"], 500);
                 $voucher->save();
             }
@@ -104,8 +105,8 @@ class OrderService implements OrderServiceInterface
                 $item->qty_sold = $item->qty_sold + $detail["quantity"];
                 $item->save();
             }
-            if (auth()->user()) {
-                $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => null, "description" => auth()->user()->name . " created order"]);
+            if (request()->user()) {
+                $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => null, "description" => request()->user()->name . " created order"]);
             } else $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => null, "description" => "Guess" . " created order"]);
 
             $this->cartRepository->query()->where("user_id", $data['user_id'])->delete();
@@ -141,7 +142,7 @@ class OrderService implements OrderServiceInterface
             $message = "";
             switch ($data["status"]) {
                 case 0:
-                    $message = (auth()->user()->name ? "User " . auth()->user()->name : "Guess") . " cancelled order";
+                    $message = (request()->user()->name ? "User " . request()->user()->name : "Guess") . " cancelled order";
                     break;
                 case 2:
                     $message = "Admin confirmed order";
@@ -220,7 +221,7 @@ class OrderService implements OrderServiceInterface
         $details = $this->orderRepository->find($id)->orderDetails;
         foreach ($details as $item) {
             Cart::create([
-                "user_id" => auth()->user()->id,
+                "user_id" => request()->user()->id,
                 "product_variation_id" => $item->product_variation_id ?? null,
                 "product_id" => $item->product_id ?? null,
                 "quantity" => $item->quantity

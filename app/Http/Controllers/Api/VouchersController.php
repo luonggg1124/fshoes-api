@@ -66,4 +66,7 @@ class VouchersController extends Controller
     {
        return $this->voucherService->findByCode($code);
     }
+    public function myVoucher(){
+        return $this->voucherService->myVoucher();
+    }
 }

@@ -7,6 +7,7 @@ use App\Http\Resources\VoucherResource;
 use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\Voucher\VouchersRepositoryInterface;
+use Carbon\Carbon;
 
 class VoucherService implements VoucherServiceInterface
 {
@@ -109,5 +110,15 @@ class VoucherService implements VoucherServiceInterface
             return response()->json(["message" => "Force deleted successfully"] , 200);
         } else return response()->json(["message" => "Voucher Not Found"] , 404);
 
+    }
+
+    public function myVoucher(){
+        $user = request()->user();
+        $vouchers = $this->vouchersRepository->query()
+        ->where('date_start','<=', Carbon::now())
+        ->where('date_end', '<=', Carbon::now())->whereDoesntHave('users',function($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->get();
+        return VoucherResource::collection($vouchers);
     }
 }

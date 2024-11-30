@@ -20,4 +20,8 @@ class Voucher extends Model
         "quantity",
         "status"
     ];
+
+    public function users(){
+        return $this->belongsToMany(User::class, 'user_voucher','voucher_id','user_id');
+    }
 }
