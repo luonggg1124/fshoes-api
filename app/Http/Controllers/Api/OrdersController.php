@@ -124,4 +124,25 @@ class OrdersController extends Controller
             $this->orderService->reOrder($id);
             return response()->json(["message"=>"Reorder created"] , 200);
     }
+    public function updatePaymentStatus(Request $request, int|string $id){
+        try{
+            
+            $data = $this->orderService->updatePaymentStatus($id,$request->payment_status);
+            return response()->json([
+               'status' => true,
+               'message' => 'Payment status updated successfully',
+                'order' => $data
+            ],201);
+        }catch(ModelNotFoundException $e){
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ],404);
+        }catch(\Exception $e){
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong!'
+            ],status: 500);
+        }
+    }
 }
