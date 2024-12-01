@@ -26,7 +26,7 @@ class CreateOrderRequest extends FormRequest
         return [
             "total_amount" => "required|numeric",
             "payment_method" => "required|string",
-            "payment_status" => "required|numeric",
+            "payment_status" => "required|string",
             'receiver_email' => 'required|email',
             "shipping_method" => "required|string",
             "shipping_cost" => "required|numeric",
