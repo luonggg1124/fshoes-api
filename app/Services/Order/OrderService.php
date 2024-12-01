@@ -108,8 +108,12 @@ class OrderService implements OrderServiceInterface
             if (request()->user()) {
                 $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => null, "description" => request()->user()->name . " created order"]);
             } else $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => null, "description" => "Guess" . " created order"]);
-            
-            $this->cartRepository->query()->where("user_id", $data['user_id'])->delete();
+
+            if(isset($data['cart_ids'])){
+                foreach($data['cart_ids'] as $id){
+                        $this->cartRepository->delete($id);
+                }
+            }
             Mail::to($order->receiver_email)->send(new CreateOrder($order->id));
             dispatch(new \App\Jobs\CreateOrder($order->id, $order->receiver_email))->delay(now()->addSeconds(5));
             return response()->json(["message" => "Order created"], 201);
