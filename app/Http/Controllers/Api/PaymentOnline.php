@@ -31,6 +31,7 @@ class PaymentOnline extends Controller
         $vnp_Locale = "VN";
         $vnp_BankCode = "NCB";
         $vnp_IpAddr = $_SERVER['REMOTE_ADDR'];
+        $vnp_ExpireDate = Carbon::now()->addMinutes(10)->format('YmdHis');
 
         $inputData = array(
             "vnp_Version" => "2.1.0",
@@ -44,6 +45,7 @@ class PaymentOnline extends Controller
             "vnp_OrderInfo" => $vnp_OrderInfo,
             "vnp_OrderType" => $vnp_OrderType,
             "vnp_ReturnUrl" => $vnp_Returnurl,
+            "vnp_ExpireDate"=>$vnp_ExpireDate,
             "vnp_TxnRef" => $vnp_TxnRef,
         );
 
