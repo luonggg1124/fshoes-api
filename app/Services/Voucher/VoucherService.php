@@ -44,7 +44,9 @@ class VoucherService implements VoucherServiceInterface
         }
         if(!$voucher) throw new ModelNotFoundException('Invalid Voucher Code');
         if($voucher->quantity === 0) throw new UnprocessableEntityHttpException('The number of voucher uses has expired'); 
-        $used = $voucher->users()->where('user_id',request()->user()->id)->get();
+        $used = $voucher->whereHas('users', function ($query) {
+            $query->whereIn('user_id', [request()->user()->id]);
+        })->get();
         if($used) throw new UnprocessableEntityHttpException('You used the voucher');
         return VoucherResource::make($voucher);
     }
