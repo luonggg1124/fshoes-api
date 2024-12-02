@@ -8,6 +8,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Repositories\Voucher\VouchersRepositoryInterface;
 use Carbon\Carbon;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class VoucherService implements VoucherServiceInterface
 {
@@ -35,9 +36,12 @@ class VoucherService implements VoucherServiceInterface
 
     function findByCode(int|string $code)
     {
-        $voucher = $this->vouchersRepository->query()->withTrashed()->where('code', $code)->first();
-        if ($voucher && $voucher->quantity > 0 ) return response()->json(VoucherResource::make($voucher) , 200);
-        else return response()->json(["message"=>"Voucher Not Found"] , 404);
+        $voucher = $this->vouchersRepository->query()->where('date_start','<=',Carbon::now())->where('date_end','>=',Carbon::now())->where('code', $code)->first();
+        if(!$voucher) throw new ModelNotFoundException('Invalid Voucher Code');
+        if($voucher->quantity === 0) throw new UnprocessableEntityHttpException('The number of voucher uses has expired'); 
+        $used = $voucher->users()->where('user_id',request()->user()->id)->get();
+        if($used) throw new UnprocessableEntityHttpException('You used the voucher');
+        return VoucherResource::make($voucher);
     }
 
     function create(array $data, array $option = [])

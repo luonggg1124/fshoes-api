@@ -209,7 +209,6 @@ class OrderService implements OrderServiceInterface
     public function cancelOrder($id, $data)
     {
         $order = $this->orderRepository->find($id);
-        
         $user = request()->user();
         if ($order->user_id != $user->id) throw new AuthorizationException('Cannot cancel order!');
         if (!$order) throw new ModelNotFoundException('Order not found');

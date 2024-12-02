@@ -6,7 +6,9 @@ use App\Http\Requests\CreateVoucherRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Voucher\VoucherService;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class VouchersController extends Controller
 {
@@ -64,7 +66,35 @@ class VouchersController extends Controller
 
     public function getVoucherByCode(string $code)
     {
-       return $this->voucherService->findByCode($code);
+        try{
+            $order =$this->voucherService->findByCode($code);
+            return response()->json([
+               'status' => true,
+                'voucher' => $order
+            ],200);
+        }catch(ModelNotFoundException $e){
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ],404);
+        }catch(UnprocessableEntityHttpException $e){
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ],422);
+        }catch(Exception $e){
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong!'
+            ],status: 500);
+        }catch(\Throwable $th){
+            logger()->error($th->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Error system!',
+            ],500);
+        }
+       
     }
     public function myVoucher(){
         return $this->voucherService->myVoucher();
