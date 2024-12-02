@@ -47,9 +47,9 @@ class VoucherService implements VoucherServiceInterface
         if($voucher->quantity === 0) throw new UnprocessableEntityHttpException('The number of voucher uses has expired'); 
         $used = $voucher->whereHas('users', function ($query) {
             $query->whereIn('user_id', [request()->user()->id]);
-        })->get();
+        })->first();
         
-        if(!$used){ throw new UnprocessableEntityHttpException('You used the voucher');
+        if($used){ throw new UnprocessableEntityHttpException('You used the voucher');
         }
         return VoucherResource::make($voucher);
     }
