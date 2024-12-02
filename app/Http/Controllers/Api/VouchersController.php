@@ -85,7 +85,7 @@ class VouchersController extends Controller
         }catch(Exception $e){
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong!'
+                'message' => $e->getMessage()
             ],status: 500);
         }catch(\Throwable $th){
             logger()->error($th->getMessage());
