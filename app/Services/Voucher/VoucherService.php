@@ -48,7 +48,9 @@ class VoucherService implements VoucherServiceInterface
         $used = $voucher->whereHas('users', function ($query) {
             $query->whereIn('user_id', [request()->user()->id]);
         })->get();
-        if($used) throw new UnprocessableEntityHttpException('You used the voucher');
+        
+        if(!$used){ throw new UnprocessableEntityHttpException('You used the voucher');
+        }
         return VoucherResource::make($voucher);
     }
 

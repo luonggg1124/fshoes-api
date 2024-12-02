@@ -100,6 +100,8 @@ Route::group(['middleware' => ['auth:api']],function(){
     Route::apiResource('attribute.value',\App\Http\Controllers\Api\Attribute\Value\AttributeValueController::class)->parameters(['attribute'=>'aid','value' => 'id'])->except('update');
 //Attribute - Attribute Value End
     
+
+Route::get('vouchers/code/{code}' , [VouchersController::class,'getVoucherByCode']);
 });
 
 Route::post('auth/refresh/token',[\App\Http\Controllers\Api\User\AuthController::class,'refresh']);
@@ -189,7 +191,7 @@ Route::delete('posts/forceDelete/{id}' , [PostsController::class,'forceDelete'])
 //Vouchers
 Route::apiResource('vouchers' , VouchersController::class);
 Route::post('vouchers/restore/{id}' , [VouchersController::class,'restore']);
-Route::get('vouchers/code/{code}' , [VouchersController::class,'getVoucherByCode']);
+
 Route::delete('vouchers/forceDelete/{id}' , [VouchersController::class,'forceDelete']);
 
 //Export Invoice
