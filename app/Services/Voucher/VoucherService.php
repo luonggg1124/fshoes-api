@@ -36,7 +36,12 @@ class VoucherService implements VoucherServiceInterface
 
     function findByCode(int|string $code)
     {
-        $voucher = $this->vouchersRepository->query()->where('date_start','<=',Carbon::now())->where('date_end','>=',Carbon::now())->where('code', $code)->first();
+        $voucher = $this->vouchersRepository->query()->where('code', $code)->first();
+        if($voucher->date_start > Carbon::now() ){
+            throw new UnprocessableEntityHttpException('Invalid voucher');
+        } else if($voucher->date_end < Carbon::now() ){
+            throw new UnprocessableEntityHttpException('Voucher has expired');
+        }
         if(!$voucher) throw new ModelNotFoundException('Invalid Voucher Code');
         if($voucher->quantity === 0) throw new UnprocessableEntityHttpException('The number of voucher uses has expired'); 
         $used = $voucher->users()->where('user_id',request()->user()->id)->get();
