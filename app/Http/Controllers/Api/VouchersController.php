@@ -68,10 +68,7 @@ class VouchersController extends Controller
     {
         try{
             $order =$this->voucherService->findByCode($code);
-            return response()->json([
-               'status' => true,
-                'voucher' => $order
-            ],200);
+            return response()->json($order,200);
         }catch(ModelNotFoundException $e){
             return response()->json([
                 'status' => false,
