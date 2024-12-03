@@ -32,7 +32,7 @@ class StatisticsService implements StatisticsServiceInterface{
         $endDate = request()->query('to');
         
         if(!$this->isValidTime($startDate)){
-            $startDate = $this->oneMonthAgo();
+            $startDate = $this->oneWeekAgo();
         }
        
         if(!$this->isValidTime($endDate)){
@@ -41,7 +41,7 @@ class StatisticsService implements StatisticsServiceInterface{
         }
         if(!$this->isGreaterDate($startDate,$endDate))
         {
-            $startDate = $this->oneMonthAgo();
+            $startDate = $this->oneWeekAgo();
             $endDate = $this->now();
         }
         
@@ -108,7 +108,7 @@ class StatisticsService implements StatisticsServiceInterface{
         $endDate = request()->query('to');
         
         if(!$this->isValidTime($startDate)){
-            $startDate = $this->oneMonthAgo();
+            $startDate = $this->oneWeekAgo();
         }
        
         if(!$this->isValidTime($endDate)){
@@ -117,7 +117,7 @@ class StatisticsService implements StatisticsServiceInterface{
         }
         if(!$this->isGreaterDate($startDate,$endDate))
         {
-            $startDate = $this->oneMonthAgo();
+            $startDate = $this->oneWeekAgo();
             $endDate = $this->now();
         }
         $orders = $this->getByDateForStatistics($startDate, $endDate,$this->orderRepository);
@@ -131,7 +131,7 @@ class StatisticsService implements StatisticsServiceInterface{
         $endDate = request()->query('to');
         
         if(!$this->isValidTime($startDate)){
-            $startDate = $this->oneMonthAgo();
+            $startDate = $this->oneWeekAgo();
         }
         
         if(!$this->isValidTime($endDate)){
@@ -139,7 +139,7 @@ class StatisticsService implements StatisticsServiceInterface{
             
         }
         if(!$this->isGreaterDate($startDate,$endDate)){
-            $startDate = $this->oneMonthAgo();
+            $startDate = $this->oneWeekAgo();
             $endDate = $this->now();
         }
         $bestSellingProducts = $this->orderDetailRepository->query()->with('product')
