@@ -18,6 +18,7 @@ class VoucherResource extends JsonResource
         return [
             'id'=>$this->id,
             'code'=>$this->code,
+            'type'=>$this->type,
             'discount'=>$this->discount,
             'date_start'=>(new Carbon($this->date_start))->format('d-m-Y H:i:s'),
             'date_end'=> (new Carbon($this->date_end))->format('d-m-Y H:i:s'),
