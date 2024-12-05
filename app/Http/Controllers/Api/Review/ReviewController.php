@@ -11,7 +11,7 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
-use Mockery\Exception;
+use Exception;
 
 class ReviewController extends Controller
 {

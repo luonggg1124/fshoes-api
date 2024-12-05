@@ -33,6 +33,7 @@ class CreateSaleRequest extends FormRequest
             'end_date' => 'required|date_format:Y-m-d H:i:s|after:start_date',
             'products' => 'nullable|array',
             'variations' => 'nullable|array',
+            'applyAll' => 'nullable|boolean'
         ];
     }
 

@@ -73,7 +73,11 @@ class Product extends Model
                 return $this->price - ($this->price * $discount->value / 100);
             }
             else{
-                return $this->price - $discount->value;}
+                if($this->price < $discount->value){
+                    return 0;
+                }
+                return $this->price - $discount->value;
+            }
         } else {
             return null;
         }

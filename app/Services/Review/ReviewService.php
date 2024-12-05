@@ -64,7 +64,7 @@ class ReviewService implements ReviewServiceInterface
 
         $data['user_id'] = $user->id;
         $review = $this->reviewRepository->create($data);
-
+        
         return new ReviewResource($this->loadRelationships($review));
     }
     

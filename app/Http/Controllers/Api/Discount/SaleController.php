@@ -35,7 +35,7 @@ class SaleController extends Controller
                 echo "data:" . json_encode($sales) . "\n\n";
                 ob_flush();
                 flush();
-                sleep(3);
+                sleep(1);
                 if (connection_aborted()) {
                     break;
                 }
@@ -103,22 +103,22 @@ class SaleController extends Controller
     {
 
         try {
+            $data = $request->only(['name', 'type', 'value', 'is_active', 'start_date', 'end_date','applyAll']);
             if (isset($data['type']) && $data['type'] === 'percent') {
-                if ($data['type'] > 99 || $data['type'] < 1) {
+                if ($data['value'] > 99 || $data['value'] < 1) {
                     return response()->json([
                         'status' => false,
                         'message' => 'Invalid type',
-
                     ], 422);
                 }
             }
-            $data = $request->only(['name', 'type', 'value', 'is_active', 'start_date', 'end_date']);
             $products = $request->products;
             $variations = $request->variations;
-
+            $applyAll = $request->applyAll;
             $discount = $this->service->store($data, [
                 'products' => $products,
-                'variations' => $variations
+                'variations' => $variations,
+                'applyAll' => $applyAll
             ]);
             return response()->json([
                 'status' => true,
@@ -149,6 +149,8 @@ class SaleController extends Controller
     public function update(UpdateSaleRequest $request, int|string $id): Response|JsonResponse
     {
         try {
+            
+            $data = $request->only(['name', 'type', 'value', 'is_active', 'start_date', 'end_date']);
             if (isset($data['type']) && $data['type'] === 'percent') {
                 if ($data['type'] > 99 || $data['type'] < 1) {
                     return response()->json([
@@ -158,7 +160,6 @@ class SaleController extends Controller
                     ], 422);
                 }
             }
-            $data = $request->only(['name', 'type', 'value', 'is_active', 'start_date', 'end_date']);
             $products = $request->products;
             $variations = $request->variations;
 
