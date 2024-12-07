@@ -127,7 +127,7 @@ class OrdersController extends Controller
     public function updatePaymentStatus(Request $request, int|string $id){
         try{
             
-            $data = $this->orderService->updatePaymentStatus($id,$request->payment_status);
+            $data = $this->orderService->updatePaymentStatus($id,$request->payment_status,$request->payment_method);
             return response()->json([
                'status' => true,
                'message' => 'Payment status updated successfully',

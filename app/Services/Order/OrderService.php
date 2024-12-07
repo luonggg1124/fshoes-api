@@ -234,15 +234,16 @@ class OrderService implements OrderServiceInterface
             ]);
         }
     }
-    public function updatePaymentStatus(int|string $id,$paymentStatus = true)
+    public function updatePaymentStatus(int|string $id,$paymentStatus = true,$paymentMethod = 'Cash on delivery')
     {
         $order = $this->orderRepository->find($id);
         if(!$order) throw new ModelNotFoundException('Order not found');
         if($paymentStatus){
             $order->payment_status = 'paid'; 
         }else{
-            $order->payment_status = 'not yet paid'; 
+            $order->payment_status = 'not_yet_paid'; 
         }
+        $order->payment_method = $paymentMethod;
         $order->save();
         return $order;
     }
