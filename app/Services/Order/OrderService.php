@@ -71,6 +71,7 @@ class OrderService implements OrderServiceInterface
     public function create(array $data, array $option = [])
     {
         try {
+            
             foreach ($data['order_details'] ?? [] as $detail) {
                 if ($detail["product_id"]) {
                     $item = $this->productRepository->query()->where('id', $detail["product_id"])->first();
@@ -92,6 +93,7 @@ class OrderService implements OrderServiceInterface
                 if ($voucher->quantity < 0) return response()->json(["message" => "Voucher is out of uses"], 500);
                 $voucher->save();
             }
+            
             $order = $this->orderRepository->create($data);
             foreach ($data['order_details'] ?? [] as $detail) {
                 $detail['order_id'] = $order->id;
@@ -103,6 +105,11 @@ class OrderService implements OrderServiceInterface
                 }
                 $item->stock_qty = $item->stock_qty - $detail["quantity"];
                 $item->qty_sold = $item->qty_sold + $detail["quantity"];
+                
+                $item->sales()->updateExistingPivot($item->currentSale()->id,[
+                    'quantity' => $detail["quantity"] > $item->currentSale()->pivot->quantity ? 0 : $item->currentSale()->pivot->quantity - $detail["quantity"],
+                ]);
+                
                 $item->save();
             }
             if (request()->user()) {

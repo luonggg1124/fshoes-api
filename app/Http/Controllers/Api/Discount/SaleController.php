@@ -35,7 +35,7 @@ class SaleController extends Controller
                 echo "data:" . json_encode($sales) . "\n\n";
                 ob_flush();
                 flush();
-                sleep(10);
+                sleep(1);
                 if (connection_aborted()) {
                     break;
                 }
