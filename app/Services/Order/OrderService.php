@@ -116,7 +116,10 @@ class OrderService implements OrderServiceInterface
             }
             Mail::to($order->receiver_email)->send(new CreateOrder($order->id));
             dispatch(new \App\Jobs\CreateOrder($order->id, $order->receiver_email))->delay(now()->addSeconds(5));
-            return response()->json(["message" => "Order created"], 201);
+            return response()->json([
+                "message" => "Order created",
+                'order' => $order
+            ], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

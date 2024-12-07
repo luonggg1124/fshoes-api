@@ -35,7 +35,7 @@ class SaleController extends Controller
                 echo "data:" . json_encode($sales) . "\n\n";
                 ob_flush();
                 flush();
-                sleep(1);
+                sleep(10);
                 if (connection_aborted()) {
                     break;
                 }
@@ -68,7 +68,6 @@ class SaleController extends Controller
             ], 500);
         }
     }
-
     public function show(int|string $id): Response|JsonResponse
     {
         try {
