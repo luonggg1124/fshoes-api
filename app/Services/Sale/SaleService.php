@@ -9,11 +9,13 @@ use App\Repositories\Product\ProductRepositoryInterface;
 use App\Repositories\Product\Variation\VariationRepositoryInterface;
 use App\Repositories\Sale\SaleRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class SaleService implements SaleServiceInterface
 {
     use CanLoadRelationships, Paginate;
+    protected $cacheTag = 'sales';
     private array $relations = ['products', 'variations'];
     private array $columns = ['id', 'name', 'type', 'start_date', 'end_date', 'created_at', 'updated_at', 'deleted_at'];
     public function __construct(
@@ -24,15 +26,18 @@ class SaleService implements SaleServiceInterface
 
     public function all()
     {
-        $perPage = request()->query('per_page');
+        $allQuery = http_build_query(request()->query());
+        return Cache::tags([$this->cacheTag])->remember('reviews-all' . $allQuery, 60, function () {
+            $perPage = request()->query('per_page');
 
-        $sales = $this->loadRelationships($this->repository->query()->sortByColumn(columns: $this->columns))->paginate($perPage);
-        return [
-            'paginator' => $this->paginate($sales),
-            'data' => SaleResource::collection(
-                $sales->items()
-            ),
-        ];
+            $sales = $this->loadRelationships($this->repository->query()->sortByColumn(columns: $this->columns))->paginate($perPage);
+            return [
+                'paginator' => $this->paginate($sales),
+                'data' => SaleResource::collection(
+                    $sales->items()
+                ),
+            ];
+        });
     }
     public function store(array $data, array $options = [
         'products' => [],
@@ -78,29 +83,36 @@ class SaleService implements SaleServiceInterface
             }
             return $sale;
         });
+        Cache::tags([$this->cacheTag])->flush();
         return new SaleResource($this->loadRelationships($sale));
     }
     public function show(int|string $id)
     {
-        $sale = $this->repository->find($id);
-        if (!$sale) throw new ModelNotFoundException('Sale not found');
-        return new SaleResource($this->loadRelationships($sale));
+        $allQuery = http_build_query(request()->query());
+        return Cache::tags([$this->cacheTag])->remember('sale/' . $id . '?' . $allQuery, 60, function () use ($id) {
+            $sale = $this->repository->find($id);
+            if (!$sale) throw new ModelNotFoundException('Sale not found');
+            return new SaleResource($this->loadRelationships($sale));
+        });
     }
     public function update(int|string $id, array $data, array $options = [
         'products' => [],
         'variations' => []
     ])
     {
-        $sale = $this->repository->find($id);
-
-        if (!$sale) throw new ModelNotFoundException('Sale not found');
-        $sale->update($data);
-        if (isset($options['products']) && is_array($options['products'])) {
-            $sale->products()->sync($options['products']);
-        }
-        if (isset($options['variations']) && is_array($options['variations'])) {
-            $sale->variations()->sync($options['variations']);
-        }
+        $sale = DB::transaction(function () use ($id, $data, $options) {
+            $sale = $this->repository->find($id);
+            if (!$sale) throw new ModelNotFoundException('Sale not found');
+            $sale->update($data);
+            if (isset($options['products']) && is_array($options['products'])) {
+                $sale->products()->sync($options['products']);
+            }
+            if (isset($options['variations']) && is_array($options['variations'])) {
+                $sale->variations()->sync($options['variations']);
+            }
+            return $sale;
+        });
+        Cache::tags([$this->cacheTag])->flush();
         return new SaleResource($this->loadRelationships($sale));
     }
 
@@ -109,12 +121,14 @@ class SaleService implements SaleServiceInterface
         $sale = $this->repository->find($id);
         if (!$sale) throw new ModelNotFoundException('Sale not found');
         $sale->delete();
+        Cache::tags([$this->cacheTag])->flush();
         return true;
     }
     public function switchActive(int|string $id, bool|null $active)
     {
         $sale = $this->repository->find($id);
         if (!$sale) throw new ModelNotFoundException('Sale not found');
+        Cache::tags([$this->cacheTag])->flush();
         if ($active) {
             $sale->is_active = $active;
             $sale->save();
