@@ -4,13 +4,12 @@ namespace App\Services\User;
 
 use App\Http\Resources\User\UserResource;
 use App\Http\Traits\CanLoadRelationships;
-use App\Mail\SendAuthCode;
+use App\Jobs\SendAuthCode;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use Mockery\Exception;
+use Exception;
 use PHPUnit\Event\InvalidArgumentException;
 
 
@@ -68,7 +67,7 @@ class AuthService extends UserService
     }
     public function getCode(string $email){
         $code = random_int(1234567, 9876543);
-        Mail::to($email)->send(new SendAuthCode($code));
+        SendAuthCode::dispatch(code: $code, email: $email);
         return $code;
     }
     public function me()

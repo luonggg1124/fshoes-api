@@ -10,4 +10,5 @@ interface ImageServiceInterface
     public function createMany(array $images,string $folder = '');
     public function create(UploadedFile $file,string $folder = '');
     public function destroy(int|string $id);
+    function destroyMany(array $ids);
 }

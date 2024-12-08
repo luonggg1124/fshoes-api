@@ -6,5 +6,5 @@ use App\Repositories\BaseRepositoryInterface;
 
 interface ImageRepositoryInterface extends BaseRepositoryInterface
 {
-
+    
 }

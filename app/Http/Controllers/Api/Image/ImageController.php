@@ -32,7 +32,9 @@ class ImageController extends Controller
             }
             if(is_array($images)){
                 $list = $this->service->createMany($images);
+                
             }
+            
             if(empty($list) || count($list) <1){
                 return response()->json([
                     'success' => false,

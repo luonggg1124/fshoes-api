@@ -6,7 +6,6 @@ use App\Http\Resources\ImageResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Http\Traits\Cloudinary;
 use App\Http\Traits\Paginate;
-use App\Models\Product;
 use App\Repositories\Image\ImageRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\UploadedFile;
