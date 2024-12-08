@@ -5,15 +5,14 @@ namespace App\Http\Controllers\Api\Product\Variation;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\Variation\CreateVariationRequest;
 use App\Http\Requests\Product\Variation\UpdateVariationRequest;
-use App\Services\Product\Variation\VariationService;
+use App\Services\Product\Variation\VariationServiceInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class VariationController extends Controller
 {
     public function __construct(
-        protected VariationService $service
+        protected VariationServiceInterface $service
     ){}
     public function index(string|int $pid){
         return response()->json([
@@ -73,7 +72,7 @@ class VariationController extends Controller
         }
     }
 
-    public function update(string|int $pid, int|string $id,Request $request){
+    public function update(string|int $pid, int|string $id,UpdateVariationRequest $request){
         try {
             $data = $request->all();
             $images = $request->images ?? [];
@@ -94,6 +93,16 @@ class VariationController extends Controller
                 'message' => $throw->getMessage()
             ]
             );
+            if($throw instanceof ModelNotFoundException){
+                return \response()->json([
+                    'status' => false,
+                    'message' => $throw->getMessage()
+                ],404);
+            }
+            return \response()->json([
+                'status' => false,
+               'message' => 'Something went wrong.'
+            ],500);
         }
     }
     public function destroy(string|int $pid,int|string $id){
@@ -104,6 +113,12 @@ class VariationController extends Controller
                 'message' => 'Deleted successfully!'
             ]);
         }catch (\Throwable $throwable) {
+            Log::error(
+                message: __CLASS__.'@'.__FUNCTION__,context: [
+                'line' => $throwable->getLine(),
+                'message' => $throwable->getMessage()
+            ]
+            );
             return \response()->json([
                 'status' => false,
                 'error' => $throwable->getMessage()

@@ -218,3 +218,9 @@ Route::post('/gemini/text', [GeminiController::class, 'text']);
 
 //Import
 Route::post('import/voucher' , [\App\Http\Controllers\Api\ImportVoucher::class, 'import']);
+Route::fallback(function () {
+    return response()->json([
+        'message' => 'Route not found',
+        'error' => 'Not Found',
+    ], 404);
+});

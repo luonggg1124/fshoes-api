@@ -24,7 +24,7 @@ class UpdateVariationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'price' => 'required|number',
+            'price' => 'required|numeric',
             'variations.*.import_price' => 'nullable',
             'sku' => 'nullable|string',
             'description' => 'nullable',
