@@ -9,6 +9,7 @@ use App\Http\Traits\Paginate;
 use App\Repositories\Image\ImageRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Mockery\Exception;
 
@@ -17,6 +18,8 @@ class ImageService implements ImageServiceInterface
     use Cloudinary, CanLoadRelationships, Paginate;
 
     private array $relations = ['products', 'variations'];
+    protected string $allQueryUrl;
+    protected string $cacheTag = 'images';
     private array $columns = [
         'id',
         'url',
@@ -28,21 +31,23 @@ class ImageService implements ImageServiceInterface
 
     public function __construct(
         protected ImageRepositoryInterface $repository
-    )
-    {
+    ) {
+        $this->allQueryUrl = http_build_query(request()->query());
     }
 
     public function all()
     {
-        $perPage = request()->query('per_page');
+        return Cache::tags([$this->cacheTag])->remember('images/all?' . $this->allQueryUrl, 60, function () {
+            $perPage = request()->query('per_page');
 
-        $image = $this->loadRelationships($this->repository->query()->sortByColumn(columns:$this->columns)->latest())->paginate($perPage);
-        return [
-            'paginator' => $this->paginate($image),
-            'data' => ImageResource::collection(
-                $image->items()
-            ),
-        ];
+            $image = $this->loadRelationships($this->repository->query()->sortByColumn(columns: $this->columns)->latest())->paginate($perPage);
+            return [
+                'paginator' => $this->paginate($image),
+                'data' => ImageResource::collection(
+                    $image->items()
+                ),
+            ];
+        });
     }
 
     public function createMany(array $images, string $folder = '')
@@ -55,6 +60,7 @@ class ImageService implements ImageServiceInterface
             }
         }
         if (count($list) < 1) throw new Exception('Cannot create images.Maybe the image is in the wrong format!');
+        Cache::tags([$this->cacheTag])->flush();
         return ImageResource::collection($list);
     }
 
@@ -69,7 +75,7 @@ class ImageService implements ImageServiceInterface
         if (!$image) {
             throw new \Exception('Cannot create image');
         }
-
+        Cache::tags([$this->cacheTag])->flush();
         return $image;
     }
 
@@ -80,6 +86,7 @@ class ImageService implements ImageServiceInterface
         $exists = Storage::disk('cloudinary')->exists($image->public_id);
         if ($exists) $this->deleteImageCloudinary($image->public_id);
         $image->delete();
+        Cache::tags([$this->cacheTag])->flush();
         return true;
     }
 
@@ -92,6 +99,7 @@ class ImageService implements ImageServiceInterface
             if ($exists) $this->deleteImageCloudinary($image->public_id);
             $image->delete();
         }
+        Cache::tags([$this->cacheTag])->flush();
         return true;
     }
 }

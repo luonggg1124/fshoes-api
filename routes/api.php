@@ -74,7 +74,6 @@ Route::group(['middleware' => ['auth:api']],function(){
     Route::post('review/{id}/like', [ReviewController::class, 'toggleLike'])->name('review.like');
     Route::apiResource('review',ReviewController::class)->parameter('review','id');
 
-
     Route::get('me/orders' , [OrdersController::class , 'me']);
     Route::patch('cancel/order/{id}' , [OrdersController::class ,'cancelOrder']);
     Route::post('reorder/order/{id}' , [OrdersController::class ,'reOrder']);
