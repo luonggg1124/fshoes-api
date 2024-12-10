@@ -106,6 +106,6 @@ class User extends Authenticatable implements JWTSubject
     }
     public function voucherUsed():BelongsToMany
     {
-        return $this->belongsToMany(Voucher::class, 'voucher_user', 'user_id', 'voucher_id');
+        return $this->belongsToMany(Voucher::class, 'user_voucher', 'user_id', 'voucher_id');
     }
 }
