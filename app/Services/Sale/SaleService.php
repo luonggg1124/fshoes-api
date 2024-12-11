@@ -51,7 +51,7 @@ class SaleService implements SaleServiceInterface
                 $formattedProduct = $products->mapWithKeys(function ($product) {
                     return [
                         $product->id => [
-                            'quantity' => $product->quantity,
+                            'quantity' => $product->stock_qty,
                         ]
                     ];
                 })->toArray();
@@ -59,10 +59,11 @@ class SaleService implements SaleServiceInterface
                 $formattedVariation = $variations->mapWithKeys(function ($variation) {
                     return [
                         $variation->id => [
-                            'quantity' => $variation->quantity,
+                            'quantity' => $variation->stock_qty,
                         ]
                     ];
                 })->toArray();
+              
                 if (empty($data['is_active']) && $data['is_active'] === null) $data['is_active'] = 1;
                 $sale = $this->repository->create($data);
 
@@ -70,18 +71,19 @@ class SaleService implements SaleServiceInterface
                 $sale->products()->attach($formattedProduct);
                 $sale->variations()->attach($formattedVariation);
                 return $sale;
-            }
-            if (empty($data['is_active']) && $data['is_active'] === null) $data['is_active'] = 1;
-            $sale = $this->repository->create($data);
+            } else {
+                if (empty($data['is_active']) && $data['is_active'] === null) $data['is_active'] = 1;
+                $sale = $this->repository->create($data);
 
-            if (!$sale) throw new \Exception("Can't create sale");
-            if (isset($options['products']) && is_array($options['products'])) {
-                $sale->products()->attach($options['products']);
+                if (!$sale) throw new \Exception("Can't create sale");
+                if (isset($options['products'])) {
+                    $sale->products()->attach($options['products']);
+                }
+                if (isset($options['variations'])) {
+                    $sale->variations()->attach($options['variations']);
+                }
+                return $sale;
             }
-            if (isset($options['variations']) && is_array($options['variations'])) {
-                $sale->variations()->attach($options['variations']);
-            }
-            return $sale;
         });
         Cache::tags([$this->cacheTag])->flush();
         return new SaleResource($this->loadRelationships($sale));
@@ -104,10 +106,10 @@ class SaleService implements SaleServiceInterface
             $sale = $this->repository->find($id);
             if (!$sale) throw new ModelNotFoundException('Sale not found');
             $sale->update($data);
-            if (isset($options['products']) && is_array($options['products'])) {
+            if (isset($options['products'])) {
                 $sale->products()->sync($options['products']);
             }
-            if (isset($options['variations']) && is_array($options['variations'])) {
+            if (isset($options['variations'])) {
                 $sale->variations()->sync($options['variations']);
             }
             return $sale;

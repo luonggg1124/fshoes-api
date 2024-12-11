@@ -225,6 +225,10 @@ class OrderService implements OrderServiceInterface
         if ($order->status >= 3 || $order->status === 0) throw new InvalidArgumentException('Cannot cancel order!');
         $order->status = 0;
         $order->reason_cancelled = $data["reason_cancelled"];
+        $voucher = $order->voucher;
+        if($voucher){
+            dd($voucher);
+        }
         $order->save();
         return new OrdersCollection($order);
     }

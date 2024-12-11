@@ -151,7 +151,7 @@ class SaleController extends Controller
             
             $data = $request->only(['name', 'type', 'value', 'is_active', 'start_date', 'end_date']);
             if (isset($data['type']) && $data['type'] === 'percent') {
-                if ($data['type'] > 99 || $data['type'] < 1) {
+                if ($data['value'] > 99 || $data['value'] < 1) {
                     return response()->json([
                         'status' => false,
                         'message' => 'Invalid type',

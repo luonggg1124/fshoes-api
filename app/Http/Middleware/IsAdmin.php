@@ -18,6 +18,9 @@ class IsAdmin
         if(auth('api')->check() && auth('api')->user()->is_admin){
             return $next($request);
         }
-        return response('You are not authorized',403);
+        return response()->json([
+            'status' => false,
+            'message' => 'Unauthorized'
+        ],403);
     }
 }
