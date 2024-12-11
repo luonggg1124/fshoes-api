@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\Statistics\StatisticsController;
 
 
 
-Route::group(['middleware' => ['auth:api']], function () {
+Route::group(['middleware' => ['auth:api','is_admin']], function () {
     Route::get('v1/statistics/overall', [StatisticsController::class, 'index']);
     Route::get('v1/statistics/data/orders/diagram', [StatisticsController::class, 'forDiagram']);
     Route::get('v1/statistics/product/bestselling', [StatisticsController::class, 'bestSellingProduct']);

@@ -60,10 +60,21 @@ Route::group(['middleware' => ['auth:api', 'is_admin']], function () {
     Route::get('user', [UserController::class, 'index']);
     Route::get('count/user/has/orders', [UserController::class, 'userHasOrderCount']);
     Route::apiResource('category', CategoryController::class)->parameter('category', 'id')->except(['index', 'show']);
+
+
+    Route::apiResource('sale', SaleController::class)->parameters(['sale' => 'id'])->only('index');
+    
+
+    Route::apiResource('image', ImageController::class)->parameter('image', 'id')->only(['index', 'store', 'destroy']);
+    Route::delete('image/delete-many', [ImageController::class, 'deleteMany'])->name('image.delete.many');
+    //End Image
+
+    Route::post('category/{id}/products', [CategoryController::class, 'addProducts'])->name('category.add.products');
+    Route::delete('category/{id}/products', [CategoryController::class, 'deleteProducts'])->name('category.delete.products');
 });
 
 // End Admin
-
+Route::get('sales/stream', [SaleController::class, 'stream'])->name('sale.stream');
 
 
 // Auth
@@ -94,12 +105,7 @@ Route::group(['middleware' => ['auth:api']], function () {
     //Discount End
     //Image
     Route::post('update/user/avatar', [UserController::class, 'updateAvatar']);
-    Route::apiResource('image', ImageController::class)->parameter('image', 'id')->only(['index', 'store', 'destroy']);
-    Route::delete('image/delete-many', [ImageController::class, 'deleteMany'])->name('image.delete.many');
-    //End Image
 
-    Route::post('category/{id}/products', [CategoryController::class, 'addProducts'])->name('category.add.products');
-    Route::delete('category/{id}/products', [CategoryController::class, 'deleteProducts'])->name('category.delete.products');
 
     // Attribute - Attribute Value Start
 
@@ -108,8 +114,8 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::get('vouchers/code/{code}', [VouchersController::class, 'getVoucherByCode']);
 });
-Route::post('forgot/password',[AuthController::class, 'forgotPassword'])->name('forgotPassword');
-Route::post('reset/password',[AuthController::class, 'resetPassword'])->name('resetPassword');;
+Route::post('forgot/password', [AuthController::class, 'forgotPassword'])->name('forgotPassword');
+Route::post('reset/password', [AuthController::class, 'resetPassword'])->name('resetPassword');;
 Route::post('auth/refresh/token', [AuthController::class, 'refresh']);
 Route::post('/check/email', [AuthController::class, 'checkEmail']);
 Route::post('login', [AuthController::class, 'login']);
@@ -124,8 +130,7 @@ Route::apiResource('category', CategoryController::class)
 Route::get('main/categories', [CategoryController::class, 'mains'])->name('main.categories');
 
 // Category End
-Route::apiResource('sale', SaleController::class)->parameters(['sale' => 'id'])->only('index');
-Route::get('sales/stream', [SaleController::class, 'stream'])->name('sale.stream');
+
 
 //Cart
 Route::apiResource('cart', CartController::class);

@@ -19,18 +19,19 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         // php artisan db:seed --class=ProductSeeder
+       
         Product::factory(50)->create();
         $allPs = Product::all();
         foreach ($allPs as $p) {
-            $p->slug = Str::slug($p->name).'.'.$p->id;
+            $p->slug = Str::slug($p->name) . '.' . $p->id;
             $p->save();
         }
         foreach (Product::query()->take(15)->get() as $product) {
             DB::table('category_product')->insert([
-               'product_id' => $product->id,
-               'category_id' => rand(1, 4)
+                'product_id' => $product->id,
+                'category_id' => rand(1, 4)
             ]);
-            for($i = 0; $i < 3; $i++){
+            for ($i = 0; $i < 3; $i++) {
                 $image = Image::factory()->create();
                 DB::table('product_image')->insert([
                     'product_id' => $product->id,
@@ -38,15 +39,15 @@ class ProductSeeder extends Seeder
                 ]);
             }
         }
-        $trendThisWeek = Category::query()->where('name','Trend This Week')->first();
+        $trendThisWeek = Category::query()->where('name', 'Trend This Week')->first();
         $weekProducts = Product::query()->take(15)->get()->pluck('id');
         $trendThisWeek->products()->attach($weekProducts);
-        $bestProducts = Product::query()->where('id','>=',15)->take(15)->get()->pluck('id');
-        $bestSelling = Category::query()->where('name','Best Selling')->first();
+        $bestProducts = Product::query()->where('id', '>=', 15)->take(15)->get()->pluck('id');
+        $bestSelling = Category::query()->where('name', 'Best Selling')->first();
         $bestSelling->products()->attach($bestProducts);
 
-        $sportProducts = Product::query()->where('id','>=',30)->take(15)->get()->pluck('id');
-        $sportsCat = Category::query()->where('name','Shop By Sport')->first();
+        $sportProducts = Product::query()->where('id', '>=', 30)->take(15)->get()->pluck('id');
+        $sportsCat = Category::query()->where('name', 'Shop By Sport')->first();
         $sportsCat->products()->attach($sportProducts);
     }
 }

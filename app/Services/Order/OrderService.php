@@ -128,6 +128,7 @@ class OrderService implements OrderServiceInterface
                 'order' => $order
             ], 201);
         } catch (\Exception $e) {
+            logger()->error($e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

@@ -26,7 +26,8 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'email' => 'louis@gmail.com',
             'nickname' => 'louis.ng',
-            'group_id'=>'1'
+            'group_id'=>'1',
+            'is_admin' => true
         ]);
         UserProfile::create([
             'user_id' => 1,
@@ -41,7 +42,8 @@ class DatabaseSeeder extends Seeder
 //        ]);
         User::factory()->create([
             'email' => 'quoc@gmail.com',
-            'nickname' => 'quocaa'
+            'nickname' => 'quocaa',
+            'is_admin' => true
         ]);
         // User::factory(30)->create();
         UserProfile::create([
@@ -51,17 +53,20 @@ class DatabaseSeeder extends Seeder
         ]);
         User::factory()->create([
             'email' => 'long@gmail.com',
-            'nickname' => 'longv'
+            'nickname' => 'longv',
+            'is_admin' => true
         ]);
         // User::factory(30)->create();
         UserProfile::create([
             'user_id' => 3,
             'given_name' => 'Long',
-            'family_name' => 'Vu'
+            'family_name' => 'Vu',
+            
         ]);
         User::factory()->create([
             'email' => 'linh@gmail.com',
-            'nickname' => 'linhn'
+            'nickname' => 'linhn',
+            'is_admin' => true
         ]);
         // User::factory(30)->create();
         UserProfile::create([
@@ -71,13 +76,15 @@ class DatabaseSeeder extends Seeder
         ]);
         User::factory()->create([
             'email' => 'thai@gmail.com',
-            'nickname' => 'thain'
+            'nickname' => 'thain',
+            'is_admin' => true
         ]);
         // User::factory(30)->create();
         UserProfile::create([
             'user_id' => 5,
             'given_name' => 'Thai',
-            'family_name' => 'Nguyen'
+            'family_name' => 'Nguyen',
+           
         ]);
         User::factory(20)->create();
         $this->call([
@@ -89,8 +96,9 @@ class DatabaseSeeder extends Seeder
             TopicsSeeder::class,
             PostsSeeder::class,
             VoucherSeeder::class,
+            ImageSeeder::class
         ]);
-        Review::factory(300)->create();
+        Review::factory(15)->create();
 
     }
 }
