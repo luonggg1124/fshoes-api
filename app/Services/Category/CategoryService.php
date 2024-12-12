@@ -9,6 +9,7 @@ use App\Http\Traits\CanLoadRelationships;
 use App\Http\Traits\Cloudinary;
 use App\Http\Traits\Paginate;
 use App\Repositories\Category\CategoryRepositoryInterface;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -136,6 +137,10 @@ class CategoryService implements CategoryServiceInterface
         if (!$category) {
             throw new ModelNotFoundException('Category not found');
         }
+        if($category->is_main || $category->display){
+            throw new AuthorizationException('Forbidden'); 
+        }
+        
         $category->delete($id);
         Cache::tags($this->cacheTag)->flush();
         return true;
@@ -147,6 +152,10 @@ class CategoryService implements CategoryServiceInterface
         if (!$category) {
             throw new ModelNotFoundException('Category not found');
         }
+        if($category->is_main || $category->display){
+            throw new AuthorizationException('Forbidden'); 
+        }
+        
         $category->forceDelete($id);
         Cache::tags($this->cacheTag)->flush();
         return true;

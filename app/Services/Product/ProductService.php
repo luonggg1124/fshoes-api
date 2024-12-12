@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Mockery\Exception;
 
@@ -72,14 +73,30 @@ class ProductService implements ProductServiceInterface
             return ProductResource::collection($products);
         });
     }
-
+    public function displayHomeProducts(){
+        $allQuery = http_build_query(request()->query());
+        return Cache::tags([$this->cacheTag])->remember('display-home-products?' . $allQuery, 60, function () {
+            $serial = request()->query('serial');
+            $validator = Validator::make(['number' => $serial], [
+                'number' => 'numeric', 
+            ]);
+            if($validator->failed()){
+                $serial = 1;
+            }
+            $products = $this->productRepository->query()->with(['categories'])
+                ->whereHas('categories', function ($query) use ( $serial){
+                    $query->where('categories.display',  $serial);
+                });
+            return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns: $this->columns))->take(15)->get());
+        });
+    }
     public function thisWeekProducts()
     {
         $allQuery = http_build_query(request()->query());
         return Cache::tags([$this->cacheTag])->remember('this-week-products?' . $allQuery, 60, function () {
             $products = $this->productRepository->query()->with(['categories'])
                 ->whereHas('categories', function ($query) {
-                    $query->where('categories.name', 'like', 'Trend This Week');
+                    $query->where('categories.display', 1);
                 });
             return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns: $this->columns))->take(15)->get());
         });
@@ -91,7 +108,7 @@ class ProductService implements ProductServiceInterface
         return Cache::tags([$this->cacheTag])->remember('shop-by-sports?' . $allQuery, 60, function () {
             $products = $this->productRepository->query()->with(['categories'])
                 ->whereHas('categories', function ($query) {
-                    $query->where('categories.name', 'like', 'Shop By Sport');
+                    $query->where('categories.display', 2);
                 });
             return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns: $this->columns))->get());
         });
@@ -103,7 +120,7 @@ class ProductService implements ProductServiceInterface
         return Cache::tags([$this->cacheTag])->remember('best-selling-products' . $allQuery, 60, function () {
             $products = $this->productRepository->query()->with(['categories'])
                 ->whereHas('categories', function ($query) {
-                    $query->where('categories.name', 'Best Selling');
+                    $query->where('categories.display', 3);
                 });
             return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns: $this->columns))->take(15)->get());
         });
@@ -267,6 +284,7 @@ class ProductService implements ProductServiceInterface
     {
         $product = $this->productRepository->find($id);
         if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
+        
         $product->delete();
         Cache::tags([$this->cacheTag])->flush();
         return true;
