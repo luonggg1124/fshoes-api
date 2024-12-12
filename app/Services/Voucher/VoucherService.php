@@ -20,7 +20,7 @@ class VoucherService implements VoucherServiceInterface
 
     function getAll(array $params)
     {
-        $voucher = $this->vouchersRepository->query()->withTrashed()->get();
+        $voucher = $this->vouchersRepository->query()->get();
         return VoucherResource::collection(
             $voucher
         );
@@ -45,9 +45,9 @@ class VoucherService implements VoucherServiceInterface
         }
         
         if($voucher->quantity === 0) throw new UnprocessableEntityHttpException('The number of voucher uses has expired'); 
-        $used = $voucher->whereHas('users', function ($query) {
-            $query->whereIn('user_id', [request()->user()->id]);
-        })->first();
+        $vouchersUsed = [...request()->user()->voucherUsed()->get()->pluck('id')];
+       
+        $used = in_array($voucher->id,$vouchersUsed);
         
         if($used){ throw new UnprocessableEntityHttpException('You used the voucher');
         }

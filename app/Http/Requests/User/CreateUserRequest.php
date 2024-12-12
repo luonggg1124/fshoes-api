@@ -28,7 +28,8 @@ class CreateUserRequest extends FormRequest
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
             'group' => 'nullable|integer|exists:groups,id',
-            'profile' => 'nullable|array'
+            'profile' => 'nullable|array',
+            'verify_code' => 'string|nullable'
         ];
     }
     protected function failedValidation(Validator $validator)

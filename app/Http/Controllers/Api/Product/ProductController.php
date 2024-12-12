@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
+
 use Illuminate\Support\Facades\Log;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 
 class ProductController extends Controller
 {
@@ -341,14 +341,5 @@ class ProductController extends Controller
             'products' => $this->productService->allSummary()
         ]);
     }
-    public function generateQRProduct(string|int $id)
-    {
-        $product = $this->productService->findById($id);
-        if(!$product) return response()->json(['error' => 'Product not found'], 404);
-        $qrCode = QrCode::format('png')->size(300)->generate(route('product.show',['id' => $id]));
-        return response()->make($qrCode,200,[
-            'Content-Type' => 'image/png',
-            'Content-Disposition' => 'attachment;filename='.$product->slug??'image'.'.png'
-        ]);
-    }
+    
 }

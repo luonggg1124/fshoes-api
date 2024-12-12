@@ -116,7 +116,7 @@ class ProductService implements ProductServiceInterface
             $product = $this->productRepository->find($id);
 
             if (!$product) {
-                throw new ModelNotFoundException('Product not found');
+                throw new ModelNotFoundException(__('messages.error-not-found'));
             }
             $product = $this->loadRelationships($product);
             return new ProductResource($product);
@@ -128,7 +128,7 @@ class ProductService implements ProductServiceInterface
         $allQuery = http_build_query(request()->query());
         return Cache::tags([$this->cacheTag])->remember('product-detail/' . $id . '?' . $allQuery, 60, function () use ($id) {
             $product = $this->productRepository->query()->find($id);
-            if (!$product) throw new ModelNotFoundException('Product not found');
+            if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
             if ($product->variations) {
                 $attributes = [];
                 foreach ($product->variations as $variation) {
@@ -185,7 +185,7 @@ class ProductService implements ProductServiceInterface
         return DB::transaction(function () use ($data, $options) {
             if (empty($data['status'])) $data['status'] = 0;
             $product = $this->productRepository->create($data);
-            if (!$product) throw new \Exception('Cannot create product');
+            if (!$product) throw new \Exception(__('messages.error-not-found'));
             $product->slug = $this->slug($product->name, $product->id);
             $product->save();
             if (count($options['images']) > 0) {
@@ -205,7 +205,7 @@ class ProductService implements ProductServiceInterface
         return DB::transaction(function () use ($id, $data, $options) {
             $product = $this->productRepository->find($id);
 
-            if (!$product) throw new \Exception('Product not found');
+            if (!$product) throw new \Exception(__('messages.error-not-found'));
             $product->update($data);
             $product->slug = $this->slug($product->name, $product->id);
             $product->save();
@@ -223,7 +223,7 @@ class ProductService implements ProductServiceInterface
         $allQuery = http_build_query(request()->query());
         return Cache::tags([$this->cacheTag])->remember('product-attribute' . $id . '?' . $allQuery, 60, function () use ($id) {
             $product = $this->productRepository->find($id);
-            if (!$product) throw new ModelNotFoundException('Product not found');
+            if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
             $attributes = $product->ownAttributes()->orWhere('product_id', null)->get();
             return AttributeResource::collection($attributes->load(['values']));
         });
@@ -232,8 +232,8 @@ class ProductService implements ProductServiceInterface
     public function createAttributeValues(int $id, string|int $attributeName, array $values = [])
     {
         $product = $this->productRepository->find($id);
-        if (!$product) throw new ModelNotFoundException('Product not found');
-        if (!$attributeName) throw new Exception('Attribute name not set');
+        if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
+        if (!$attributeName) throw new Exception(__('messages.error-internal-server'));
         $attribute = $product->ownAttributes()->create([
             'name' => $attributeName,
         ]);
@@ -250,7 +250,7 @@ class ProductService implements ProductServiceInterface
     public function updateStatus(string|int|bool $status, int|string $id)
     {
         $product = $this->productRepository->find($id);
-        if (!$product) throw new ModelNotFoundException('Product not found');
+        if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
         $product->status = $status;
         $product->save();
         Cache::tags([$this->cacheTag])->flush();
@@ -266,7 +266,7 @@ class ProductService implements ProductServiceInterface
     public function destroy(int|string $id)
     {
         $product = $this->productRepository->find($id);
-        if (!$product) throw new ModelNotFoundException('Product not found');
+        if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
         $product->delete();
         Cache::tags([$this->cacheTag])->flush();
         return true;
@@ -307,7 +307,7 @@ class ProductService implements ProductServiceInterface
     {
         $product = $this->productRepository->query()->withTrashed()->find($id);
         if (!$product) {
-            throw new ModelNotFoundException('Product not found');
+            throw new ModelNotFoundException(__('messages.error-not-found'));
         }
         $product->restore();
         Cache::tags([$this->cacheTag])->flush();
@@ -320,7 +320,7 @@ class ProductService implements ProductServiceInterface
         return Cache::tags([$this->cacheTag])->remember('find-product-trashed' . $id . '?' . $allQuery, 60, function () use ($id) {
             $product = $this->productRepository->query()->withTrashed()->find($id);
             if (!$product) {
-                throw new ModelNotFoundException('Product not found');
+                throw new ModelNotFoundException(__('messages.error-not-found'));
             }
             $product = $this->loadRelationships($product);
             return new ProductResource($product);
@@ -331,7 +331,7 @@ class ProductService implements ProductServiceInterface
     {
         $product = $this->productRepository->query()->withTrashed()->find($id);
         if (!$product) {
-            throw new ModelNotFoundException('Product not found');
+            throw new ModelNotFoundException(__('messages.error-not-found'));
         }
         $product->forceDelete();
         Cache::tags([$this->cacheTag])->flush();

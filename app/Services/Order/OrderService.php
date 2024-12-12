@@ -128,6 +128,7 @@ class OrderService implements OrderServiceInterface
                 'order' => $order
             ], 201);
         } catch (\Exception $e) {
+            logger()->error($e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
@@ -225,6 +226,10 @@ class OrderService implements OrderServiceInterface
         if ($order->status >= 3 || $order->status === 0) throw new InvalidArgumentException('Cannot cancel order!');
         $order->status = 0;
         $order->reason_cancelled = $data["reason_cancelled"];
+        $voucher = $order->voucher;
+        if($voucher){
+            dd($voucher);
+        }
         $order->save();
         return new OrdersCollection($order);
     }

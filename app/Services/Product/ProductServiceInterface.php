@@ -24,4 +24,5 @@ interface ProductServiceInterface
     function findByAttributeValues();
     function allSummary();
     function countByDateForStatistics($from, $to);
+    function forceDestroy(int|string $id);
 }

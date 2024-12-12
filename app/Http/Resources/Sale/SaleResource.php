@@ -30,8 +30,23 @@ class SaleResource extends JsonResource
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
             'is_active' => $this->is_active,
-            'products' => ProductResource::collection($this->whenLoaded('products')),
-            'variations' => VariationResource::collection($this->whenLoaded('variations')),
+            'products' => $this->whenLoaded('products',function($products){
+                return $products->map(function ($product){
+                    return [
+                        ...$product->toArray(),
+                        'qty_sale' => $product->pivot->quantity
+                    ];
+                });
+            }),
+            'variations' => $this->whenLoaded('variations',function($variations){
+                return $variations->map(function ($variation){
+                    return [
+                        ...$variation->toArray(),
+                        'qty_sale' => $variation->pivot->quantity
+                    ];
+                });
+            }),
+           
         ];
         if ($this->includeTimes($this->model)) {
             $resource['created_at'] = $this->created_at;
