@@ -12,8 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use PHPUnit\Event\InvalidArgumentException;
-
-
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class AuthService extends UserService
 {
@@ -70,6 +69,7 @@ class AuthService extends UserService
         ];
     }
     public function getCode(string $email){
+       
         $code = random_int(1234567, 9876543);
         Cache::tags(['verifyEmailCode'])->put('verify_email_code-email='.$email,$code,300);
         SendAuthCode::dispatch(code: $code, email: $email);
@@ -93,7 +93,12 @@ class AuthService extends UserService
     public function sendCodeForgotPassword(string $email){
         $user = $this->userRepository->findByColumnOrEmail($email);
         if(!$user) throw new ModelNotFoundException('Email not found in the system!');
-        $this->getCode($email);
+        $isset =Cache::tags(['verifyEmailCode'])->get('verify_email_code-email='.$email);
+        if(!$isset){
+            $this->getCode($email);
+        }else{
+            throw new TooManyRequestsHttpException(60,'Email already sent verification code');
+        }
         return true;
     }
     public function resetPassword($verifyCode,string $email ,string $password){

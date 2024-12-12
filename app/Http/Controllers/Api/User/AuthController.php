@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use PHPUnit\Event\InvalidArgumentException;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Throwable;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
@@ -246,7 +247,13 @@ class AuthController extends Controller
                 'status' => false,
                 'message' => $e->getMessage()
             ], 404);
-        } catch (Exception $e) {
+        }catch(TooManyRequestsHttpException $e){
+            return response()->json([
+                'status' => false,
+               'message' => $e->getMessage()
+            ],429);
+        }
+         catch (Exception $e) {
             logger()->error($e->getMessage());
             return response()->json([
                 'status' => false,

@@ -61,7 +61,7 @@ class CategoryService implements CategoryServiceInterface
         return Cache::tags([$this->cacheTag])->remember('category/'.$id.'?'.$allQuery, 60, function () use ($id) {
             $category = $this->categoryRepository->find($id);
             if (!$category) {
-                throw new ModelNotFoundException('Category not found');
+                throw new ModelNotFoundException(__('messages.error-not-found'));
             }
             $category = $this->loadRelationships($category);
             return new CategoryResource($category);
