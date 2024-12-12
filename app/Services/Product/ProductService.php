@@ -341,10 +341,13 @@ class ProductService implements ProductServiceInterface
     public function findByAttributeValues()
     {
         $allQuery = http_build_query(request()->query());
+       
         return Cache::tags([$this->cacheTag])->remember('find-by-attribute-values?' . $allQuery, 60, function () {
             $perPage = request()->query('per_page');
             $attributeQuery = request()->query('attributes');
             $categoryId = request()->query('categoryId');
+            $search = request()->query('search');
+            
             $arrAttrVal = [];
             if (empty($categoryId)) {
                 $categoryId = '';
@@ -365,7 +368,10 @@ class ProductService implements ProductServiceInterface
                         $q->whereIn('attribute_value_id', $arrAttrVal);
                     });
                 });
-            })->when($category, function ($q) use ($categoryId) {
+            })->when($search,function ($q) use ($search){
+                $q->where('name', 'like', '%'. $search. '%');
+            })
+            ->when($category, function ($q) use ($categoryId) {
                 $q->whereHas('categories', function ($query) use ($categoryId) {
                     $query->where('category_id', $categoryId);
                 });
