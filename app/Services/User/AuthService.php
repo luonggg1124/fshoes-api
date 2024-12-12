@@ -5,7 +5,6 @@ namespace App\Services\User;
 use App\Http\Resources\User\UserResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Jobs\SendAuthCode;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -56,7 +55,16 @@ class AuthService extends UserService
     {
         $user = $this->userRepository->findByColumnOrEmail($credentials['email']);
         if(!$user) throw new ModelNotFoundException('User not found');
-        if(!Hash::check($credentials['password'], $user->password)) throw new AuthenticationException('Wrong password');
+        if(!Hash::check($credentials['password'], $user->password)) {
+            $count = Cache::tags(['auth'])->get('password_wrong_limit?email='.$credentials['email']);
+            if($count == 5){
+                throw new TooManyRequestsHttpException(5*60,'You have entered the wrong password too many times, please enter again after 5 minutes');
+            }
+            Cache::tags(['auth'])->put('password_wrong_limit?email='.$credentials['email'], $count ? $count+1 : 1, 5*60);
+            
+            dd($count);
+            throw new InvalidArgumentException('Wrong password');
+        };
         $token = auth()->login($user);
         $refresh_token = auth()->claims([
             'exp' => now()->addDays(30)->timestamp,
@@ -71,7 +79,8 @@ class AuthService extends UserService
     public function getCode(string $email){
        
         $code = random_int(1234567, 9876543);
-        Cache::tags(['verifyEmailCode'])->put('verify_email_code-email='.$email,$code,300);
+
+        Cache::tags(['verifyEmailCode'])->put('verify_email_code-email='.$email,$code,5*60);
         SendAuthCode::dispatch(code: $code, email: $email);
         return $code;
     }
@@ -93,13 +102,9 @@ class AuthService extends UserService
     public function sendCodeForgotPassword(string $email){
         $user = $this->userRepository->findByColumnOrEmail($email);
         if(!$user) throw new ModelNotFoundException('Email not found in the system!');
-        $isset =Cache::tags(['verifyEmailCode'])->get('verify_email_code-email='.$email);
-        if(!$isset){
-            $this->getCode($email);
-        }else{
-            throw new TooManyRequestsHttpException(60,'Email already sent verification code');
-        }
-        return true;
+       
+        $code =$this->getCode($email);
+        return $code;
     }
     public function resetPassword($verifyCode,string $email ,string $password){
         $user = $this->userRepository->findByColumnOrEmail($email);

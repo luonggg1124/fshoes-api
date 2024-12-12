@@ -114,8 +114,9 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::get('vouchers/code/{code}', [VouchersController::class, 'getVoucherByCode']);
 });
-Route::post('forgot/password', [AuthController::class, 'forgotPassword'])->name('forgotPassword');
-Route::post('reset/password', [AuthController::class, 'resetPassword'])->name('resetPassword');;
+
+Route::middleware('customize_throttle:1,1')->post('forgot/password', [AuthController::class, 'forgotPassword'])->name('forgotPassword');
+Route::post('reset/password', [AuthController::class, 'resetPassword'])->name('resetPassword');
 Route::post('auth/refresh/token', [AuthController::class, 'refresh']);
 Route::post('/check/email', [AuthController::class, 'checkEmail']);
 Route::post('login', [AuthController::class, 'login']);
