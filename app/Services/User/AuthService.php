@@ -99,9 +99,7 @@ class AuthService extends UserService
     public function resetPassword($verifyCode,string $email ,string $password){
         $user = $this->userRepository->findByColumnOrEmail($email);
         if(!$user) throw new ModelNotFoundException('Email not found in the system!');
-       
         $code = Cache::tags(['verifyEmailCode'])->get('verify_email_code-email='.$email);
-        
         if($code != $verifyCode){
             throw new InvalidArgumentException("Wrong verification code");
         }
@@ -109,6 +107,5 @@ class AuthService extends UserService
         $user->save();
         Cache::tags(['verifyEmailCode'])->forget('verify_email_code-email='.$email);
         return true;
-
     }
 }
