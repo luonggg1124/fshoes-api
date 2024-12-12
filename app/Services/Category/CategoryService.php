@@ -82,13 +82,13 @@ class CategoryService implements CategoryServiceInterface
                 $quantity = 15;
             }
             $listProduct = [];
-            $category = $this->categoryRepository->query()->with(['products'])->find($serial);
+            $category = $this->categoryRepository->query()->with(['products'])->where('display',$serial)->first();
             $productsInCategory = $category->products;
             $listProduct = [...$productsInCategory];
             if(count($productsInCategory) < $quantity){
-                $listProduct = $this->productRepository->all();
+                $listAllProducts = $this->productRepository->all();
                 $arrayId = $category->products()->orderBy('qty_sold','desc')->get()->pluck('id');
-                foreach($listProduct as $p){
+                foreach($listAllProducts as $p){
                     if(!in_array($p->id, [...$arrayId])){
                         $listProduct[] = $p; 
                     }

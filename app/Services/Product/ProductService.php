@@ -349,6 +349,7 @@ class ProductService implements ProductServiceInterface
                 'data' => ProductResource::collection(
                     $products->items()
                 ),
+                'category' =>  $category
             ];
         });
     }
@@ -356,7 +357,7 @@ class ProductService implements ProductServiceInterface
     {
         $allQuery = http_build_query(request()->query());
         return Cache::tags([$this->cacheTag])->remember('all-summary-products?'.$allQuery, 60, function () {
-            $products = $this->productRepository->query()->orderBy('updated_at', 'desc')->get();
+            $products = $this->loadRelationships($this->productRepository->query()->orderBy('updated_at', 'desc'))->get();
             return ProductSummary::collection($products);
         });
     }
