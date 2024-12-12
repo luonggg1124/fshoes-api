@@ -27,10 +27,8 @@ class AuthService extends UserService
         $credential = [
             'email' => $data['email'],
             'password' => $data['password']
-        ];
-       
-        $code = Cache::tags(['verifyEmailCode'])->get('verify_email_code');
-        
+        ];       
+        $code = Cache::tags(['verifyEmailCode'])->get('verify_email_code-email='.$data['email']);
         if(empty($data['verify_code']) || $data['verify_code'] != $code){
             throw new InvalidArgumentException('Invalid verify code');
         }
@@ -73,7 +71,7 @@ class AuthService extends UserService
     }
     public function getCode(string $email){
         $code = random_int(1234567, 9876543);
-        Cache::tags(['verifyEmailCode'])->put('verify_email_code',$code,300);
+        Cache::tags(['verifyEmailCode'])->put('verify_email_code-email='.$email,$code,300);
         SendAuthCode::dispatch(code: $code, email: $email);
         return $code;
     }
@@ -85,7 +83,6 @@ class AuthService extends UserService
         );
     }
     public function changePassword($currenPassword,$newPassword){
-        
         $user = auth()->user();
         $isValid = Hash::check( $currenPassword,$user->password);
         if(!$isValid) throw new InvalidArgumentException("Wrong current password");
@@ -103,14 +100,14 @@ class AuthService extends UserService
         $user = $this->userRepository->findByColumnOrEmail($email);
         if(!$user) throw new ModelNotFoundException('Email not found in the system!');
        
-        $code = Cache::tags(['verifyEmailCode'])->get('verify_email_code');
+        $code = Cache::tags(['verifyEmailCode'])->get('verify_email_code-email='.$email);
         
         if($code != $verifyCode){
             throw new InvalidArgumentException("Wrong verification code");
         }
         $user->password = Hash::make($password);
         $user->save();
-        Cache::tags(['verifyEmailCode'])->forget('verify_email_code');
+        Cache::tags(['verifyEmailCode'])->forget('verify_email_code-email='.$email);
         return true;
 
     }
