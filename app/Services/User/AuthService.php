@@ -94,12 +94,8 @@ class AuthService extends UserService
         $user = $this->userRepository->findByColumnOrEmail($email);
         if(!$user) throw new ModelNotFoundException('Email not found in the system!');
         $isset =Cache::tags(['verifyEmailCode'])->get('verify_email_code-email='.$email);
-        if(!$isset){
-            $this->getCode($email);
-        }else{
-            throw new TooManyRequestsHttpException(60,'Email already sent verification code');
-        }
-        return true;
+        $this->getCode($email);
+        return $isset;
     }
     public function resetPassword($verifyCode,string $email ,string $password){
         $user = $this->userRepository->findByColumnOrEmail($email);
