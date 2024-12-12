@@ -85,16 +85,16 @@ class AuthController extends Controller
             if ($th instanceof ValidationException) {
 
                 return response()->json([
-                    'error' => $th->getMessage()
+                    'message' => $th->getMessage()
                 ], 422);
             }
             if ($th instanceof InvalidArgumentException) {
                 return response()->json([
-                    'error' => $th->getMessage()
+                    'message' => $th->getMessage()
                 ], 422);
             }
             return response()->json([
-                'error' => $th->getMessage()
+                'message' => $th->getMessage()
             ], 500);
         }
     }
@@ -130,7 +130,7 @@ class AuthController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Please check your password again!',
-                ], 500);
+                ], status: 422);
             }
             if ($throwable instanceof InvalidArgumentException) {
                 return response()->json([

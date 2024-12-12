@@ -36,6 +36,12 @@ class CategoryController extends Controller
            'categories' => $this->categoryService->mains()
         ]);
     }
+    public function displayAtHomePage(){
+        return response()->json([
+            'status' => true,
+            'category' => $this->categoryService->displayHomePage()
+        ]);
+    }
     /**
      * Store a newly created resource in storage.
      */

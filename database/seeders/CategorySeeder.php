@@ -26,10 +26,13 @@ class CategorySeeder extends Seeder
             $category->save();
         }
         $homePage = ['Trend This Week','Best Selling','Shop By Sport'];
+        $count = 1;
         foreach ($homePage as $c) {
+            
             $category = Category::query()->create([
                 'name' => $c,
-                'is_main' => 2
+                'is_main' => 2,
+                'display' => $count++
             ]);
             $slug = Str::slug($c).'.'.$category->id;
             $category->slug = $slug;

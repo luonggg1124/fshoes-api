@@ -73,58 +73,8 @@ class ProductService implements ProductServiceInterface
             return ProductResource::collection($products);
         });
     }
-    public function displayHomeProducts(){
-        $allQuery = http_build_query(request()->query());
-        return Cache::tags([$this->cacheTag])->remember('display-home-products?' . $allQuery, 60, function () {
-            $serial = request()->query('serial');
-            $validator = Validator::make(['number' => $serial], [
-                'number' => 'numeric', 
-            ]);
-            if($validator->failed()){
-                $serial = 1;
-            }
-            $products = $this->productRepository->query()->with(['categories'])
-                ->whereHas('categories', function ($query) use ( $serial){
-                    $query->where('categories.display',  $serial);
-                });
-            return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns: $this->columns))->take(15)->get());
-        });
-    }
-    public function thisWeekProducts()
-    {
-        $allQuery = http_build_query(request()->query());
-        return Cache::tags([$this->cacheTag])->remember('this-week-products?' . $allQuery, 60, function () {
-            $products = $this->productRepository->query()->with(['categories'])
-                ->whereHas('categories', function ($query) {
-                    $query->where('categories.display', 1);
-                });
-            return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns: $this->columns))->take(15)->get());
-        });
-    }
-
-    public function shopBySports()
-    {
-        $allQuery = http_build_query(request()->query());
-        return Cache::tags([$this->cacheTag])->remember('shop-by-sports?' . $allQuery, 60, function () {
-            $products = $this->productRepository->query()->with(['categories'])
-                ->whereHas('categories', function ($query) {
-                    $query->where('categories.display', 2);
-                });
-            return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns: $this->columns))->get());
-        });
-    }
-
-    public function bestSellingProducts()
-    {
-        $allQuery = http_build_query(request()->query());
-        return Cache::tags([$this->cacheTag])->remember('best-selling-products' . $allQuery, 60, function () {
-            $products = $this->productRepository->query()->with(['categories'])
-                ->whereHas('categories', function ($query) {
-                    $query->where('categories.display', 3);
-                });
-            return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns: $this->columns))->take(15)->get());
-        });
-    }
+    
+   
 
     public function findById(int|string $id)
     {
