@@ -53,7 +53,10 @@ class ProductService implements ProductServiceInterface
         $allQuery = http_build_query(request()->query());
         return Cache::tags([$this->cacheTag])->remember('all/products?' . $allQuery, 60, function () {
             $perPage = request()->query('per_page');
-            $products = $this->loadRelationships($this->productRepository->query()->sortByColumn(columns: $this->columns))->paginate(is_numeric($perPage) ? $perPage : 15);
+            $searchKey = request()->query('search');
+            $products = $this->loadRelationships($this->productRepository->query()->when($searchKey,function($q) use ($searchKey){
+                $q->where('name', 'like', '%'. $searchKey. '%');
+            })->sortByColumn(columns: $this->columns))->paginate(is_numeric($perPage) ? $perPage : 15);
             return [
                 'paginator' => $this->paginate($products),
                 'data' => ProductResource::collection(
