@@ -117,7 +117,7 @@ class CategoryService implements CategoryServiceInterface
     {
         
         $category = $this->categoryRepository->find($id);
-        if (!$category) throw new ModelNotFoundException('Category not found');
+        if (!$category) throw new ModelNotFoundException(__('messages.error-not-found'));
         if ($products) $category->products()->syncWithoutDetaching($products);
         Cache::tags($this->cacheTag)->flush();
         return new CategoryResource($this->loadRelationships($category));
@@ -125,7 +125,7 @@ class CategoryService implements CategoryServiceInterface
     public function deleteProducts(int|string $id, array $products = [])
     {
         $category = $this->categoryRepository->find($id);
-        if (!$category) throw new ModelNotFoundException('Category not found');
+        if (!$category) throw new ModelNotFoundException(__('messages.error-not-found'));
         if ($products) $category->products()->detach($products);
         Cache::tags($this->cacheTag)->flush();
         return new CategoryResource($this->loadRelationships($category));
@@ -138,7 +138,7 @@ class CategoryService implements CategoryServiceInterface
     ])
     {
         $category = $this->categoryRepository->create($data);
-        if (!$category) throw new \Exception('Category not found');
+        if (!$category) throw new \Exception(__('messages.error-not-found'));
         $listPar = [];
         if (count($option['parents']) > 0) {
             foreach ($option['parents'] as $parent) {
@@ -159,7 +159,7 @@ class CategoryService implements CategoryServiceInterface
     ])
     {
         $category = $this->categoryRepository->find($id);
-        if (!$category) throw new ModelNotFoundException('Category not found');
+        if (!$category) throw new ModelNotFoundException(__('messages.error-not-found'));
         if ($category->is_main) return new CategoryResource($this->loadRelationships($category));
         $category->update($data);
         $listPar = [];
@@ -180,7 +180,7 @@ class CategoryService implements CategoryServiceInterface
 
         $category = $this->categoryRepository->find($id);
         if (!$category) {
-            throw new ModelNotFoundException('Category not found');
+            throw new ModelNotFoundException(__('messages.error-not-found'));
         }
         if($category->is_main || $category->display){
             throw new AuthorizationException('Forbidden'); 
@@ -195,7 +195,7 @@ class CategoryService implements CategoryServiceInterface
 
         $category = $this->categoryRepository->find($id);
         if (!$category) {
-            throw new ModelNotFoundException('Category not found');
+            throw new ModelNotFoundException(__('messages.error-not-found'));
         }
         if($category->is_main || $category->display){
             throw new AuthorizationException('Forbidden'); 
