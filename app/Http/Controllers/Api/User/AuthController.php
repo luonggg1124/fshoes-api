@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Api\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ChangePasswordRequest;
 use App\Http\Requests\User\CreateUserRequest;
+
 use App\Services\User\AuthService;
 use Exception;
-use Illuminate\Auth\AuthenticationException;
+
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
@@ -84,16 +85,16 @@ class AuthController extends Controller
             if ($th instanceof ValidationException) {
 
                 return response()->json([
-                    'error' => $th->getMessage()
+                    'message' => $th->getMessage()
                 ], 422);
             }
             if ($th instanceof InvalidArgumentException) {
                 return response()->json([
-                    'error' => $th->getMessage()
+                    'message' => $th->getMessage()
                 ], 422);
             }
             return response()->json([
-                'error' => $th->getMessage()
+                'message' => $th->getMessage()
             ], 500);
         }
     }
@@ -128,19 +129,31 @@ class AuthController extends Controller
             if ($throwable instanceof JWTException) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Something went wrong',
-                ], 500);
+                    'message' => 'Please check your password again!',
+                ], status: 422);
             }
-            if ($throwable instanceof AuthenticationException) {
+            if ($throwable instanceof InvalidArgumentException) {
                 return response()->json([
                     'status' => false,
                     'message' => $throwable->getMessage(),
-                ], 401);
+                ], 422);
+            }
+            if($throwable instanceof ModelNotFoundException){
+                return response()->json([
+                    'status' => false,
+                    'message' => $throwable->getMessage()
+                ],404);
+            }
+            if($throwable instanceof TooManyRequestsHttpException){
+                return response()->json([
+                   'status' => false,
+                   'message' => $throwable->getMessage()
+                ], 429);
             }
             return response()->json([
                 'status' => false,
-                'message' => $throwable->getMessage(),
-            ], 422);
+                'message' => "Something went wrong!",
+            ], 500);
         }
     }
 

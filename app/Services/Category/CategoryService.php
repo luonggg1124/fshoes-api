@@ -9,8 +9,11 @@ use App\Http\Traits\CanLoadRelationships;
 use App\Http\Traits\Cloudinary;
 use App\Http\Traits\Paginate;
 use App\Repositories\Category\CategoryRepositoryInterface;
+use App\Repositories\Product\ProductRepositoryInterface;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 
@@ -20,7 +23,10 @@ class CategoryService implements CategoryServiceInterface
     protected $cacheTag = 'categories';
     private array $relations = ['products', 'parents', 'children'];
     private array $columns = ['id', 'name', 'slug', 'parent_id', 'created_at', 'updated_at'];
-    public function __construct(protected CategoryRepositoryInterface $categoryRepository) {}
+    public function __construct(
+        protected CategoryRepositoryInterface $categoryRepository,
+        protected ProductRepositoryInterface $productRepository
+        ) {}
 
     public function getAll()
     {
@@ -53,6 +59,46 @@ class CategoryService implements CategoryServiceInterface
                     $categories->items()
                 ),
             ];
+        });
+    }
+    public function displayHomePage(){
+        $allQuery = http_build_query(request()->query());
+        return Cache::tags([$this->cacheTag])->remember('display-home-products?' . $allQuery, 60, function () {
+            $serial = request()->query('serial');
+            $quantity = request()->query('quantity');
+            $validator = Validator::make(['number' => $serial,'quantity' => $quantity], [
+                'number' => 'numeric', 
+                'quantity'=> 'numeric'
+            ]);
+            if(!$serial){
+                $serial = 1;
+            }
+            if(!$quantity){
+                $quantity = 15;
+            }
+            if($validator->failed())
+            {
+                $serial = 1;
+                $quantity = 15;
+            }
+            $listProduct = [];
+            $category = $this->categoryRepository->query()->with(['products'])->where('display',$serial)->first();
+            $productsInCategory = $category->products;
+            $listProduct = [...$productsInCategory];
+            if(count($productsInCategory) < $quantity){
+                $listAllProducts = $this->productRepository->all();
+                $arrayId = $category->products()->orderBy('qty_sold','desc')->get()->pluck('id');
+                foreach($listAllProducts as $p){
+                    if(!in_array($p->id, [...$arrayId])){
+                        $listProduct[] = $p; 
+                    }
+                    if(count($listProduct) == $quantity){
+                        break;
+                    }
+                }
+            }
+            $category->products = $listProduct;
+            return CategoryResource::make($category);
         });
     }
     public function findById(int|string $id)
@@ -136,6 +182,10 @@ class CategoryService implements CategoryServiceInterface
         if (!$category) {
             throw new ModelNotFoundException(__('messages.error-not-found'));
         }
+        if($category->is_main || $category->display){
+            throw new AuthorizationException('Forbidden'); 
+        }
+        
         $category->delete($id);
         Cache::tags($this->cacheTag)->flush();
         return true;
@@ -147,6 +197,10 @@ class CategoryService implements CategoryServiceInterface
         if (!$category) {
             throw new ModelNotFoundException(__('messages.error-not-found'));
         }
+        if($category->is_main || $category->display){
+            throw new AuthorizationException('Forbidden'); 
+        }
+        
         $category->forceDelete($id);
         Cache::tags($this->cacheTag)->flush();
         return true;

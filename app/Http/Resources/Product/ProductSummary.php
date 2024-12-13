@@ -16,11 +16,12 @@ class ProductSummary extends JsonResource
     {
         return [
             'id' => $this->id,
+            'slug' => $this->slug,
             'image_url' => $this->image_url,
             'name' => $this->name,
             'stock_qty' => $this->stock_qty,
             'price' => $this->price,
-            'variations' => VariationResource::collection($this->variations)
+            'variations' => VariationResource::collection($this->whenLoaded('variations'))
         ];
     }
 }

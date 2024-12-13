@@ -63,24 +63,9 @@ class ProductController extends Controller
          }
 
     }
-    public function thisWeekProducts(){
-        return response()->json([
-            'status' => true,
-            'products' => $this->productService->thisWeekProducts()
-        ]);
-    }
-    public function bestSellingProducts(){
-        return response()->json([
-            'status' => true,
-            'products' => $this->productService->bestSellingProducts()
-        ]);
-    }
-    public function shopBySports(){
-        return response()->json([
-            'status' => true,
-            'products' => $this->productService->shopBySports()
-        ]);
-    }
+    
+    
+    
 
     public function createAttributeValues(int $id,Request $request):Response|JsonResponse
     {

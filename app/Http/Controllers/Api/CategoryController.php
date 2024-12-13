@@ -6,13 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\CreateCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Services\Category\CategoryServiceInterface;
-
+use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class CategoryController extends Controller
 {
@@ -32,6 +34,12 @@ class CategoryController extends Controller
         return response()->json([
             'status' => true,
            'categories' => $this->categoryService->mains()
+        ]);
+    }
+    public function displayAtHomePage(){
+        return response()->json([
+            'status' => true,
+            'category' => $this->categoryService->displayHomePage()
         ]);
     }
     /**
@@ -194,8 +202,50 @@ class CategoryController extends Controller
                 'status' => true,
                 'message' => __('messages.delete-success'),
             ]);
-        }catch (\Exception $e){
-            return response()->json(['error' => $e->getMessage()], 500);
+        }catch (ModelNotFoundException $e){
+            logger('error',[
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return response()->json([
+                'status' => false,
+                'error' => $e->getMessage()
+            ], 404);
+        }catch(AuthorizationException $e){
+            logger('error',[
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return response()->json([
+               'status' => false,
+                'error' => $e->getMessage()
+            ], 403);
+        }catch(Exception $e){
+            logger('error',[
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return response()->json([
+                'status' => false,
+                'error' => 'Something went wrong'
+            ], 500);
+        }catch(Throwable $throw){
+            logger('error',[
+                'message' => $throw->getMessage(),
+                'file' => $throw->getFile(),
+                'line' => $throw->getLine(),
+                'trace' => $throw->getTraceAsString(),
+            ]);
+            return response()->json([
+                'status' => false,
+                'error' => 'System Error',
+            ], 500);
         }
 
     }
@@ -207,8 +257,50 @@ class CategoryController extends Controller
             return response()->json([
                 'message' => __('messages.delete-success'),
             ]);
-        }catch (\Exception $e){
-            return response()->json(['error' => $e->getMessage()], 500);
+        }catch (ModelNotFoundException $e){
+            logger('error',[
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return response()->json([
+                'status' => false,
+                'error' => $e->getMessage()
+            ], 404);
+        }catch(AuthorizationException $e){
+            logger('error',[
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return response()->json([
+               'status' => false,
+                'error' => $e->getMessage()
+            ], 403);
+        }catch(Exception $e){
+            logger('error',[
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return response()->json([
+                'status' => false,
+                'error' => 'Something went wrong'
+            ], 500);
+        }catch(Throwable $throw){
+            logger('error',[
+                'message' => $throw->getMessage(),
+                'file' => $throw->getFile(),
+                'line' => $throw->getLine(),
+                'trace' => $throw->getTraceAsString(),
+            ]);
+            return response()->json([
+                'status' => false,
+                'error' => 'System Error',
+            ], 500);
         }
     }
 

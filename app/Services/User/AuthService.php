@@ -5,7 +5,6 @@ namespace App\Services\User;
 use App\Http\Resources\User\UserResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Jobs\SendAuthCode;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -17,18 +16,20 @@ use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 class AuthService extends UserService
 {
     use CanLoadRelationships;
-    public function checkEmail(string $email){
+    public function checkEmail(string $email)
+    {
         $user = $this->userRepository->findByColumnOrEmail($email);
-        if(!$user) return false;
+        if (!$user) return false;
         return true;
     }
-    public function register(array $data, array $options = ['profile' => []]){
+    public function register(array $data, array $options = ['profile' => []])
+    {
         $credential = [
             'email' => $data['email'],
             'password' => $data['password']
-        ];       
-        $code = Cache::tags(['verifyEmailCode'])->get('verify_email_code-email='.$data['email']);
-        if(empty($data['verify_code']) || $data['verify_code'] != $code){
+        ];
+        $code = Cache::tags(['verifyEmailCode'])->get('verify_email_code-email=' . $data['email']);
+        if (empty($data['verify_code']) || $data['verify_code'] != $code) {
             throw new InvalidArgumentException('Invalid verify code');
         }
         $user = DB::transaction(function () use ($data, $options) {
@@ -45,8 +46,8 @@ class AuthService extends UserService
             $this->createProfile($user->id, $options['profile']);
             return $user;
         }, 3);
-        if($user)
-        return $this->login($credential);
+        if ($user)
+            return $this->login($credential);
         else throw new Exception('something went wrong');
     }
     public function login(array $credentials = [
@@ -55,8 +56,16 @@ class AuthService extends UserService
     ])
     {
         $user = $this->userRepository->findByColumnOrEmail($credentials['email']);
-        if(!$user) throw new ModelNotFoundException('User not found');
-        if(!Hash::check($credentials['password'], $user->password)) throw new AuthenticationException('Wrong password');
+        if (!$user) throw new ModelNotFoundException('User not found');
+        $count = Cache::tags(['auth'])->get('password_wrong_limit?email=' . $credentials['email']);
+        if ($count == 5) {
+            throw new TooManyRequestsHttpException(5 * 60, 'You have entered the wrong password too many times, please enter again after 5 minutes');
+        }
+        if (!Hash::check($credentials['password'], $user->password)) {
+
+            Cache::tags(['auth'])->put('password_wrong_limit?email=' . $credentials['email'], $count ? $count + 1 : 1, 5 * 60);
+            throw new InvalidArgumentException('Wrong password');
+        };
         $token = auth()->login($user);
         $refresh_token = auth()->claims([
             'exp' => now()->addDays(30)->timestamp,
@@ -68,10 +77,12 @@ class AuthService extends UserService
             'user' => new UserResource($user)
         ];
     }
-    public function getCode(string $email){
-       
+    public function getCode(string $email)
+    {
+
         $code = random_int(1234567, 9876543);
-        Cache::tags(['verifyEmailCode'])->put('verify_email_code-email='.$email,$code,300);
+
+        Cache::tags(['verifyEmailCode'])->put('verify_email_code-email=' . $email, $code, 5 * 60);
         SendAuthCode::dispatch(code: $code, email: $email);
         return $code;
     }
@@ -82,35 +93,34 @@ class AuthService extends UserService
             $this->loadRelationships($user)
         );
     }
-    public function changePassword($currenPassword,$newPassword){
+    public function changePassword($currenPassword, $newPassword)
+    {
         $user = auth()->user();
-        $isValid = Hash::check( $currenPassword,$user->password);
-        if(!$isValid) throw new InvalidArgumentException("Wrong current password");
+        $isValid = Hash::check($currenPassword, $user->password);
+        if (!$isValid) throw new InvalidArgumentException("Wrong current password");
         $user->password = Hash::make($newPassword);
         $user->save();
         return true;
     }
-    public function sendCodeForgotPassword(string $email){
+    public function sendCodeForgotPassword(string $email)
+    {
         $user = $this->userRepository->findByColumnOrEmail($email);
-        if(!$user) throw new ModelNotFoundException('Email not found in the system!');
-        $isset =Cache::tags(['verifyEmailCode'])->get('verify_email_code-email='.$email);
-        if(!$isset){
-            $this->getCode($email);
-        }else{
-            throw new TooManyRequestsHttpException(60,'Email already sent verification code');
-        }
-        return true;
+        if (!$user) throw new ModelNotFoundException('Email not found in the system!');
+
+        $code = $this->getCode($email);
+        return $code;
     }
-    public function resetPassword($verifyCode,string $email ,string $password){
+    public function resetPassword($verifyCode, string $email, string $password)
+    {
         $user = $this->userRepository->findByColumnOrEmail($email);
-        if(!$user) throw new ModelNotFoundException('Email not found in the system!');
-        $code = Cache::tags(['verifyEmailCode'])->get('verify_email_code-email='.$email);
-        if($code != $verifyCode){
+        if (!$user) throw new ModelNotFoundException('Email not found in the system!');
+        $code = Cache::tags(['verifyEmailCode'])->get('verify_email_code-email=' . $email);
+        if ($code != $verifyCode) {
             throw new InvalidArgumentException("Wrong verification code");
         }
         $user->password = Hash::make($password);
         $user->save();
-        Cache::tags(['verifyEmailCode'])->forget('verify_email_code-email='.$email);
+        Cache::tags(['verifyEmailCode'])->forget('verify_email_code-email=' . $email);
         return true;
     }
 }

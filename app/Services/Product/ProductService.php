@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Mockery\Exception;
 
@@ -72,42 +73,8 @@ class ProductService implements ProductServiceInterface
             return ProductResource::collection($products);
         });
     }
-
-    public function thisWeekProducts()
-    {
-        $allQuery = http_build_query(request()->query());
-        return Cache::tags([$this->cacheTag])->remember('this-week-products?' . $allQuery, 60, function () {
-            $products = $this->productRepository->query()->with(['categories'])
-                ->whereHas('categories', function ($query) {
-                    $query->where('categories.name', 'like', 'Trend This Week');
-                });
-            return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns: $this->columns))->take(15)->get());
-        });
-    }
-
-    public function shopBySports()
-    {
-        $allQuery = http_build_query(request()->query());
-        return Cache::tags([$this->cacheTag])->remember('shop-by-sports?' . $allQuery, 60, function () {
-            $products = $this->productRepository->query()->with(['categories'])
-                ->whereHas('categories', function ($query) {
-                    $query->where('categories.name', 'like', 'Shop By Sport');
-                });
-            return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns: $this->columns))->get());
-        });
-    }
-
-    public function bestSellingProducts()
-    {
-        $allQuery = http_build_query(request()->query());
-        return Cache::tags([$this->cacheTag])->remember('best-selling-products' . $allQuery, 60, function () {
-            $products = $this->productRepository->query()->with(['categories'])
-                ->whereHas('categories', function ($query) {
-                    $query->where('categories.name', 'Best Selling');
-                });
-            return ProductResource::collection($this->loadRelationships($products->sortByColumn(columns: $this->columns))->take(15)->get());
-        });
-    }
+    
+   
 
     public function findById(int|string $id)
     {
@@ -267,6 +234,7 @@ class ProductService implements ProductServiceInterface
     {
         $product = $this->productRepository->find($id);
         if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
+        
         $product->delete();
         Cache::tags([$this->cacheTag])->flush();
         return true;
@@ -341,10 +309,13 @@ class ProductService implements ProductServiceInterface
     public function findByAttributeValues()
     {
         $allQuery = http_build_query(request()->query());
+       
         return Cache::tags([$this->cacheTag])->remember('find-by-attribute-values?' . $allQuery, 60, function () {
             $perPage = request()->query('per_page');
             $attributeQuery = request()->query('attributes');
             $categoryId = request()->query('categoryId');
+            $search = request()->query('search');
+            
             $arrAttrVal = [];
             if (empty($categoryId)) {
                 $categoryId = '';
@@ -365,7 +336,10 @@ class ProductService implements ProductServiceInterface
                         $q->whereIn('attribute_value_id', $arrAttrVal);
                     });
                 });
-            })->when($category, function ($q) use ($categoryId) {
+            })->when($search,function ($q) use ($search){
+                $q->where('name', 'like', '%'. $search. '%');
+            })
+            ->when($category, function ($q) use ($categoryId) {
                 $q->whereHas('categories', function ($query) use ($categoryId) {
                     $query->where('category_id', $categoryId);
                 });
@@ -375,6 +349,7 @@ class ProductService implements ProductServiceInterface
                 'data' => ProductResource::collection(
                     $products->items()
                 ),
+                'category' =>  $category
             ];
         });
     }
@@ -382,7 +357,7 @@ class ProductService implements ProductServiceInterface
     {
         $allQuery = http_build_query(request()->query());
         return Cache::tags([$this->cacheTag])->remember('all-summary-products?'.$allQuery, 60, function () {
-            $products = $this->productRepository->query()->orderBy('updated_at', 'desc')->get();
+            $products = $this->loadRelationships($this->productRepository->query()->orderBy('updated_at', 'desc'))->get();
             return ProductSummary::collection($products);
         });
     }

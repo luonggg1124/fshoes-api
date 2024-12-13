@@ -114,8 +114,9 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     Route::get('vouchers/code/{code}', [VouchersController::class, 'getVoucherByCode']);
 });
-Route::post('forgot/password', [AuthController::class, 'forgotPassword'])->name('forgotPassword');
-Route::post('reset/password', [AuthController::class, 'resetPassword'])->name('resetPassword');;
+
+Route::middleware('customize_throttle:1,1')->post('forgot/password', [AuthController::class, 'forgotPassword'])->name('forgotPassword');
+Route::post('reset/password', [AuthController::class, 'resetPassword'])->name('resetPassword');
 Route::post('auth/refresh/token', [AuthController::class, 'refresh']);
 Route::post('/check/email', [AuthController::class, 'checkEmail']);
 Route::post('login', [AuthController::class, 'login']);
@@ -153,9 +154,8 @@ Route::get('success-paypal', [PaymentOnline::class, 'successPaypal'])->name('suc
 Route::get('error-paypal', [PaymentOnline::class, 'errorPaypal'])->name('errorPaypal');
 
 //Product Start
-Route::get('trend/this-week/products', [ProductController::class, 'thisWeekProducts'])->name('this.week.products');
-Route::get('best-selling/products', [ProductController::class, 'bestSellingProducts'])->name('best.selling.products');
-Route::get('shop-by-sports/products', [ProductController::class, 'shopBySports'])->name('shop.by.sports');
+Route::get('display/home-page/products', [CategoryController::class, 'displayAtHomePage'])->name('display.home.page');
+
 Route::get('product/detail/{id}', [ProductController::class, 'productDetail'])->name('product.detail');
 Route::apiResource('product', ProductController::class)->parameter('product', 'id')->only('index', 'show');
 Route::get('products/category/{categoryId}', [ProductController::class, 'productsByCategory'])->name('products.category');

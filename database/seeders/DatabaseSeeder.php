@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
            GroupSeeder::class
         ]);
         User::factory()->create([
-            'email' => 'louis@gmail.com',
+            'email' => 'luongnm1124@gmail.com',
             'nickname' => 'louis.ng',
             'group_id'=>'1',
             'is_admin' => true

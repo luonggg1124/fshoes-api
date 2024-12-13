@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique()->nullable();
             $table->boolean('is_main')->default(false);
+            $table->integer('display')->unique()->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
