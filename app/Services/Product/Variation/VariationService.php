@@ -19,6 +19,7 @@ class VariationService implements VariationServiceInterface
 {
     use CanLoadRelationships, Paginate, Cloudinary;
     protected $cacheTag = 'variations';
+    protected $cacheTagProduct = 'products';
     private array $relations = ['product', 'images', 'values'];
     private array $columns = [
         'id',
@@ -36,6 +37,7 @@ class VariationService implements VariationServiceInterface
         protected VariationRepositoryInterface $repository,
         protected ProductRepositoryInterface   $productRepository
     ) {}
+    
 
     public function index(int|string $pid)
     {
@@ -103,7 +105,7 @@ class VariationService implements VariationServiceInterface
             $variation->save();
             return $variation;
         });
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,$this->cacheTagProduct])->flush();
         return new VariationResource($this->loadRelationships($variation));
     }
 
@@ -124,7 +126,7 @@ class VariationService implements VariationServiceInterface
             $list[] = $variation;
         }
         if (empty($list) || count($list) < 1) throw new \Exception('Can not create variations');
-        Cache::tags([$this->cacheTag])->flush();
+       
         return VariationResource::collection($list);
     }
 
@@ -147,7 +149,7 @@ class VariationService implements VariationServiceInterface
             $variation->save();
             return $variation;
         });
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,$this->cacheTagProduct])->flush();
         return new VariationResource($this->loadRelationships($variation));
     }
     public function destroy(int|string $pid, int|string $id)
@@ -157,7 +159,7 @@ class VariationService implements VariationServiceInterface
         $variation = $this->repository->find($id);
         if (!$variation) throw new ModelNotFoundException('Variation not found');
         $variation->delete();
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,$this->cacheTagProduct])->flush();
         return true;
     }
     protected function slug(int|string $id)
