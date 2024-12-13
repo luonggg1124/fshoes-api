@@ -44,7 +44,7 @@ class VariationController extends Controller
             if(empty($variations) || !is_array($variations) ||count($variations) < 1){
                 return response()->json([
                     'status' => false,
-                    'message' => 'Malformed variant.'
+                    'message' => __('messages.product.error-variant.'),
                 ],400);
             }
             $list = $this->service->createMany($pid,$variations);
@@ -67,7 +67,7 @@ class VariationController extends Controller
             }
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong.'
+                'message' => __('messages.error-internal-server'),
             ],500);
         }
     }
@@ -83,7 +83,7 @@ class VariationController extends Controller
             ]);
             return response()->json([
                 'status' => true,
-                'message' => 'Variation updated successfully.',
+                'message' => __('messages.update-success'),
                 'variation' => $variation
             ],201);
         }catch (\Throwable $throw){
@@ -101,7 +101,7 @@ class VariationController extends Controller
             }
             return \response()->json([
                 'status' => false,
-               'message' => 'Something went wrong.'
+               'message' => __('messages.error-internal-server'),
             ],500);
         }
     }
@@ -110,7 +110,7 @@ class VariationController extends Controller
             $success = $this->service->destroy($pid, $id);
             return \response()->json([
                 'status' => $success,
-                'message' => 'Deleted successfully!'
+                'message' => __('messages.delete-success'),
             ]);
         }catch (\Throwable $throwable) {
             Log::error(

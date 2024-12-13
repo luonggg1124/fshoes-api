@@ -45,7 +45,7 @@ class ProductController extends Controller
                  'categories' => $categories
              ]);
              return response()->json([
-                 'message' => 'Product created successfully',
+                 'message' => __('messages.created-success'),
                  'status' => true,
                  'product' => $product
              ],201);
@@ -57,7 +57,7 @@ class ProductController extends Controller
              ]
              );
              return response()->json([
-                 'message' => "Something went wrong!",
+                 'message' => __('messages.error-internal-server'),
                  'status' => false,
              ],500);
          }
@@ -73,18 +73,18 @@ class ProductController extends Controller
             if(empty($request->attribute)){
                 return \response()->json([
                     'status' => false,
-                    'error' => 'The attributes is required'
+                    'error' => __('messages.error-required'),
                 ],400);
             }
             if(empty($request->values)){
                 return \response()->json([
                     'status' => false,
-                    'error' => 'The values is required'
+                    'error' => __('messages.error-required'),
                 ],400);
             }elseif (!is_array($request->values)){
                 return \response()->json([
                     'status' => false,
-                    'error' => 'The values must be an array'
+                    'error' => __('messages.error-value'),
                 ],400);
             }
             $attribute = $request->attribute;
@@ -172,7 +172,7 @@ class ProductController extends Controller
                 'categories' => $categories
             ]);
             return response()->json([
-                'message' => 'Update product successfully',
+                'message' => __('messages.update-success'),
                 'status' => true,
                 'product' => $product
             ],201);
@@ -184,7 +184,7 @@ class ProductController extends Controller
             ]
             );
             return response()->json([
-                'message' => 'Something went wrong!',
+                'message' => __('messages.error-internal-server'),
                 'status' => false,
             ],500);
         }
@@ -200,7 +200,7 @@ class ProductController extends Controller
             $status = $request->status;
             $product = $this->productService->updateStatus($status,$id);
             return response()->json([
-                'message' => 'Update product status successfully',
+                'message' => __('messages.update-success'),
                 'status' => true,
             ],201);
         }catch (\Throwable $throwable){
@@ -211,7 +211,7 @@ class ProductController extends Controller
             ]
             );
             return response()->json([
-                'message' => 'Some thing went wrong',
+                'message' => __('messages.error-internal-server'),
                 'status' => false
             ],500);
         }
@@ -226,7 +226,7 @@ class ProductController extends Controller
             $this->productService->destroy($id);
             return \response()->json([
                 'status' => true,
-                'message' => 'Deleted successfully'
+                'message' => __('messages.delete-success'),
             ]);
         }catch (\Throwable $throw){
             Log::error(
@@ -243,7 +243,7 @@ class ProductController extends Controller
             }
             return \response()->json([
                 'status' => false,
-                'error' => 'Something went wrong.Please try later!'
+                'error' => __('messages.error-internal-server'),
             ],500);
         }
     }
@@ -276,7 +276,7 @@ class ProductController extends Controller
             return \response()->json([
                 'status' => true,
                 'product' => $product,
-                'message' => 'Restore successfully'
+                'message' => __('messages.restore-success'),
             ],201);
         }catch (ModelNotFoundException $e){
             return response()->json([
@@ -290,7 +290,7 @@ class ProductController extends Controller
             $sucess = $this->productService->forceDestroy($id);
             return \response()->json([
                 'status' => $sucess,
-                'message' => 'Deleted successfully',
+                'message' => __('messages.delete-success'),
 
             ]);
         }catch (\Throwable $throwable){
@@ -308,7 +308,7 @@ class ProductController extends Controller
             }
             return response()->json([
                 'status' => false,
-                'error' => 'Something went wrong.Please try later!'
+                'error' => __('messages.error-internal-server'),
             ],500);
         }
     }
