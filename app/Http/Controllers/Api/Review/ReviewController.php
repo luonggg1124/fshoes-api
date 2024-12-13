@@ -37,7 +37,7 @@ class ReviewController extends Controller
         try {
             $review = $this->reviewService->create($request->validated());
             return response()->json([
-                'message' => 'Review created successfully',
+                'message' => __('messages.created-success'),
                 'review' => $review
             ], 201);
         } catch (\Throwable $throw) {
@@ -63,7 +63,7 @@ class ReviewController extends Controller
            }
            return response()->json([
                'status' => false,
-               'message' => "Something went wrong!"
+               'message' => __('messages.error-internal-server'),
            ],500);
         }
     }
@@ -95,7 +95,7 @@ class ReviewController extends Controller
             $review = $this->reviewService->update($id, $request->validated());
             return response()->json([
                 'status' => true,
-                'message' => 'Review created successfully',
+                'message' => __('messages.created-success'),
                 'review' => $review
             ], 201);
         } catch (\Exception $e) {
@@ -119,7 +119,7 @@ class ReviewController extends Controller
             $this->reviewService->delete($id);
             return response()->json([
                 'status' => true,
-                'message' => 'Review deleted successfully',
+                'message' => __('messages.delete-success'),
             ]);
         } catch (\Throwable $throw) {
             if($throw instanceof ModelNotFoundException)
@@ -137,7 +137,7 @@ class ReviewController extends Controller
             }
             return response()->json([
                 'status' => false,
-                'message' => "Something went wrong!"
+                'message' => __('messages.error-internal-server'),
             ],500);
         }
     }
@@ -149,7 +149,7 @@ class ReviewController extends Controller
             $likesCount = $this->reviewService->toggleLike($review_id, $user_id);
             return response()->json([
                 'status' => true,
-                'message' => 'Like status toggled',
+                'message' => __('messages.created-success'),
                 'likes_count' => $likesCount,
             ], 200);
         } catch (\Exception $e) {
@@ -182,7 +182,7 @@ class ReviewController extends Controller
             }
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong!'
+                'message' => __('messages.error-internal-server'),
             ],500);
         }
     }

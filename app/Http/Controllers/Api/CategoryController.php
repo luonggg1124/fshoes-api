@@ -45,7 +45,7 @@ class CategoryController extends Controller
                'parents' => $request->parents
             ]);
             return response()->json([
-                'message' => 'Category created successfully',
+                'message' => __('messages.created-success'),
                 'category' => $category
             ],201);
         }catch (\Throwable $throw){
@@ -64,7 +64,7 @@ class CategoryController extends Controller
             }
             return response()->json([
                 'status' => false,
-                'error' => 'Something went wrong'
+                'error' => __('messages.error-internal-server')
             ], 500);
         }
     }
@@ -74,13 +74,13 @@ class CategoryController extends Controller
             $products = $request->products;
             if(!$products || !is_array($products)) return response()->json([
                 'status' => false,
-                'error' => 'Products not found'
+                'error' =>__('messages.error-not-found')
             ],422);
 
             $category = $this->categoryService->addProducts($id,$products);
             return response()->json([
                 'status' => true,
-                'message' => 'Products added successfully',
+                'message' => __('messages.created-success'),
                 'category' => $category
             ],201);
         }catch (\Throwable $throw){
@@ -98,7 +98,7 @@ class CategoryController extends Controller
             }
             return response()->json([
                 'status' => false,
-                'error' => 'Something went wrong'
+                'error' => __('messages.error-internal-server'),
             ],500);
         }
     }
@@ -108,13 +108,13 @@ class CategoryController extends Controller
             $products = $request->products;
             if(!$products || !is_array($products)) return response()->json([
                 'status' => false,
-                'error' => 'Products not found'
+                'error' => __('messages.error-not-found'),
             ],422);
 
             $category = $this->categoryService->deleteProducts($id,$products);
             return response()->json([
                 'status' => true,
-                'message' => 'Deleted successfully!',
+                'message' => __('messages.delete-success'),
                 'category' => $category,
             ],201);
         }catch (\Throwable $throw){
@@ -132,7 +132,7 @@ class CategoryController extends Controller
             }
             return response()->json([
                 'status' => false,
-                'error' => 'Something went wrong'
+                'error' => __('messages.error-internal-server'),
             ],500);
         }
     }
@@ -159,7 +159,7 @@ class CategoryController extends Controller
                 'parents'=> $request->parents
             ]);
             return response()->json([
-                'message' => 'Category updated successfully',
+                'message' => __('messages.update-success'),
                 'category' => $category
             ],201);
         }catch (\Throwable $throw){
@@ -178,7 +178,7 @@ class CategoryController extends Controller
             }
             return response()->json([
                 'status' => false,
-                'error' => 'Something went wrong'
+                'error' => __('messages.error-internal-server'),
             ], 500);
         }
     }
@@ -192,7 +192,7 @@ class CategoryController extends Controller
             $this->categoryService->delete($id);
             return response()->json([
                 'status' => true,
-                'message' => 'Category deleted successfully',
+                'message' => __('messages.delete-success'),
             ]);
         }catch (\Exception $e){
             return response()->json(['error' => $e->getMessage()], 500);
@@ -205,7 +205,7 @@ class CategoryController extends Controller
         try {
             $this->categoryService->forceDelete($id);
             return response()->json([
-                'message' => 'The category has been permanently deleted.',
+                'message' => __('messages.delete-success'),
             ]);
         }catch (\Exception $e){
             return response()->json(['error' => $e->getMessage()], 500);

@@ -57,19 +57,19 @@ class ReviewService implements ReviewServiceInterface
 
         // Kiểm tra xem người dùng có thể đánh giá sản phẩm này không
         if (!$this->canReview($user->id, $productId)) {
-            throw new \Exception("You can only review a product after purchasing it and only once per product.");
+            throw new \Exception(__('messages.review.error-review-forbidden'));
         }
 
         // Kiểm tra sản phẩm tồn tại
         $product = $this->productRepository->find($productId);
         if (!$product) {
-            throw new ModelNotFoundException('Product not found');
+            throw new ModelNotFoundException(__('messages.error-not-found'));
         }
 
         $data['user_id'] = $user->id;
         $review = $this->reviewRepository->create($data);
         if (!$review) {
-            throw new Exception('Cannot create review');
+            throw new Exception(__('messages.delete-success'));
         }
         Cache::tags([$this->cacheTag])->flush();
         return new ReviewResource($this->loadRelationships($review));
@@ -82,7 +82,7 @@ class ReviewService implements ReviewServiceInterface
         return Cache::tags([$this->cacheTag])->remember('review/' . $id . '?' . $allQuery, 60, function () use ($id) {
             $review = $this->reviewRepository->find($id);
             if (!$review)
-                throw new ModelNotFoundException('Review not found');
+                throw new ModelNotFoundException(__('messages.error-not-found'));
             return new ReviewResource($this->loadRelationships($review));
         });
     }
@@ -93,7 +93,7 @@ class ReviewService implements ReviewServiceInterface
 
         $review = $this->reviewRepository->find($id);
         if (!$review)
-            throw new ModelNotFoundException('Review not found');
+            throw new ModelNotFoundException(__('messages.error-not-found'));
 
         $updated = $review->update($data);
         Cache::tags([$this->cacheTag])->flush();
@@ -109,7 +109,7 @@ class ReviewService implements ReviewServiceInterface
     {
         $review = $this->reviewRepository->find($id);
         if (!$review)
-            throw new ModelNotFoundException('Review not found');
+            throw new ModelNotFoundException(__('messages.error-not-found'));
         //        $requestUser = \request()->user();
         //        if($requestUser->id != $review->user_id) throw new AuthorizationException("Unauthorized!");
         $review->delete();
@@ -122,7 +122,7 @@ class ReviewService implements ReviewServiceInterface
         return Cache::tags([$this->cacheTag])->remember('reviews-by-product/' . $productId . '?' . $allQuery, 60, function () use ($productId) {
             $product = $this->productRepository->find($productId);
             if (!$product)
-                throw new ModelNotFoundException('Product not found');
+                throw new ModelNotFoundException(__('messages.error-not-found'));
             $reviews = $product->reviews()->with(['user'])->get();
             return ReviewResource::collection($reviews);
         });
@@ -147,7 +147,7 @@ class ReviewService implements ReviewServiceInterface
         // Lấy review từ repository
         $review = $this->reviewRepository->find($review_id);
         if (!$review) {
-            throw new ModelNotFoundException('Review not found');
+            throw new ModelNotFoundException(__('messages.error-not-found'));
         }
 
         return $this->reviewRepository->toggleLike($review_id, $user_id);
