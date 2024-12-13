@@ -228,8 +228,9 @@ class OrderService implements OrderServiceInterface
         $order->reason_cancelled = $data["reason_cancelled"];
         $voucher = $order->voucher;
         if($voucher){
-            dd($voucher);
+            $user->voucherUsed()->detach([$voucher->id]);
         }
+        
         $order->save();
         return new OrdersCollection($order);
     }

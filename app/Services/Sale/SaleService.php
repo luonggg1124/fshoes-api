@@ -85,7 +85,7 @@ class SaleService implements SaleServiceInterface
                 return $sale;
             }
         });
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return new SaleResource($this->loadRelationships($sale));
     }
     public function show(int|string $id)
@@ -114,7 +114,7 @@ class SaleService implements SaleServiceInterface
             }
             return $sale;
         });
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return new SaleResource($this->loadRelationships($sale));
     }
 
@@ -123,7 +123,7 @@ class SaleService implements SaleServiceInterface
         $sale = $this->repository->find($id);
         if (!$sale) throw new ModelNotFoundException('Sale not found');
         $sale->delete();
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return true;
     }
     public function switchActive(int|string $id, bool|null $active)

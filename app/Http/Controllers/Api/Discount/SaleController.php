@@ -14,9 +14,7 @@ use Illuminate\Support\Facades\Log;
 
 class SaleController extends Controller
 {
-    public function __construct(protected SaleServiceInterface $service)
-    {
-    }
+    public function __construct(protected SaleServiceInterface $service) {}
 
     public function index()
     {
@@ -24,12 +22,14 @@ class SaleController extends Controller
             'status' => true,
             'data' => [...$this->service->all()]
         ]);
-
     }
 
     public function stream()
     {
+
         return response()->stream(function () {
+            ignore_user_abort(true);
+            set_time_limit(0);
             while (true) {
                 $sales = $this->service->all();
                 echo "data:" . json_encode($sales) . "\n\n";
@@ -43,7 +43,7 @@ class SaleController extends Controller
         }, 200, [
             'Content-Type' => 'text/event-stream',
             'Cache-Control' => 'no-cache',
-            'Connection' => 'keep-alive',
+            'Connection' => 'close',
         ]);
     }
 
@@ -51,11 +51,11 @@ class SaleController extends Controller
     {
         try {
             $active = $request->active;
-            $this->service->switchActive($id,$active);
+            $this->service->switchActive($id, $active);
             return response()->json([
                 'status' => true,
                 'message' => 'Update successfully!'
-            ],201);
+            ], 201);
         } catch (ModelNotFoundException $e) {
             return \response()->json([
                 'status' => false,
@@ -70,6 +70,7 @@ class SaleController extends Controller
     }
     public function show(int|string $id): Response|JsonResponse
     {
+
         try {
             $discount = $this->service->show($id);
             return response()->json([
@@ -95,14 +96,13 @@ class SaleController extends Controller
                 'message' => 'Something went wrong'
             ], 500);
         }
-
     }
 
     public function store(CreateSaleRequest $request): Response|JsonResponse
     {
 
         try {
-            $data = $request->only(['name', 'type', 'value', 'is_active', 'start_date', 'end_date','applyAll']);
+            $data = $request->only(['name', 'type', 'value', 'is_active', 'start_date', 'end_date', 'applyAll']);
             if (isset($data['type']) && $data['type'] === 'percent') {
                 if ($data['value'] > 99 || $data['value'] < 1) {
                     return response()->json([
@@ -148,7 +148,7 @@ class SaleController extends Controller
     public function update(UpdateSaleRequest $request, int|string $id): Response|JsonResponse
     {
         try {
-            
+
             $data = $request->only(['name', 'type', 'value', 'is_active', 'start_date', 'end_date']);
             if (isset($data['type']) && $data['type'] === 'percent') {
                 if ($data['value'] > 99 || $data['value'] < 1) {
@@ -190,8 +190,6 @@ class SaleController extends Controller
                 'message' => 'Something went wrong'
             ], 500);
         }
-
-
     }
 
     public function destroy(int|string $id): Response|JsonResponse
