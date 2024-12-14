@@ -15,11 +15,13 @@ return [
         
     ],
     'product' => [
-        'error-variant.' =>  'Malformed variant.',
-        
+        'error-variant' =>  'Malformed variant.',
+        'error-create.variant' =>  'Can not create variations',
+        'error-failed-create.variant' =>  'Failed to create variation',
+        'error-not-attribute' =>  'Could not find any attribute value',
     ],
     'post' => [
-        'error-already-exists.' =>  'The title or slug already exists. Please choose a different value.',
+        'error-already-exists' =>  'The title or slug already exists. Please choose a different value.',
         'error-Could-not-found-post' => 'Could not found post',
         'error-delete-post' => 'An error occurred while deleting the post.',
         'error-restoring-post' => 'An error occurred while restoring the post.',
@@ -40,5 +42,23 @@ return [
     'sale' => [
         'error-can-not-sale' =>  'Can not create sale',
         'error-invalid-type' =>  'Invalid type.',
+    ],
+    'order' => [
+        'error-order' =>  'Unauthorized',
+        'error-provider-detail' =>  'Please provide more detail.',
+        'error-cancelled-order' =>  'Order Cancelled Successfully!',
+        'error-payment' =>  'Payment status updated successfully',
+        'error-specific' =>  'Please provide specific reason.',
+        'error-confirmed' =>  'Admin confirmed order',
+        'error-delivered' =>  'Order is being delivered',
+        'error-was-delivered' =>  'Order was delivered',
+        'error-processing' =>  'Return order processing',
+        'error-returned-processing' =>  'Order returned processing',
+        'error-returned' =>  'Order is returned',
+        'error-can-not-order' =>  'Cannot cancel order',
+    ],
+    'voucher' => [
+        'error-voucher' =>  'Voucher is out of uses',
+        
     ],
 ];

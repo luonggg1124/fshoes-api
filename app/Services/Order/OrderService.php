@@ -60,7 +60,7 @@ class OrderService implements OrderServiceInterface
     {
         $order = $this->orderRepository->query()->where('id', $id)->with(["orderDetails", 'orderHistory', 'user', 'orderDetails.variation', 'orderDetails.product', 'voucher'])->first();
         if (!$order) {
-            throw new ModelNotFoundException('Order not found');
+            throw new ModelNotFoundException(__('messages.error-not-found'));
         }
         return new OrdersCollection($order);
     }
@@ -90,7 +90,7 @@ class OrderService implements OrderServiceInterface
                 $voucher = Voucher::find($data["voucher_id"]);
                 $voucher->quantity--;
                 $voucher->users()->attach(request()->user()->id);
-                if ($voucher->quantity < 0) return response()->json(["message" => "Voucher is out of uses"], 500);
+                if ($voucher->quantity < 0) return response()->json(["message" => __('messages.voucher.error-voucher')], 500);
                 $voucher->save();
             }
             
@@ -124,7 +124,7 @@ class OrderService implements OrderServiceInterface
             Mail::to($order->receiver_email)->send(new CreateOrder($order->id));
             dispatch(new \App\Jobs\CreateOrder($order->id, $order->receiver_email))->delay(now()->addSeconds(5));
             return response()->json([
-                "message" => "Order created",
+                "message" => __('messages.created-success'),
                 'order' => $order
             ], 201);
         } catch (\Exception $e) {
@@ -136,7 +136,7 @@ class OrderService implements OrderServiceInterface
     public function update(int|string $id, array $data, array $option = [])
     {
         if (isset($data["status"]) && $data["status"] == "0" && !isset($data["reason_cancelled"])) {
-            return response()->json(["message" => "Please provide specific reason."], 403);
+            return response()->json(["message" => __('messages.order.error-specific')], 403);
         }
         try {
             $order = $this->orderRepository->find($id);
@@ -160,28 +160,28 @@ class OrderService implements OrderServiceInterface
                     $message = (request()->user()->name ? "User " . request()->user()->name : "Guess") . " cancelled order";
                     break;
                 case 2:
-                    $message = "Admin confirmed order";
+                    $message = __('messages.order.error-confirmed');
                     break;
                 case 3:
-                    $message = "Order is being delivered";
+                    $message = __('messages.order.error-delivered');
                     break;
                 case 4:
-                    $message = "Order was delivered";
+                    $message = __('messages.order.error-was-delivered');
                     break;
                 case 5:
-                    $message = "Return order processing";
+                    $message = __('messages.order.error-processing');
                     break;
                 case 6:
-                    $message = "Order returned processing";
+                    $message = __('messages.order.error-returned-processing');
                     break;
                 case 7:
-                    $message = "Order is returned";
+                    $message = __('messages.order.error-returned');
                     break;
             }
             $this->orderHistoryService->create(["order_id" => $id, "user_id" => null, "description" => $message]);
-            return response()->json(["message" => "Update order successful"], 200);
+            return response()->json(["message" => __('messages.update-success')], 200);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => "Can't update order"], 500);
+            return response()->json(['error' => __('messages.order.error-can-not-order')], 500);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -200,7 +200,7 @@ class OrderService implements OrderServiceInterface
         }
        
         $user = $this->userRepository->find(request()->user()->id);
-        if (!$user) throw  new UnauthorizedException('Unauthorized!');
+        if (!$user) throw  new UnauthorizedException(__('messages.order.error-order'));
         $orders = $user->orders()->when(
             $status !== null,
             function ($query) use ($status) {
@@ -221,9 +221,9 @@ class OrderService implements OrderServiceInterface
     {
         $order = $this->orderRepository->find($id);
         $user = request()->user();
-        if ($order->user_id != $user->id) throw new AuthorizationException('Cannot cancel order!');
-        if (!$order) throw new ModelNotFoundException('Order not found');
-        if ($order->status >= 3 || $order->status === 0) throw new InvalidArgumentException('Cannot cancel order!');
+        if ($order->user_id != $user->id) throw new AuthorizationException(__('messages.order.error-can-not-order'));
+        if (!$order) throw new ModelNotFoundException(__('messages.error-not-found'));
+        if ($order->status >= 3 || $order->status === 0) throw new InvalidArgumentException(__('messages.order.error-can-not-order'));
         $order->status = 0;
         $order->reason_cancelled = $data["reason_cancelled"];
         $voucher = $order->voucher;
@@ -249,7 +249,7 @@ class OrderService implements OrderServiceInterface
     public function updatePaymentStatus(int|string $id,$paymentStatus = true,$paymentMethod = 'cash_on_delivery')
     {
         $order = $this->orderRepository->find($id);
-        if(!$order) throw new ModelNotFoundException('Order not found');
+        if(!$order) throw new ModelNotFoundException(__('messages.error-not-found'));
         if($paymentStatus){
             $order->payment_status = 'paid'; 
         }else{

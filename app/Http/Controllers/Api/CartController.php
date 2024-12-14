@@ -33,7 +33,7 @@ class CartController extends Controller
         }catch (Exception $e){
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong!'
+                'message' => __('messages.error-internal-server')
             ], 500);
         }
        
@@ -47,7 +47,7 @@ class CartController extends Controller
         try {
             $newCart = $this->cartService->create($request->all());
             return response()->json([
-                'message' => 'Create cart successfully',
+                'message' => __('messages.created-success'),
                 'cart' => $newCart
             ],201);
         }catch (\Exception $e){
@@ -76,7 +76,7 @@ class CartController extends Controller
         try {
             $cart = $this->cartService->update($id, $request->all());
             return response()->json([
-                'message' => 'Update cart successfully',
+                'message' => __('messages.update-success'),
                 'cart' => $cart
             ],201);
         }catch (\Exception $e){
@@ -92,7 +92,7 @@ class CartController extends Controller
         try {
             $this->cartService->delete($id);
             return response()->json([
-                'message' => 'The cart has been permanently deleted.',
+                'message' => __('messages.delete-success'),
             ] ,200);
         }catch (\Exception $e){
             return response()->json(['error' => $e->getMessage()], 500);

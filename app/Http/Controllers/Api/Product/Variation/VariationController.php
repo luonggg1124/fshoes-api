@@ -44,7 +44,7 @@ class VariationController extends Controller
             if(empty($variations) || !is_array($variations) ||count($variations) < 1){
                 return response()->json([
                     'status' => false,
-                    'message' => __('messages.product.error-variant.'),
+                    'message' => __('messages.product.error-variant'),
                 ],400);
             }
             $list = $this->service->createMany($pid,$variations);

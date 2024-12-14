@@ -42,7 +42,7 @@ class VariationService implements VariationServiceInterface
         $allQuery = http_build_query(request()->query());
         return Cache::tags([$this->cacheTag])->remember('all-variation/' . $pid . '?' . $allQuery, 60, function () use ($pid) {
             $product = $this->productRepository->query()->find($pid);
-            if (!$product) throw new ModelNotFoundException('Product not found');
+            if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
             if ($product->variations) {
                 $attributes = [];
                 foreach ($product->variations as $variation) {
@@ -74,9 +74,9 @@ class VariationService implements VariationServiceInterface
         $allQuery = http_build_query(request()->query());
         return Cache::tags([$this->cacheTag])->remember('product/' . $pid . '/' . $id . '?' . $allQuery, 60, function () use ($pid, $id) {
             $product = $this->productRepository->find($pid);
-            if (!$product) throw new ModelNotFoundException('Product not found');
+            if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
             $variation = $product->variations()->find($id);
-            if (!$variation) throw new ModelNotFoundException('Variation not found');
+            if (!$variation) throw new ModelNotFoundException(__('messages.error-not-found'));
             return new VariationResource($this->loadRelationships($variation));
         });
     }
@@ -86,13 +86,13 @@ class VariationService implements VariationServiceInterface
     ])
     {
         $variation = DB::transaction(function () use ($pid, $data, $options) {
-            if (empty($options['values'])) throw new \Exception('Could not find any attribute value');
+            if (empty($options['values'])) throw new \Exception(__('messages.product.error-not-attribute'));
             $product = $this->productRepository->find($pid);
-            if (!$product) throw new ModelNotFoundException('Product not found');
+            if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
             $data['qty_sold'] = 0;
             $variation = $product->variations()->create($data);
 
-            if (!$variation) throw new \Exception('Failed to create variation');
+            if (!$variation) throw new \Exception(__('messages.product.error-failed-create.variant'));
             if (isset($options['images'])) $variation->images()->attach($options['images']);
             $variation->values()->attach($options['values']);
             $valuesName = [...$variation->values()->get()->pluck('value')];
@@ -123,7 +123,7 @@ class VariationService implements VariationServiceInterface
 
             $list[] = $variation;
         }
-        if (empty($list) || count($list) < 1) throw new \Exception('Can not create variations');
+        if (empty($list) || count($list) < 1) throw new \Exception(__('messages.product.error-create.variant'));
         Cache::tags([$this->cacheTag])->flush();
         return VariationResource::collection($list);
     }
@@ -136,9 +136,9 @@ class VariationService implements VariationServiceInterface
         
         $variation = DB::transaction(function () use ($pid, $id, $data, $options) {
             $product = $this->productRepository->find($pid);
-            if (!$product) throw new ModelNotFoundException('Product not found');
+            if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
             $variation = $this->repository->find($id);
-            if(!$variation) throw new ModelNotFoundException('Variation not found');
+            if(!$variation) throw new ModelNotFoundException(__('messages.error-not-found'));
             $variation->update($data);
             
             if (isset($options['images'])) $variation->images()->sync($options['images']);
@@ -153,9 +153,9 @@ class VariationService implements VariationServiceInterface
     public function destroy(int|string $pid, int|string $id)
     {
         $product = $this->productRepository->find($pid);
-        if (!$product) throw new ModelNotFoundException('Product not found');
+        if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
         $variation = $this->repository->find($id);
-        if (!$variation) throw new ModelNotFoundException('Variation not found');
+        if (!$variation) throw new ModelNotFoundException(__('messages.error-not-found'));
         $variation->delete();
         Cache::tags([$this->cacheTag])->flush();
         return true;
@@ -163,7 +163,7 @@ class VariationService implements VariationServiceInterface
     protected function slug(int|string $id)
     {
         $variation = $this->repository->find($id);
-        if (!$variation) throw new ModelNotFoundException('Variation not found');
+        if (!$variation) throw new ModelNotFoundException(__('messages.error-not-found'));
 
 
         $values = $variation->values()->pluck('value');

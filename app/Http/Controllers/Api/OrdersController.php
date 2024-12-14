@@ -73,7 +73,7 @@ class OrdersController extends Controller
             if($throw instanceof UnauthorizedException){
                 return response()->json([
                     'status' => false,
-                    'message' => 'Unauthorized'
+                    'message' => __('messages.order.error-order'),
                 ], 401);
             }
             return response()->json([
@@ -84,12 +84,12 @@ class OrdersController extends Controller
 
     }
     public function cancelOrder($id ,Request $request){
-        if(!isset($request->reason_cancelled))return response()->json(["message"=>"Please provide more detail."],403);
+        if(!isset($request->reason_cancelled))return response()->json(["message"=> __('messages.order.error-provider-detail')],403);
         try {
             $order = $this->orderService->cancelOrder($id , $request->all());
             return response()->json([
                 'status'=> true,
-                'message'=> 'Order Cancelled Successfully!',
+                'message'=> __('messages.order.error-cancelled-order'),
                 'order' => $order
             ],201);
         }catch (\Throwable $throw){
@@ -113,7 +113,7 @@ class OrdersController extends Controller
             }
             return response()->json([
                 'status'=> false,
-                'message' => 'Something went wrong!'
+                'message' => __('messages.error-internal-server'),
             ],500);
 
         }
@@ -122,7 +122,7 @@ class OrdersController extends Controller
 
     public function reOrder($id){
             $this->orderService->reOrder($id);
-            return response()->json(["message"=>"Reorder created"] , 200);
+            return response()->json(["message"=> __('messages.created-success')] , 200);
     }
     public function updatePaymentStatus(Request $request, int|string $id){
         try{
@@ -130,7 +130,7 @@ class OrdersController extends Controller
             $data = $this->orderService->updatePaymentStatus($id,$request->payment_status,$request->payment_method);
             return response()->json([
                'status' => true,
-               'message' => 'Payment status updated successfully',
+               'message' => __('messages.order.error-payment'),
                 'order' => $data
             ],201);
         }catch(ModelNotFoundException $e){
@@ -141,7 +141,7 @@ class OrdersController extends Controller
         }catch(\Exception $e){
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong!'
+                'message' => __('messages.error-internal-server'),
             ],status: 500);
         }
     }
