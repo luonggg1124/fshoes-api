@@ -20,7 +20,7 @@ class ReviewService implements ReviewServiceInterface
 
     use CanLoadRelationships, Paginate;
     protected $cacheTag = 'reviews';
-    private array $relations = ['user', 'product'];
+    private array $relations = ['user', 'product','statistics'];
     private array $columns = [
         'id',
         'title',
@@ -71,7 +71,7 @@ class ReviewService implements ReviewServiceInterface
         if (!$review) {
             throw new Exception(__('messages.delete-success'));
         }
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return new ReviewResource($this->loadRelationships($review));
     }
 
@@ -96,7 +96,7 @@ class ReviewService implements ReviewServiceInterface
             throw new ModelNotFoundException(__('messages.error-not-found'));
 
         $updated = $review->update($data);
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         if ($updated) {
             return new ReviewResource($this->loadRelationships($review));
         }
@@ -113,7 +113,7 @@ class ReviewService implements ReviewServiceInterface
         //        $requestUser = \request()->user();
         //        if($requestUser->id != $review->user_id) throw new AuthorizationException("Unauthorized!");
         $review->delete();
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return true;
     }
     public function reviewsByProduct(int|string $productId)
