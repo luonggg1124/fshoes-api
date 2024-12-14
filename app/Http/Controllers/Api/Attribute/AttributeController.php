@@ -32,7 +32,7 @@ class AttributeController extends Controller
             if(empty($request->name)){
                 return \response()->json([
                     'status' => false,
-                    'error' => 'The name is required'
+                    'error' => __('messages.error-required'),
                 ],422);
             }
             $data = [
@@ -79,7 +79,7 @@ class AttributeController extends Controller
             if(empty($request->name)){
                 return \response()->json([
                     'status' => false,
-                    'error' => 'The name is required'
+                    'error' => __('messages.error-required'),
                 ],422);
             }
             $data = [
@@ -119,7 +119,7 @@ class AttributeController extends Controller
             });
             return \response()->json([
                 'status' => true,
-                'message' => 'Deleted successfully'
+                'message' => __('messages.delete-success'),
             ],201);
         }catch (\Throwable $throw){
             Log::error(
@@ -136,7 +136,7 @@ class AttributeController extends Controller
             }
             return \response()->json([
                 'status' => false,
-                'error' => 'Something went wrong.Please try later!'
+                'error' => __('messages.error-internal-server'),
             ],500);
         }
     }
@@ -151,7 +151,7 @@ class AttributeController extends Controller
         }catch (\Exception $e){
             return \response()->json([
                 'status' => false,
-                'error' => 'Something went wrong.Please try later!'
+                'error' => __('messages.error-internal-server'),
             ],500);
         }
     }

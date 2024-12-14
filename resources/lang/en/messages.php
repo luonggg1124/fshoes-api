@@ -34,4 +34,11 @@ return [
         
         
     ],
+    'attribute' => [
+        'error-can-not-attribute' =>  'Cannot find any images',
+    ],
+    'sale' => [
+        'error-can-not-sale' =>  'Can not create sale',
+        'error-invalid-type' =>  'Invalid type.',
+    ],
 ];

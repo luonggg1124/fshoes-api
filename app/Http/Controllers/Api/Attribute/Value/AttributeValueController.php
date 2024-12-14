@@ -34,7 +34,7 @@ class AttributeValueController extends Controller
             if (empty($request->values)) {
                 return \response()->json([
                     'status' => false,
-                    'error' => 'The values is required'
+                    'error' => __('messages.error-value'),
                 ], 422);
             }
             $data = $request->values;
@@ -59,7 +59,7 @@ class AttributeValueController extends Controller
             }
             return \response()->json([
                 'status' => false,
-                'error' => 'Something went wrong.Please try later!'
+                'error' => __('messages.error-internal-server'),
             ], 500);
         }
     }
@@ -92,7 +92,7 @@ class AttributeValueController extends Controller
             if (empty($request->value)) {
                 return \response()->json([
                     'status' => false,
-                    'error' => 'The value is required'
+                    'error' => __('messages.error-value'),
                 ], 422);
             }
             $data = [
@@ -113,7 +113,7 @@ class AttributeValueController extends Controller
             }
             return \response()->json([
                 'status' => false,
-                'error' => 'Something went wrong.Please try later!'
+                'error' => __('messages.error-internal-server'),
             ], 500);
         }
     }
@@ -127,7 +127,7 @@ class AttributeValueController extends Controller
             $success = $this->service->delete($aid, $id);
             return \response()->json([
                 'status' => $success,
-                'message' => 'Deleted successfully!'
+                'message' => __('messages.delete-success'),
             ],201);
         }catch (\Throwable $throwable) {
             return \response()->json([

@@ -54,7 +54,7 @@ class SaleController extends Controller
             $this->service->switchActive($id,$active);
             return response()->json([
                 'status' => true,
-                'message' => 'Update successfully!'
+                'message' => __('messages.update-success'),
             ],201);
         } catch (ModelNotFoundException $e) {
             return \response()->json([
@@ -64,7 +64,7 @@ class SaleController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong!'
+                'message' => __('messages.error-internal-server'),
             ], 500);
         }
     }
@@ -77,7 +77,7 @@ class SaleController extends Controller
                 'discount' => $discount
             ]);
         } catch (\Throwable $throw) {
-            Log::error('Some thing went wrong!', [
+            Log::error(__('messages.error-internal-server'), [
                 'message' => $throw->getMessage(),
                 'file' => $throw->getFile(),
                 'line' => $throw->getLine(),
@@ -92,7 +92,7 @@ class SaleController extends Controller
 
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong'
+                'message' => __('messages.error-internal-server')
             ], 500);
         }
 
@@ -107,7 +107,7 @@ class SaleController extends Controller
                 if ($data['value'] > 99 || $data['value'] < 1) {
                     return response()->json([
                         'status' => false,
-                        'message' => 'Invalid type',
+                        'message' => __('messages.sale.error-invalid-type'),
                     ], 422);
                 }
             }
@@ -121,11 +121,11 @@ class SaleController extends Controller
             ]);
             return response()->json([
                 'status' => true,
-                'message' => 'Create discount successfully.',
+                'message' => __('messages.created-success'),
                 'discount' => $discount
             ], 201);
         } catch (\Throwable $throw) {
-            Log::error('Some thing went wrong!', [
+            Log::error(__('messages.error-internal-server'), [
                 'message' => $throw->getMessage(),
                 'file' => $throw->getFile(),
                 'line' => $throw->getLine(),
@@ -140,7 +140,7 @@ class SaleController extends Controller
 
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong'
+                'message' => __('messages.error-internal-server')
             ], 500);
         }
     }
@@ -154,7 +154,7 @@ class SaleController extends Controller
                 if ($data['value'] > 99 || $data['value'] < 1) {
                     return response()->json([
                         'status' => false,
-                        'message' => 'Invalid type',
+                        'message' => __('messages.sale.error-invalid-type'),
 
                     ], 422);
                 }
@@ -168,11 +168,11 @@ class SaleController extends Controller
             ]);
             return response()->json([
                 'status' => true,
-                'message' => 'Updated discount successfully.',
+                'message' => __('messages.update-success'),
                 'discount' => $discount
             ], 201);
         } catch (\Throwable $throw) {
-            Log::error('Some thing went wrong!', [
+            Log::error(__('messages.error-internal-server'), [
                 'message' => $throw->getMessage(),
                 'file' => $throw->getFile(),
                 'line' => $throw->getLine(),
@@ -187,7 +187,7 @@ class SaleController extends Controller
 
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong'
+                'message' => __('messages.error-internal-server')
             ], 500);
         }
 
@@ -200,10 +200,10 @@ class SaleController extends Controller
             $status = $this->service->destroy($id);
             return response()->json([
                 'status' => $status,
-                'message' => 'Delete discount successfully.'
+                'message' => __('messages.delete-success')
             ]);
         } catch (\Throwable $throw) {
-            Log::error('Some thing went wrong!', [
+            Log::error(__('messages.error-internal-server'), [
                 'message' => $throw->getMessage(),
                 'file' => $throw->getFile(),
                 'line' => $throw->getLine(),
@@ -218,7 +218,7 @@ class SaleController extends Controller
 
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong'
+                'message' => __('messages.error-internal-server')
             ], 500);
         }
     }

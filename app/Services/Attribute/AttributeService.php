@@ -42,7 +42,7 @@ class AttributeService implements AttributeServiceInterface
     {
 
         $attribute = $this->attributeRepository->create($data);
-        if (!$attribute) throw new Exception('Cannot create attribute');
+        if (!$attribute) throw new Exception(__('messages.attribute.error-can-not-attribute'));
         Cache::tags([$this->cacheTag])->flush();
         return new AttributeResource($this->loadRelationships($attribute));
     }
@@ -51,14 +51,14 @@ class AttributeService implements AttributeServiceInterface
     {
         return Cache::tags([$this->cacheTag])->remember('attribute/' . $id . '?' . $this->allQueryUrl, 60, function () use ($id) {
             $attribute = $this->attributeRepository->find($id);
-            if (!$attribute) throw new ModelNotFoundException('Attribute not found');
+            if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
             return new AttributeResource($this->loadRelationships($attribute));
         });
     }
     public function update(int|string $id, array $data)
     {
         $attribute = $this->attributeRepository->find($id);
-        if (!$attribute) throw new ModelNotFoundException('Attribute not found');
+        if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
         $attribute->update($data);
         Cache::tags([$this->cacheTag])->flush();
         return new AttributeResource($this->loadRelationships($attribute));
@@ -66,7 +66,7 @@ class AttributeService implements AttributeServiceInterface
     public function delete(int|string $id)
     {
         $attribute = $this->attributeRepository->find($id);
-        if (!$attribute) throw new ModelNotFoundException('Attribute not found');
+        if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
         $attribute->values()->delete();
         $attribute->delete();
         Cache::tags([$this->cacheTag])->flush();

@@ -67,7 +67,7 @@ class SaleService implements SaleServiceInterface
                 if (empty($data['is_active']) && $data['is_active'] === null) $data['is_active'] = 1;
                 $sale = $this->repository->create($data);
 
-                if (!$sale) throw new \Exception("Can't create sale");
+                if (!$sale) throw new \Exception(__('messages.sale.error-can-not-sale'));
                 $sale->products()->attach($formattedProduct);
                 $sale->variations()->attach($formattedVariation);
                 return $sale;
@@ -75,7 +75,7 @@ class SaleService implements SaleServiceInterface
                 if (empty($data['is_active']) && $data['is_active'] === null) $data['is_active'] = 1;
                 $sale = $this->repository->create($data);
 
-                if (!$sale) throw new \Exception("Can't create sale");
+                if (!$sale) throw new \Exception(__('messages.sale.error-can-not-sale'));
                 if (isset($options['products'])) {
                     $sale->products()->attach($options['products']);
                 }
@@ -93,7 +93,7 @@ class SaleService implements SaleServiceInterface
         $allQuery = http_build_query(request()->query());
         return Cache::tags([$this->cacheTag])->remember('sale/' . $id . '?' . $allQuery, 60, function () use ($id) {
             $sale = $this->repository->find($id);
-            if (!$sale) throw new ModelNotFoundException('Sale not found');
+            if (!$sale) throw new ModelNotFoundException(__('messages.error-not-found'));
             return new SaleResource($this->loadRelationships($sale));
         });
     }
@@ -104,7 +104,7 @@ class SaleService implements SaleServiceInterface
     {
         $sale = DB::transaction(function () use ($id, $data, $options) {
             $sale = $this->repository->find($id);
-            if (!$sale) throw new ModelNotFoundException('Sale not found');
+            if (!$sale) throw new ModelNotFoundException(__('messages.error-not-found'));
             $sale->update($data);
             if (isset($options['products'])) {
                 $sale->products()->sync($options['products']);
@@ -121,7 +121,7 @@ class SaleService implements SaleServiceInterface
     public function destroy(int|string $id)
     {
         $sale = $this->repository->find($id);
-        if (!$sale) throw new ModelNotFoundException('Sale not found');
+        if (!$sale) throw new ModelNotFoundException(__('messages.error-not-found'));
         $sale->delete();
         Cache::tags([$this->cacheTag])->flush();
         return true;
@@ -129,7 +129,7 @@ class SaleService implements SaleServiceInterface
     public function switchActive(int|string $id, bool|null $active)
     {
         $sale = $this->repository->find($id);
-        if (!$sale) throw new ModelNotFoundException('Sale not found');
+        if (!$sale) throw new ModelNotFoundException(__('messages.error-not-found'));
         Cache::tags([$this->cacheTag])->flush();
         if ($active) {
             $sale->is_active = $active;
