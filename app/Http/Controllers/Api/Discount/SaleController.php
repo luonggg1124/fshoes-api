@@ -26,7 +26,6 @@ class SaleController extends Controller
 
     public function stream()
     {
-
         return response()->stream(function () {
             ignore_user_abort(true);
             set_time_limit(0);

@@ -6,34 +6,29 @@ namespace App\Services\Order;
 use App\Http\Traits\Paginate;
 use Exception;
 use App\Models\Cart;
-use App\Models\Order;
 use App\Models\Voucher;
 use App\Mail\CreateOrder;
-use App\Models\ProductVariations;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\OrdersCollection;
-use App\Services\Cart\CartServiceInterface;
-use Cassandra\Exception\InvalidQueryException;
 use Illuminate\Validation\UnauthorizedException;
-use App\Services\Product\ProductServiceInterface;
 use App\Repositories\Cart\CartRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
-use App\Services\OrderHistory\OrderHistoryService;
 use Illuminate\Auth\Access\AuthorizationException;
 use App\Repositories\Order\OrderRepositoryInterface;
 use App\Repositories\Product\ProductRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Services\OrderHistory\OrderHistoryServiceInterface;
-use App\Services\Product\Variation\VariationServiceInterface;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Repositories\OrderDetail\OrderDetailRepositoryInterface;
 use Symfony\Component\Process\Exception\InvalidArgumentException;
 use App\Repositories\Product\Variation\VariationRepositoryInterface;
-
+use Illuminate\Support\Facades\Cache;
 
 class OrderService implements OrderServiceInterface
 {
     use Paginate;
+    protected $cacheTag = 'orders';
+    private array $relations = ['products','variations','statistics'];
     public function __construct(
         protected OrderRepositoryInterface       $orderRepository,
         protected OrderDetailRepositoryInterface $orderDetailRepository,
@@ -123,11 +118,12 @@ class OrderService implements OrderServiceInterface
             }
             Mail::to($order->receiver_email)->send(new CreateOrder($order->id));
             dispatch(new \App\Jobs\CreateOrder($order->id, $order->receiver_email))->delay(now()->addSeconds(5));
+            Cache::tags([$this->cacheTag,...$this->relations])->flush();
             return response()->json([
                 "message" => "Order created",
                 'order' => $order
             ], 201);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             logger()->error($e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -178,7 +174,9 @@ class OrderService implements OrderServiceInterface
                     $message = "Order is returned";
                     break;
             }
+            
             $this->orderHistoryService->create(["order_id" => $id, "user_id" => null, "description" => $message]);
+            Cache::tags([$this->cacheTag,...$this->relations])->flush();
             return response()->json(["message" => "Update order successful"], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => "Can't update order"], 500);
@@ -232,6 +230,7 @@ class OrderService implements OrderServiceInterface
         }
         
         $order->save();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return new OrdersCollection($order);
     }
 
@@ -246,6 +245,7 @@ class OrderService implements OrderServiceInterface
                 "quantity" => $item->quantity
             ]);
         }
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
     }
     public function updatePaymentStatus(int|string $id,$paymentStatus = true,$paymentMethod = 'cash_on_delivery')
     {
@@ -258,6 +258,7 @@ class OrderService implements OrderServiceInterface
         }
         $order->payment_method = $paymentMethod;
         $order->save();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return $order;
     }
 }

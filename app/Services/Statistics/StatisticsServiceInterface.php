@@ -8,4 +8,5 @@ interface StatisticsServiceInterface{
     function productBestSelling();
     function revenueOfYear();
     function revenueOfMonths($month = 1,$year = null);
+    function countWaitingConfirmOrders();
 }

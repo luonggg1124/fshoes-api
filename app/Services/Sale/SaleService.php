@@ -16,7 +16,8 @@ class SaleService implements SaleServiceInterface
 {
     use CanLoadRelationships, Paginate;
     protected $cacheTag = 'sales';
-    private array $relations = ['products', 'variations'];
+    
+    private array $relations = ['products', 'variations','statistics'];
     private array $columns = ['id', 'name', 'type', 'start_date', 'end_date', 'created_at', 'updated_at', 'deleted_at'];
     public function __construct(
         protected SaleRepositoryInterface $repository,

@@ -20,7 +20,7 @@ class VariationService implements VariationServiceInterface
     use CanLoadRelationships, Paginate, Cloudinary;
     protected $cacheTag = 'variations';
     protected $cacheTagProduct = 'products';
-    private array $relations = ['product', 'images', 'values'];
+    private array $relations = ['product', 'images', 'values','statistics'];
     private array $columns = [
         'id',
         'slug',
@@ -105,7 +105,7 @@ class VariationService implements VariationServiceInterface
             $variation->save();
             return $variation;
         });
-        Cache::tags([$this->cacheTag,$this->cacheTagProduct])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return new VariationResource($this->loadRelationships($variation));
     }
 
@@ -149,7 +149,7 @@ class VariationService implements VariationServiceInterface
             $variation->save();
             return $variation;
         });
-        Cache::tags([$this->cacheTag,$this->cacheTagProduct])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return new VariationResource($this->loadRelationships($variation));
     }
     public function destroy(int|string $pid, int|string $id)
@@ -159,7 +159,7 @@ class VariationService implements VariationServiceInterface
         $variation = $this->repository->find($id);
         if (!$variation) throw new ModelNotFoundException('Variation not found');
         $variation->delete();
-        Cache::tags([$this->cacheTag,$this->cacheTagProduct])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return true;
     }
     protected function slug(int|string $id)
