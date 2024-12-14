@@ -30,25 +30,25 @@ class AuthService extends UserService
         ];
         $code = Cache::tags(['verifyEmailCode'])->get('verify_email_code-email=' . $data['email']);
         if (empty($data['verify_code']) || $data['verify_code'] != $code) {
-            throw new InvalidArgumentException('Invalid verify code');
+            throw new InvalidArgumentException(__('messages.user.error-invalid'));
         }
         $user = DB::transaction(function () use ($data, $options) {
             if ($this->userRepository->query()->where('email', $data['email'])->exists())
                 throw \Illuminate\Validation\ValidationException::withMessages([
-                    'email' => 'The email have already been taken'
+                    'email' => __('messages.user.error-email')
                 ]);
             $data['status'] = 'active';
             $data['password'] = Hash::make($data['password']);
             $data['nickname'] = $this->createNickname($data['name']);
             $user = $this->userRepository->create($data);
             if (!$user)
-                throw new \Exception('Failed to register');
+                throw new \Exception(__('messages.user.error-register'));
             $this->createProfile($user->id, $options['profile']);
             return $user;
         }, 3);
         if ($user)
             return $this->login($credential);
-        else throw new Exception('something went wrong');
+        else throw new Exception(__('messages.error-internal-server'));
     }
     public function login(array $credentials = [
         'email' => '',
@@ -56,15 +56,15 @@ class AuthService extends UserService
     ])
     {
         $user = $this->userRepository->findByColumnOrEmail($credentials['email']);
-        if (!$user) throw new ModelNotFoundException('User not found');
+        if (!$user) throw new ModelNotFoundException(__('messages.error-not-found'));
         $count = Cache::tags(['auth'])->get('password_wrong_limit?email=' . $credentials['email']);
         if ($count == 5) {
-            throw new TooManyRequestsHttpException(5 * 60, 'You have entered the wrong password too many times, please enter again after 5 minutes');
+            throw new TooManyRequestsHttpException(5 * 60, __('messages.user.error-password'));
         }
         if (!Hash::check($credentials['password'], $user->password)) {
 
             Cache::tags(['auth'])->put('password_wrong_limit?email=' . $credentials['email'], $count ? $count + 1 : 1, 5 * 60);
-            throw new InvalidArgumentException('Wrong password');
+            throw new InvalidArgumentException(__('messages.user.error-wrong-password'));
         };
         $token = auth()->login($user);
         $refresh_token = auth()->claims([
@@ -97,7 +97,7 @@ class AuthService extends UserService
     {
         $user = auth()->user();
         $isValid = Hash::check($currenPassword, $user->password);
-        if (!$isValid) throw new InvalidArgumentException("Wrong current password");
+        if (!$isValid) throw new InvalidArgumentException(__('messages.user.error-current-password'));
         $user->password = Hash::make($newPassword);
         $user->save();
         return true;
@@ -105,7 +105,7 @@ class AuthService extends UserService
     public function sendCodeForgotPassword(string $email)
     {
         $user = $this->userRepository->findByColumnOrEmail($email);
-        if (!$user) throw new ModelNotFoundException('Email not found in the system!');
+        if (!$user) throw new ModelNotFoundException(__('messages.user.error-can-not-email'));
 
         $code = $this->getCode($email);
         return $code;
@@ -113,10 +113,10 @@ class AuthService extends UserService
     public function resetPassword($verifyCode, string $email, string $password)
     {
         $user = $this->userRepository->findByColumnOrEmail($email);
-        if (!$user) throw new ModelNotFoundException('Email not found in the system!');
+        if (!$user) throw new ModelNotFoundException(__('messages.user.error-can-not-email'));
         $code = Cache::tags(['verifyEmailCode'])->get('verify_email_code-email=' . $email);
         if ($code != $verifyCode) {
-            throw new InvalidArgumentException("Wrong verification code");
+            throw new InvalidArgumentException(__('messages.user.error-wrong-verification'));
         }
         $user->password = Hash::make($password);
         $user->save();

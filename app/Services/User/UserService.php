@@ -64,7 +64,7 @@ class UserService implements UserServiceInterface
         $user = DB::transaction(function () use ($data, $options) {
             if ($this->userRepository->query()->where('email', $data['email'])->exists())
                 throw \Illuminate\Validation\ValidationException::withMessages([
-                    'email' => 'The email have already been taken'
+                    'email' => __('messages.user.error-email')
                 ]);
             if (isset($data) && empty($data['group_id'])) $data['group_id'] = 1;
 
@@ -75,7 +75,7 @@ class UserService implements UserServiceInterface
             $user = $this->userRepository->create($data);
 
             if (!$user)
-                throw new \Exception('Could not create user');
+                throw new \Exception(__('messages.user.error-could-not-create'));
 
             if (isset($options['avatar'])) {
                 $avatar = $this->createAvatar($user->id, $options['avatar']);
@@ -143,7 +143,7 @@ class UserService implements UserServiceInterface
     ])
     {
         $user = $this->userRepository->find($id);
-        if (!$user) throw new ModelNotFoundException("User not found");
+        if (!$user) throw new ModelNotFoundException(__('messages.error-not-found'));
         $update = DB::transaction(function () use ($user, $data, $options) {
             if (isset($data['password'])) unset($data['password']);
             $user->update($data);
@@ -165,7 +165,7 @@ class UserService implements UserServiceInterface
     public function delete(int|string $id)
     {
         $user = $this->userRepository->find($id);
-        if (!$user) throw new ModelNotFoundException("User not found");
+        if (!$user) throw new ModelNotFoundException(__('messages.error-not-found'));
         $user->delete();
         return true;
     }
@@ -179,7 +179,7 @@ class UserService implements UserServiceInterface
     public function getFavoriteProduct()
     {
         $user = request()->user();
-        if (!$user) throw new AuthorizationException('Unauthorized');
+        if (!$user) throw new AuthorizationException(__('messages.user.error-user'));
         $products = $user->favoriteProducts()->with(['categories'])->get();
         return ProductResource::collection($products);
     }
@@ -187,9 +187,9 @@ class UserService implements UserServiceInterface
     public function addFavoriteProduct(int|string $productId)
     {
         $user = request()->user();
-        if (!$user) throw new AuthorizationException('Unauthorized!');
+        if (!$user) throw new AuthorizationException(__('messages.user.error-user'));
         $product = $this->productRepository->find($productId);
-        if (!$product) throw new ModelNotFoundException('Product not found!');
+        if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
         $user->favoriteProducts()->syncWithoutDetaching($productId);
         $products = $user->favoriteProducts()->with(['categories'])->get();
         return ProductResource::collection($products);
@@ -198,9 +198,9 @@ class UserService implements UserServiceInterface
     public function removeFavoriteProduct(int|string $productId)
     {
         $user = request()->user();
-        if (!$user) throw new AuthorizationException('Unauthorized!');
+        if (!$user) throw new AuthorizationException(__('messages.user.error-user'));
         $product = $this->productRepository->find($productId);
-        if (!$product) throw new ModelNotFoundException('Product not found!');
+        if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
         $user->favoriteProducts()->detach($productId);
         $products = $user->favoriteProducts()->with(['categories'])->get();
         return ProductResource::collection($products);
@@ -212,7 +212,7 @@ class UserService implements UserServiceInterface
         $user = $this->userRepository->find(request()->user()->id);
         $profile = $user->profile;
 
-        if (!$user) throw new AuthorizationException('Unauthorized!');
+        if (!$user) throw new AuthorizationException(__('messages.user.error-user'));
         $updatedUser = DB::transaction(function () use ($user, $data, $profile) {
             if (isset($data['given_name'])) {
                 $profile->given_name = $data['given_name'];
@@ -247,7 +247,7 @@ class UserService implements UserServiceInterface
     public function updateAvatar(UploadedFile $file){
         $userRequest = request()->user();
         $userModel = $this->userRepository->find($userRequest->id);
-        if(!$userModel) throw new ModelNotFoundException('User not found');
+        if(!$userModel) throw new ModelNotFoundException(__('messages.error-not-found'));
         if($userModel->avatar_public_id)
         $this->deleteImageCloudinary($userModel->avatar_public_id);
         $avatar = $this->uploadImageCloudinary( $file,'avatars');

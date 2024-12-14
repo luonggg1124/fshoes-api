@@ -27,7 +27,7 @@ class TopicsService implements TopicServiceInterface
     {
         $topic = $this->topicsRepository->query()->find($id);
         if ($topic) return TopicsResource::make($topic);
-        else throw new Exception("Topic not found");
+        else throw new Exception(__('messages.error-not-found'));
 
     }
 
@@ -60,7 +60,7 @@ class TopicsService implements TopicServiceInterface
         $topic = $this->topicsRepository->query()->find($id);
         if ($topic) {
             $topic->delete();
-        } else throw new Exception("Can't find topic");
+        } else throw new Exception(__('messages.topic.error-can-not'));
     }
 
     function restore(int|string $id)
@@ -68,7 +68,7 @@ class TopicsService implements TopicServiceInterface
         $topic = $this->topicsRepository->query()->withTrashed()->find($id);
         if ($topic) {
             $topic->restore();
-        } else throw new Exception("Can't restore topic");
+        } else throw new Exception(__('messages.topic.error-restore'));
     }
 
     function forceDelete(int|string $id)
@@ -76,6 +76,6 @@ class TopicsService implements TopicServiceInterface
         $topic = $this->topicsRepository->query()->withTrashed()->find($id);
         if ($topic) {
             $topic->forceDelete();
-        } else throw new Exception("Can't force delete");
+        } else throw new Exception(__('messages.topic.error-force-delete'));
     }
 }
