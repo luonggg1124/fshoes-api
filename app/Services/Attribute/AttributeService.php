@@ -16,19 +16,18 @@ use Mockery\Exception;
 class AttributeService implements AttributeServiceInterface
 {
     use CanLoadRelationships, Paginate;
-    private array $relations = ['values', 'product'];
+    private array $relations = ['values', 'product','attributes_values'];
     protected string $allQueryUrl;
     protected string $cacheTag = 'attributes';
     private array $columns = ['id', 'value', 'attribute_id', 'created_at', 'updated_at'];
     public function __construct(
         protected AttributeRepositoryInterface $attributeRepository,
-
     ) {
         $this->allQueryUrl = http_build_query(request()->query());
     }
     public function all()
     {
-        return Cache::tags([$this->allQueryUrl])->remember('all/attributes?' . $this->allQueryUrl, 60, function () {
+        return Cache::tags([$this->cacheTag])->remember('all/attributes?' . $this->allQueryUrl, 60, function () {
             $perPage = request()->query('per_page');
             $attributes = $this->loadRelationships($this->attributeRepository->query()->sortByColumn(columns: $this->columns))->paginate($perPage);
             return [
@@ -40,10 +39,9 @@ class AttributeService implements AttributeServiceInterface
 
     public function create(array $data)
     {
-
         $attribute = $this->attributeRepository->create($data);
         if (!$attribute) throw new Exception(__('messages.attribute.error-can-not-attribute'));
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return new AttributeResource($this->loadRelationships($attribute));
     }
 
@@ -60,7 +58,7 @@ class AttributeService implements AttributeServiceInterface
         $attribute = $this->attributeRepository->find($id);
         if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
         $attribute->update($data);
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return new AttributeResource($this->loadRelationships($attribute));
     }
     public function delete(int|string $id)
@@ -69,7 +67,7 @@ class AttributeService implements AttributeServiceInterface
         if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
         $attribute->values()->delete();
         $attribute->delete();
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return true;
     }
     public function isFilterAttributes()

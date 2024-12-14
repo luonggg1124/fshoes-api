@@ -15,7 +15,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 
 class ProductVariations extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
     protected $table = "product_variations";
     protected $fillable=[
         'product_id',

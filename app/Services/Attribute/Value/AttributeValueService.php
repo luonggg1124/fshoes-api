@@ -8,30 +8,33 @@ use App\Http\Traits\Paginate;
 use App\Repositories\Attribute\AttributeRepositoryInterface;
 use App\Repositories\Attribute\Value\AttributeValueRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Cache;
 
 class AttributeValueService implements AttributeValueServiceInterface
 {
     use CanLoadRelationships, Paginate;
 
-    private array $relations = ['attribute', 'variations'];
-    private array $columns = ['id','attribute_id', 'value', 'created_at', 'updated_at'];
+    protected string $cacheTag = 'attributes_values';
+    protected string $allQueryUrl;
+    private array $relations = ['attribute', 'variations','attributes'];
+    private array $columns = ['id', 'attribute_id', 'value', 'created_at', 'updated_at'];
 
     public function __construct(
         protected AttributeValueRepositoryInterface $repository,
         protected AttributeRepositoryInterface      $attributeRepository,
-    )
-    {
+    ) {
+        $this->allQueryUrl = http_build_query(request()->query());
     }
 
     public function index(int|string $aid)
     {
-        $attribute = $this->attributeRepository->find($aid);
-        if (!$attribute)
-            throw new ModelNotFoundException(__('messages.error-not-found'));
-
-
-        $values = $attribute->values()->sortByColumn(columns:$this->columns);
-        return ValueResource::collection($this->loadRelationships($values)->get());
+        return Cache::tags([$this->cacheTag])->remember('all/attributes?' . $this->allQueryUrl, 60, function () use ($aid) {
+            $attribute = $this->attributeRepository->find($aid);
+            if (!$attribute)
+                throw new ModelNotFoundException(__('messages.error-not-found'));
+            $values = $attribute->values()->sortByColumn(columns: $this->columns);
+            return ValueResource::collection($this->loadRelationships($values)->get());
+        });
     }
 
     public function create(int|string $aid, string|array $data)
@@ -39,6 +42,7 @@ class AttributeValueService implements AttributeValueServiceInterface
         $attribute = $this->attributeRepository->find($aid);
         if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
         $value = $attribute->values()->create($data);
+        Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return new ValueResource($this->loadRelationships($value));
     }
 
@@ -49,7 +53,6 @@ class AttributeValueService implements AttributeValueServiceInterface
         $list = [];
         foreach ($data as $val) {
             if (isset($val)) {
-
                 if (is_array($val)) {
                     if (isset($val['id']) && isset($val['value'])) {
                         $value = $attribute->values()->find($val['id']);
@@ -67,16 +70,20 @@ class AttributeValueService implements AttributeValueServiceInterface
                 }
             }
         }
+        Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return ValueResource::collection($list);
     }
 
     public function find(int|string $aid, int|string $id)
     {
-        $attribute = $this->attributeRepository->find($aid);
-        if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
-        $value = $attribute->values()->find($id);
-        if (!$value) throw new ModelNotFoundException(__('messages.error-value'));
-        return new ValueResource($this->loadRelationships($value));
+        return Cache::tags([$this->cacheTag])
+        ->remember('attribute' . $aid . '/' . 'value/' . $id . '?' . $this->allQueryUrl, 60, function () use ($aid, $id) {
+            $attribute = $this->attributeRepository->find($aid);
+            if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
+            $value = $attribute->values()->find($id);
+            if (!$value) throw new ModelNotFoundException(__('messages.error-not-found'));
+            return new ValueResource($this->loadRelationships($value));
+        });
     }
 
     public function update(int|string $aid, int|string $id, array $data)
@@ -84,18 +91,20 @@ class AttributeValueService implements AttributeValueServiceInterface
         $attribute = $this->attributeRepository->find($aid);
         if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
         $value = $attribute->values()->find($id);
-        if (!$value) throw new ModelNotFoundException(__('messages.error-value'));
+        if (!$value) throw new ModelNotFoundException(__('messages.error-not-found'));
         $value->update($data);
+        Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return new ValueResource($this->loadRelationships($value));
     }
 
     public function delete(int|string $aid, int|string $id)
     {
         $attribute = $this->attributeRepository->find($aid);
-        if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
+        if (!$attribute) throw new ModelNotFoundException(message: __('messages.error-not-found'));
         $value = $attribute->values()->find($id);
-        if (!$value) throw new ModelNotFoundException(__('messages.error-value'));
+        if (!$value) throw new ModelNotFoundException(message: __('messages.error-not-found'));
         $value->delete();
+        Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return true;
     }
 }
