@@ -27,7 +27,7 @@ class ImageController extends Controller
             if(empty($images)){
                 return response()->json([
                     'success' => false,
-                    'message' => 'Cannot find any images',
+                    'message' => __('messages.image.error-can-not-image'),
                 ],500);
             }
             if(is_array($images)){
@@ -38,7 +38,7 @@ class ImageController extends Controller
             if(empty($list) || count($list) <1){
                 return response()->json([
                     'success' => false,
-                    'message' => 'No images uploaded'
+                    'message' => __('messages.image.error-no-image'),
                 ],500);
             }
             return response()->json([
@@ -55,7 +55,7 @@ class ImageController extends Controller
             );
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong',
+                'message' => __('messages.error-internal-server'),
             ],500);
         }
     }
@@ -64,7 +64,7 @@ class ImageController extends Controller
             $success = $this->service->destroy( $id);
             return \response()->json([
                 'status' => $success,
-                'message' => 'Deleted successfully!'
+                'message' => __('messages.delete-success'),
             ],201);
         }catch (\Throwable $throwable) {
             return \response()->json([
@@ -79,13 +79,13 @@ class ImageController extends Controller
             if(empty($images || count($images) < 1)){
                 return response()->json([
                     'status' => false,
-                    'message' => 'Cannot find any images to delete.'
+                    'message' => __('messages.image.error-no-image'),
                 ],400);
             }
             $success = $this->service->destroyMany($images);
             return \response()->json([
                 'status' => $success,
-                'message' => 'Deleted successfully!'
+                'message' => __('messages.delete-success'),
             ],201);
         }catch (\Throwable $throwable) {
             return \response()->json([

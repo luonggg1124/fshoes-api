@@ -17,5 +17,21 @@ return [
     'product' => [
         'error-variant.' =>  'Malformed variant.',
         
-    ]
+    ],
+    'post' => [
+        'error-already-exists.' =>  'The title or slug already exists. Please choose a different value.',
+        'error-Could-not-found-post' => 'Could not found post',
+        'error-delete-post' => 'An error occurred while deleting the post.',
+        'error-restoring-post' => 'An error occurred while restoring the post.',
+    ],
+    'image' => [
+        'error-image' =>  'Cannot create images.Maybe the image is in the wrong format!',
+        'error-can-not-image' =>  'Cannot find any images',
+        'error-no-image' =>  'No images uploaded',
+    ],
+    'group' => [
+        'error-group' =>  'Group with this name already exists.',
+        
+        
+    ],
 ];

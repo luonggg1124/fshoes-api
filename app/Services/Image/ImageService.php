@@ -59,7 +59,7 @@ class ImageService implements ImageServiceInterface
                 $list[] = $img;
             }
         }
-        if (count($list) < 1) throw new Exception('Cannot create images.Maybe the image is in the wrong format!');
+        if (count($list) < 1) throw new Exception(__('messages.image.error-image'));
         Cache::tags([$this->cacheTag])->flush();
         return ImageResource::collection($list);
     }
@@ -73,7 +73,7 @@ class ImageService implements ImageServiceInterface
             'alt_text' => $folder
         ]);
         if (!$image) {
-            throw new \Exception('Cannot create image');
+            throw new \Exception(__('messages.created-success'));
         }
         Cache::tags([$this->cacheTag])->flush();
         return $image;
@@ -82,7 +82,7 @@ class ImageService implements ImageServiceInterface
     public function destroy(int|string $id)
     {
         $image = $this->repository->find($id);
-        if (!$image) throw new ModelNotFoundException('Image not found');
+        if (!$image) throw new ModelNotFoundException(__('messages.error-not-found'));
         $exists = Storage::disk('cloudinary')->exists($image->public_id);
         if ($exists) $this->deleteImageCloudinary($image->public_id);
         $image->delete();

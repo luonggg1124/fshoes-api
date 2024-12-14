@@ -37,7 +37,7 @@ class GroupsService implements GroupsServiceInterface
 
         $group = $this->groupsRepository->query()->find($id);
         if ($group) return GroupResource::make($group);
-        else throw new Exception("Group not found");
+        else throw new Exception(__('messages.error-not-found'));
 
     }
 
@@ -51,10 +51,10 @@ class GroupsService implements GroupsServiceInterface
 
                  $this->database->getReference('groups/'. $group->id)->set(json_encode($data["permissions"] ?? ""));
 
-                return response()->json(["message" => "Group created", "group"=>GroupResource::make($group)], 201);
+                return response()->json(["message" => __('messages.created-success'), "group"=>GroupResource::make($group)], 201);
             }catch (QueryException  $exception){
                 if ($exception->getCode() == '23000') {
-                    return response()->json(["message"=> "Group with this name already exists."] , 500);
+                    return response()->json(["message"=> __('messages.group.error-group')] , 500);
                 }
             }
     }
@@ -70,11 +70,11 @@ class GroupsService implements GroupsServiceInterface
                 }
                 $group->update($data);
                 return GroupResource::make($group);
-            }else return response()->json(["message"=> "Group not found"], 404);
+            }else return response()->json(["message"=> __('messages.error-not-found')], 404);
 
         }catch (QueryException $exception){
             if ($exception->getCode() == '23000') {
-                return response()->json(["message"=> "Group with this name already exists."] , 500);
+                return response()->json(["message"=> __('messages.group.error-group')] , 500);
             }
             return response()->json(["message"=> $exception->getMessage()], 500);
         }
@@ -87,7 +87,7 @@ class GroupsService implements GroupsServiceInterface
             $this->database->getReference('groups/'. $group->id)->remove();
              $group->delete();
         }
-        else throw new Exception("Group not found");
+        else throw new Exception(__('messages.error-not-found'));
     }
 
     function restore(int|string $id)
@@ -96,7 +96,7 @@ class GroupsService implements GroupsServiceInterface
         if ($group) {
             $group->restore();
         }
-        else throw new Exception("Group not found");
+        else throw new Exception(__('messages.error-not-found'));
     }
 
     function forceDelete(int|string $id)
@@ -106,6 +106,6 @@ class GroupsService implements GroupsServiceInterface
             $this->database->getReference('groups/'. $group->id)->remove();
             $group->forceDelete();
         }
-        else throw new Exception("Group not found");
+        else throw new Exception(__('messages.error-not-found'));
     }
 }
