@@ -2,8 +2,7 @@
 
 namespace App\Http\Resources\Sale;
 
-use App\Http\Resources\Product\VariationResource;
-use App\Http\Resources\ProductResource;
+
 use App\Http\Traits\ResourceSummary;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -34,14 +33,18 @@ class SaleResource extends JsonResource
                 return $products->map(function ($product){
                     return [
                         ...$product->toArray(),
+                        'images' => $product->images,
                         'qty_sale' => $product->pivot->quantity
                     ];
                 });
             }),
             'variations' => $this->whenLoaded('variations',function($variations){
                 return $variations->map(function ($variation){
+                    $firstRecordImage = $variation->images[0];
                     return [
                         ...$variation->toArray(),
+                        'images' => $variation->images,
+                        'image_url' => $firstRecordImage && $firstRecordImage->url ? $firstRecordImage->url : '',
                         'qty_sale' => $variation->pivot->quantity
                     ];
                 });

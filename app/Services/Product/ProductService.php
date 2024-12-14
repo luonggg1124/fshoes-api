@@ -18,7 +18,6 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Mockery\Exception;
 
@@ -26,7 +25,7 @@ class ProductService implements ProductServiceInterface
 {
     use CanLoadRelationships, Cloudinary, Paginate;
     protected $cacheTag = 'products';
-    private array $relations = ['categories', 'images', 'variations', 'ownAttributes'];
+    private array $relations = ['categories', 'images', 'variations', 'ownAttributes','statistics'];
     private array $columns = [
         'id',
         'name',
@@ -53,7 +52,10 @@ class ProductService implements ProductServiceInterface
         $allQuery = http_build_query(request()->query());
         return Cache::tags([$this->cacheTag])->remember('all/products?' . $allQuery, 60, function () {
             $perPage = request()->query('per_page');
-            $products = $this->loadRelationships($this->productRepository->query()->sortByColumn(columns: $this->columns))->paginate(is_numeric($perPage) ? $perPage : 15);
+            $searchKey = request()->query('search');
+            $products = $this->loadRelationships($this->productRepository->query()->when($searchKey,function($q) use ($searchKey){
+                $q->where('name', 'like', '%'. $searchKey. '%');
+            })->sortByColumn(columns: $this->columns))->paginate(is_numeric($perPage) ? $perPage : 15);
             return [
                 'paginator' => $this->paginate($products),
                 'data' => ProductResource::collection(
@@ -159,7 +161,7 @@ class ProductService implements ProductServiceInterface
                 $product->images()->attach($options['images']);
             }
             if (count($options['categories']) > 0) $product->categories()->attach($options['categories']);
-            Cache::tags([$this->cacheTag])->flush();
+            Cache::tags([$this->cacheTag,...$this->relations])->flush();
             return new ProductResource($this->loadRelationships($product));
         });
     }
@@ -180,7 +182,7 @@ class ProductService implements ProductServiceInterface
                 $product->images()->sync($options['images']);
             }
             if (count($options['categories']) > 0) $product->categories()->sync($options['categories']);
-            Cache::tags([$this->cacheTag])->flush();
+            Cache::tags([$this->cacheTag,...$this->relations])->flush();
             return new ProductResource($this->loadRelationships($product));
         });
     }
@@ -208,7 +210,7 @@ class ProductService implements ProductServiceInterface
         foreach ($values as $value) {
             $attribute->values()->create(['value' => $value]);
         }
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return [
             new AttributeResource($attribute->load(['values'])),
         ];
@@ -220,7 +222,7 @@ class ProductService implements ProductServiceInterface
         if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
         $product->status = $status;
         $product->save();
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return new ProductResource($this->loadRelationships($product));
     }
 
@@ -236,7 +238,7 @@ class ProductService implements ProductServiceInterface
         if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
         
         $product->delete();
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return true;
     }
 
@@ -278,7 +280,7 @@ class ProductService implements ProductServiceInterface
             throw new ModelNotFoundException(__('messages.error-not-found'));
         }
         $product->restore();
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return new ProductResource($this->loadRelationships($product));
     }
 
@@ -302,7 +304,7 @@ class ProductService implements ProductServiceInterface
             throw new ModelNotFoundException(__('messages.error-not-found'));
         }
         $product->forceDelete();
-        Cache::tags([$this->cacheTag])->flush();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return true;
     }
 

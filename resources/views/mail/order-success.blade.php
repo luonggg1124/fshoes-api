@@ -123,7 +123,7 @@
                 <table>
                     <tr>
                         <td class="title">
-                            <img src="https://sparksuite.github.io/simple-html-invoice-template/images/logo.png"
+                            <img src="https://res.cloudinary.com/dnchsftqy/image/upload/v1733917304/assets/wtmamlmdmxug7efehaga.png"
                                  alt="Fshoes logo" style="width: 100%; max-width: 300px"/>
                         </td>
 
@@ -136,9 +136,9 @@
                                 @case(2) Confirmed@break
                                 @case(3) Delivering"@break
                                 @case(4) Delivered"@break
-                                @case(5) Return Processing@break
-                                @case(6) Denied Return@break
-                                @case(7) Returned@break
+                                @case(5) Return Processing @break
+                                @case(6) Denied Return @break
+                                @case(7) Returned @break
                             @endswitch
                         </td>
                     </tr>
