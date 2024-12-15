@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('image_id')->constrained('images')->onDelete('cascade');
             $table->unique(['product_variation_id', 'image_id']);
             $table->timestamps();
+            
         });
     }
 

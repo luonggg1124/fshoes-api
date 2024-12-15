@@ -23,6 +23,7 @@ return new class extends Migration
             $table->boolean('status')->default(1)->nullable();
             $table->integer('stock_qty');
             $table->integer('qty_sold');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

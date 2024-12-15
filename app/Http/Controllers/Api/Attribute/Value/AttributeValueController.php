@@ -13,9 +13,7 @@ class AttributeValueController extends Controller
 {
     public function __construct(
         protected AttributeValueServiceInterface $service,
-    )
-    {
-    }
+    ) {}
 
     public function index(int|string $aid)
     {
@@ -31,35 +29,31 @@ class AttributeValueController extends Controller
     public function store(Request $request, string|int $aid)
     {
         try {
-            if (empty($request->values)) {
-                return \response()->json([
-                    'status' => false,
-                    'error' => __('messages.error-value'),
-                ], 422);
-            }
+            
             $data = $request->values;
             $values = $this->service->createMany($aid, $data);
             return \response()->json([
                 'status' => true,
                 'values' => $values,
+                'message' => __('messages.update-success')
             ], 201);
-
         } catch (\Throwable $throw) {
             Log::error(
-                message: __CLASS__.'@'.__FUNCTION__,context: [
-                'line' => $throw->getLine(),
-                'message' => $throw->getMessage()
-            ]
+                message: __CLASS__ . '@' . __FUNCTION__,
+                context: [
+                    'line' => $throw->getLine(),
+                    'message' => $throw->getMessage()
+                ]
             );
             if ($throw instanceof ModelNotFoundException) {
                 return \response()->json([
                     'status' => false,
-                    'error' => $throw->getMessage()
+                    'message' => $throw->getMessage()
                 ], 404);
             }
             return \response()->json([
                 'status' => false,
-                'error' => __('messages.error-internal-server'),
+                'message' => __('messages.error-internal-server'),
             ], 500);
         }
     }
@@ -103,7 +97,6 @@ class AttributeValueController extends Controller
                 'status' => true,
                 'value' => $value,
             ], 201);
-
         } catch (\Throwable $throw) {
             if ($throw instanceof ModelNotFoundException) {
                 return \response()->json([
@@ -121,19 +114,25 @@ class AttributeValueController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int|string $aid,string|int $id)
+    public function destroy(int|string $aid, string|int $id)
     {
         try {
             $success = $this->service->delete($aid, $id);
             return \response()->json([
                 'status' => $success,
                 'message' => __('messages.delete-success'),
-            ],201);
-        }catch (\Throwable $throwable) {
-            return \response()->json([
+            ], 201);
+        } catch (\Throwable $throwable) {
+            if ($throwable instanceof ModelNotFoundException) {
+                return \response()->json([
+                    'status' => false,
+                    'message' => $throwable->getMessage()
+                ], 404);
+            }
+            return response()->json([
                 'status' => false,
-                'error' => $throwable->getMessage()
-            ],404);
+                'message' => $throwable->getMessage()
+            ], 500);
         }
     }
 }

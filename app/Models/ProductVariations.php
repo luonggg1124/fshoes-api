@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 
 
 class ProductVariations extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
     protected $table = "product_variations";
     protected $fillable=[
         'product_id',
