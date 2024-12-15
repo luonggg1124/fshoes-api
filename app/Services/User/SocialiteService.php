@@ -14,7 +14,7 @@ class SocialiteService extends UserService{
     public function handleGoogleCallback(){
 
         $data = Socialite::driver('google')->user();
-        if(!$data) return response()->json(['error' => 'Something went wrong!']);
+        if(!$data) return response()->json(['error' => __('messages.error-internal-server')]);
         $user = $this->userRepository->query()->where('email',$data->email)->first();
         if(!$user){
             $user = $this->create([

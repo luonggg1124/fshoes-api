@@ -61,4 +61,32 @@ return [
         'error-voucher' =>  'Voucher is out of uses',
         
     ],
+    'topic' => [
+        'error-can-not' =>  'Cannot find topic',
+        'error-restore' =>  'Cannot restore topic',
+        'error-force-delete' =>  'Cannot force delete',
+    ],
+    'user' => [
+        'error-user' =>  'Unauthorized',
+        'error-email' =>  'The email have already been taken',
+        'error-invalid' =>  'Invalid verify code',
+        'error-register' =>  'Failed to register',
+        'error-password' =>  'You have entered the wrong password too many times, please enter again after 5 minutes',
+        'error-wrong-password' =>  'Wrong password',
+        'error-current-password' =>  'Wrong current password',
+        'error-can-not-email' =>  'Email not found in the system!',
+        'error-wrong-verification' =>  'Wrong verification code',
+        'error-could-not-create' =>  'Could not create user',
+        'error-system' =>  'Error system!',
+        'error-check-password' =>  'Please check your password again!',
+        'error-logout' =>  'Successfully logged out',
+        'error-password-success' =>  'Password successfully changed',
+        'error-email-not-found' =>  'Not found email!',
+        'error-code' =>  'Code sent to your email!',
+        'error-password-reset' =>  'Password successfully reset!',
+        'error-add-favorite' =>  'Add favorite product successfully!',
+        'error-profile' =>  'Profile updated successfully!',
+        'error-upload' =>  'Could not find any files to upload',
+
+    ],
 ];

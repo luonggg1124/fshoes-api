@@ -50,7 +50,7 @@ class UserController extends Controller
             ], 404);
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong!'
+                'message' => __('messages.error-internal-server')
             ], 500);
         }
     }
@@ -60,7 +60,7 @@ class UserController extends Controller
             $products = $this->userService->addFavoriteProduct($product_id);
             return response()->json([
                 'status' => true,
-                'message' => 'Add favorite product successfully!',
+                'message' => __('messages.user.error-add-favorite'),
                 'products' => $products
             ], 201);
         } catch (\Throwable $throw) {
@@ -78,7 +78,7 @@ class UserController extends Controller
             ], 404);
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong!'
+                'message' => __('messages.error-internal-server')
             ], 500);
         }
     }
@@ -88,7 +88,7 @@ class UserController extends Controller
             $products = $this->userService->removeFavoriteProduct($product_id);
             return response()->json([
                 'status' => true,
-                'message' => 'Add favorite product successfully!',
+                'message' => __('messages.user.error-add-favorite'),
                 'products' => $products
             ], 200);
         } catch (\Throwable $throw) {
@@ -106,7 +106,7 @@ class UserController extends Controller
             ], 404);
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong!'
+                'message' => __('messages.error-internal-server')
             ], 500);
         }
     }
@@ -119,7 +119,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => true,
                 'user' => $user,
-                'message' => 'Profile updated successfully!'
+                'message' => __('messages.user.error-profile'),
             ], 201);
         } catch (\Throwable $throw) {
             Log::error(__CLASS__ . '@' . __FUNCTION__, [
@@ -132,7 +132,7 @@ class UserController extends Controller
             ], 401);
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong!'
+                'message' => __('messages.error-internal-server')
             ], 500);
         }
     }
@@ -155,7 +155,7 @@ class UserController extends Controller
             $user = $this->userService->create($data);
             return response()->json([
                 'status' => true,
-                'message' => 'User created successfully!',
+                'message' => __('messages.created-success'),
                 'user' => $user
             ], 201);
         } catch (\Throwable $th) {
@@ -184,7 +184,7 @@ class UserController extends Controller
             ]);
             return response()->json([
                 'status' => true,
-                'message' => 'User updated successfully!',
+                'message' => __('messages.update-success'),
                 'user' => $user
             ], 201);
         } catch (\Throwable $th) {
@@ -209,7 +209,7 @@ class UserController extends Controller
             $this->userService->delete($id);
             return response()->json([
                 'status' => true,
-                'message' => 'User deleted successfully!',
+                'message' => __('messages.delete-success'),
             ]);
         } catch (\Throwable $throw) {
             Log::error(__CLASS__ . '@' . __FUNCTION__, [
@@ -224,7 +224,7 @@ class UserController extends Controller
             }
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong!'
+                'message' => __('messages.error-internal-server')
             ], 500);
         }
     }
@@ -244,13 +244,13 @@ class UserController extends Controller
             $user = $this->userService->updateAvatar($file);
             return response()->json([
                 'status' => true,
-                'message' => 'Avatar updated successfully!',
+                'message' => __('messages.update-success'),
                 'user' => $user
             ], 201);
         } else {
             return response()->json([
                 'status' => false,
-                'message' => 'Could not find any files to upload'
+                'message' => __('messages.error-upload'),
             ], 422);
         }
         // try {

@@ -55,12 +55,12 @@ class AuthController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong!',
+                'message' => __('messages.error-internal-server'),
             ], 500);
         } catch (Throwable $throw) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error system!',
+                'message' => __('messages.user.error-system'),
             ], 500);
         }
     }
@@ -129,7 +129,7 @@ class AuthController extends Controller
             if ($throwable instanceof JWTException) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Please check your password again!',
+                    'message' => __('messages.user.error-check-password'),
                 ], status: 422);
             }
             if ($throwable instanceof InvalidArgumentException) {
@@ -152,7 +152,7 @@ class AuthController extends Controller
             }
             return response()->json([
                 'status' => false,
-                'message' => "Something went wrong!",
+                'message' => __('messages.error-internal-server'),
             ], 500);
         }
     }
@@ -168,7 +168,7 @@ class AuthController extends Controller
         } catch (\Tymon\JWTAuth\Exceptions\UserNotDefinedException $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong',
+                'message' => __('messages.error-internal-server'),
             ], 500);
         }
     }
@@ -178,7 +178,7 @@ class AuthController extends Controller
         auth()->logout(true);
         return response()->json([
             'status' => true,
-            'message' => 'Successfully logged out'
+            'message' => __('messages.user.error-logout')
         ]);
     }
 
@@ -187,7 +187,7 @@ class AuthController extends Controller
         try {
             if (!$request->refresh_token) return response()->json([
                 'status' => false,
-                'message' => 'Unauthorized'
+                'message' => __('messages.user.error-user')
             ], 401);
             $newToken = auth()->setToken($request->refresh_token)->refresh();
             $user = auth()->user();
@@ -195,7 +195,7 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Unauthorized'
+                'message' => __('messages.user.error-user')
             ], 401);
         }
     }
@@ -218,7 +218,7 @@ class AuthController extends Controller
             $this->service->changePassword($request->password, $request->newPassword,);
             return \response()->json([
                 'status' => true,
-                'message' => 'Password successfully changed!'
+                'message' => __('messages.user.error-password-success')
             ], 201);
         } catch (\Throwable $throw) {
             Log::error(
@@ -236,7 +236,7 @@ class AuthController extends Controller
             }
             return response()->json([
                 'status' => false,
-                'message' => "Something went wrong!"
+                'message' => __('messages.error-internal-server')
             ], 500);
         }
     }
@@ -246,13 +246,13 @@ class AuthController extends Controller
             if (empty($request->email)) {
                 return response()->json([
                     'status' => false,
-                    'message' => "Not found email!"
+                    'message' => __('messages.user.error-email-not-found')
                 ], 422);
             }
             $this->service->sendCodeForgotPassword($request->email);
             return response()->json([
                 'status' => true,
-                'message' => "Code sent to your email!",
+                'message' => __('messages.user.error-code')
             ], 200);
         } catch (ModelNotFoundException $e) {
             logger()->error($e->getMessage());
@@ -270,13 +270,13 @@ class AuthController extends Controller
             logger()->error($e->getMessage());
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong!'
+                'message' => __('messages.error-internal-server')
             ], 500);
         } catch (Throwable $th) {
             logger()->error($e->getMessage());
             return response()->json([
                 'status' => false,
-                'message' => 'Error system!'
+                'message' => __('messages.user.error-system')
             ], 500);
         }
     }
@@ -301,7 +301,7 @@ class AuthController extends Controller
             $this->service->resetPassword($code, $email, $newPassword);
             return response()->json([
                 'status' => true,
-                'message' => 'Password successfully reset!'
+                'message' => __('messages.user.error-password-reset')
             ], 201);
         } catch (ModelNotFoundException $e) {
             logger()->error($e->getMessage());
@@ -319,13 +319,13 @@ class AuthController extends Controller
             logger()->error($e->getMessage());
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong!'
+                'message' => __('messages.error-internal-server')
             ], 500);
         } catch (Throwable $throw) {
             logger()->error($throw->getMessage());
             return response()->json([
                 'status' => false,
-                'message' => 'Error system!'
+                'message' => __('messages.user.error-system')
             ], 500);
         }
     }
