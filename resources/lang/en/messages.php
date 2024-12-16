@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 return [
     'error-internal-server' => 'Something went wrong!. Please try later.',
@@ -12,7 +12,7 @@ return [
     'error-value' => 'The values must be an array',
     'review' => [
         'error-review-forbidden' =>  'You can only review a product after purchasing it and only once per product.',
-        
+
     ],
     'product' => [
         'error-variant' =>  'Malformed variant.',
@@ -33,8 +33,8 @@ return [
     ],
     'group' => [
         'error-group' =>  'Group with this name already exists.',
-        
-        
+
+
     ],
     'attribute' => [
         'error-can-not-attribute' =>  'Cannot find any images',
@@ -59,7 +59,7 @@ return [
     ],
     'voucher' => [
         'error-voucher' =>  'Voucher is out of uses',
-        
+
     ],
     'topic' => [
         'error-can-not' =>  'Cannot find topic',
@@ -89,4 +89,37 @@ return [
         'error-upload' =>  'Could not find any files to upload',
 
     ],
+    'mail' => [
+        'order-success' => [
+            'invoice' => 'Invoice',
+            'created' => 'Created',
+            'status' => 'Status',
+            'status_order' => [
+                'cancelled' => 'Cancelled',
+                'waiting_confirm' => 'Waiting Confirm',
+                'confirmed' => 'Confirmed',
+                'delivering' => 'Delivering',
+                'delivered' => 'Delivered'
+            ],
+            'payment_method_title' => 'Payment Method',
+            'payment_method' => [
+                'banking' => 'Banking',
+                'momo' => 'Payment Gateway Momo',
+                'vnpay' => 'Payment Gateway VnPay',
+                'cash_on_delivery' => 'Cash On Delivery',
+            ],
+            'item_text' => 'Items',
+            'price_text' => 'Price',
+            'subtotal_text' => 'Subtotal',
+            'delivery_fee' => 'Delivery Fee',
+            'total_text' => 'Total'
+        ],
+        'authentication-code' => [
+            'title' => 'Your Fshoes Member profile code',
+            'span_code' => 'Here\'s the one-time verification code you requested',
+            'message_time' => 'This code will be valid for 5 minutes',
+            'message_ignore' => 'If you\'ve already received this code or don\'t need it any more, ignore this email', 
+        ]
+    ],
+
 ];

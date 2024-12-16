@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 return [
     'error-internal-server' => 'Có gì đó đã sai! Vui lòng thử lại sau.',
@@ -84,5 +84,37 @@ return [
         'error-add-favorite' =>  'Đã thêm sản phẩm yêu thích thành công!',
         'error-profile' =>  'Thông tin hồ sơ đã được cập nhật thành công!',
         'error-upload' =>  'Không thể tìm thấy tệp nào để tải lên',
+    ],
+    'mail' => [
+        'order-success' => [
+            'invoice' => 'Hóa Đơn',
+            'created' => 'Ngày tạo',
+            'status' => 'Trạng Thái',
+            'status_order' => [
+                'cancelled' => 'Đã Hủy',
+                'waiting_confirm' => 'Chờ Xác Nhận',
+                'confirmed' => 'Đã Xác Nhận',
+                'delivering' => 'Đang Giao',
+                'delivered' => 'Đã Giao'
+            ],
+            'payment_method_title' => 'Phương Thức Thanh Toán ',
+            'payment_method' => [
+                'banking' => 'Chuyển Khoảng',
+                'momo' => 'Cổng Thanh Toán Momo',
+                'vnpay' => 'Cổng Thanh Toán VnPay',
+                'cash_on_delivery' => 'Thanh Toán Khi Nhận Hàng',
+            ],
+            'item_text' => 'Sản Phẩm',
+            'price_text' => 'Giá',
+            'subtotal_text' => 'Tổng Phụ',
+            'delivery_fee' => 'Phí Vận Chuyển',
+            'total_text' => 'Tổng'
+        ],
+        'authentication-code' => [
+            'title' => 'Mã Xác Thực Tài Khoản Fshoes Của Bạn',
+            'span_code' => 'Đây là mã xác minh một lần mà bạn đã yêu cầu',
+            'message_time' => 'Mã này sẽ có hiệu lực trong 5 phút',
+            'message_ignore' => 'Nếu bạn đã nhận được mã này hoặc không cần nó nữa, hãy bỏ qua email này',
+        ]
     ],
 ];

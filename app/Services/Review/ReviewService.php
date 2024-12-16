@@ -40,11 +40,21 @@ class ReviewService implements ReviewServiceInterface
         $allQuery = http_build_query(request()->query());
         return Cache::tags([$this->cacheTag])->remember('all-reviews?' . $allQuery, 60, function () {
             $perPage = request()->query('per_page');
-            $reviews = $this->loadRelationships($this->reviewRepository->query()->sortByColumn(columns: $this->columns))->paginate($perPage);
-            return [
-                'paginator' => $this->paginate($reviews),
-                'data' => ReviewResource::collection($reviews->items())
-            ];
+            $paginator = request()->query('paginator');
+            if($paginator){
+                $reviews = $this->loadRelationships($this->reviewRepository->query()->sortByColumn(columns: $this->columns))->paginate($perPage);
+                return [
+                    'paginator' => $this->paginate($reviews),
+                    'data' => ReviewResource::collection($reviews->items())
+                ];
+            }else {
+                $reviews = $this->loadRelationships($this->reviewRepository->query()->sortByColumn(columns: $this->columns))->get();
+                return [
+                  
+                    'data' => ReviewResource::collection($reviews)
+                ];
+            }
+            
         });
     }
 

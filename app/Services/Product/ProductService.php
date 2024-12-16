@@ -25,7 +25,7 @@ class ProductService implements ProductServiceInterface
 {
     use CanLoadRelationships, Cloudinary, Paginate;
     protected $cacheTag = 'products';
-    private array $relations = ['categories', 'images', 'variations', 'ownAttributes','statistics'];
+    private array $relations = ['categories', 'images', 'variations', 'ownAttributes', 'statistics'];
     private array $columns = [
         'id',
         'name',
@@ -53,15 +53,25 @@ class ProductService implements ProductServiceInterface
         return Cache::tags([$this->cacheTag])->remember('all/products?' . $allQuery, 60, function () {
             $perPage = request()->query('per_page');
             $searchKey = request()->query('search');
-            $products = $this->loadRelationships($this->productRepository->query()->when($searchKey,function($q) use ($searchKey){
-                $q->where('name', 'like', '%'. $searchKey. '%');
-            })->sortByColumn(columns: $this->columns))->paginate(is_numeric($perPage) ? $perPage : 15);
-            return [
-                'paginator' => $this->paginate($products),
-                'data' => ProductResource::collection(
-                    $products->items()
-                ),
-            ];
+            $paginate = request()->query('paginate');
+            if ($paginate) {
+                $products = $this->loadRelationships($this->productRepository->query()->when($searchKey, function ($q) use ($searchKey) {
+                    $q->where('name', 'like', '%' . $searchKey . '%');
+                })->sortByColumn(columns: $this->columns))->paginate(is_numeric($perPage) ? $perPage : 15);
+                return [
+                    'paginator' => $this->paginate($products),
+                    'data' => ProductResource::collection(
+                        $products->items()
+                    ),
+                ];
+            } else {
+                $products = $this->loadRelationships($this->productRepository->query()->when($searchKey, function ($q) use ($searchKey) {
+                    $q->where('name', 'like', '%' . $searchKey . '%');
+                })->sortByColumn(columns: $this->columns))->get();
+                return [
+                    'data' => ProductResource::collection($products),
+                ];
+            }
         });
     }
 
@@ -75,8 +85,8 @@ class ProductService implements ProductServiceInterface
             return ProductResource::collection($products);
         });
     }
-    
-   
+
+
 
     public function findById(int|string $id)
     {
@@ -97,6 +107,9 @@ class ProductService implements ProductServiceInterface
         $allQuery = http_build_query(request()->query());
         return Cache::tags([$this->cacheTag])->remember('product-detail/' . $id . '?' . $allQuery, 60, function () use ($id) {
             $product = $this->productRepository->query()->find($id);
+            if(!$product->status){
+                throw new ModelNotFoundException(__('messages.error-not-found'));
+            }
             if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
             if ($product->variations) {
                 $attributes = [];
@@ -161,7 +174,7 @@ class ProductService implements ProductServiceInterface
                 $product->images()->attach($options['images']);
             }
             if (count($options['categories']) > 0) $product->categories()->attach($options['categories']);
-            Cache::tags([$this->cacheTag,...$this->relations])->flush();
+            Cache::tags([$this->cacheTag, ...$this->relations])->flush();
             return new ProductResource($this->loadRelationships($product));
         });
     }
@@ -182,7 +195,7 @@ class ProductService implements ProductServiceInterface
                 $product->images()->sync($options['images']);
             }
             if (count($options['categories']) > 0) $product->categories()->sync($options['categories']);
-            Cache::tags([$this->cacheTag,...$this->relations])->flush();
+            Cache::tags([$this->cacheTag, ...$this->relations])->flush();
             return new ProductResource($this->loadRelationships($product));
         });
     }
@@ -210,7 +223,7 @@ class ProductService implements ProductServiceInterface
         foreach ($values as $value) {
             $attribute->values()->create(['value' => $value]);
         }
-        Cache::tags([$this->cacheTag,...$this->relations])->flush();
+        Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return [
             new AttributeResource($attribute->load(['values'])),
         ];
@@ -222,7 +235,7 @@ class ProductService implements ProductServiceInterface
         if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
         $product->status = $status;
         $product->save();
-        Cache::tags([$this->cacheTag,...$this->relations])->flush();
+        Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return new ProductResource($this->loadRelationships($product));
     }
 
@@ -236,9 +249,9 @@ class ProductService implements ProductServiceInterface
     {
         $product = $this->productRepository->find($id);
         if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
-        
+
         $product->delete();
-        Cache::tags([$this->cacheTag,...$this->relations])->flush();
+        Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return true;
     }
 
@@ -280,7 +293,7 @@ class ProductService implements ProductServiceInterface
             throw new ModelNotFoundException(__('messages.error-not-found'));
         }
         $product->restore();
-        Cache::tags([$this->cacheTag,...$this->relations])->flush();
+        Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return new ProductResource($this->loadRelationships($product));
     }
 
@@ -304,20 +317,20 @@ class ProductService implements ProductServiceInterface
             throw new ModelNotFoundException(__('messages.error-not-found'));
         }
         $product->forceDelete();
-        Cache::tags([$this->cacheTag,...$this->relations])->flush();
+        Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return true;
     }
 
     public function findByAttributeValues()
     {
         $allQuery = http_build_query(request()->query());
-       
+
         return Cache::tags([$this->cacheTag])->remember('find-by-attribute-values?' . $allQuery, 60, function () {
             $perPage = request()->query('per_page');
             $attributeQuery = request()->query('attributes');
             $categoryId = request()->query('categoryId');
             $search = request()->query('search');
-            
+
             $arrAttrVal = [];
             if (empty($categoryId)) {
                 $categoryId = '';
@@ -338,14 +351,14 @@ class ProductService implements ProductServiceInterface
                         $q->whereIn('attribute_value_id', $arrAttrVal);
                     });
                 });
-            })->when($search,function ($q) use ($search){
-                $q->where('name', 'like', '%'. $search. '%');
+            })->when($search, function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
             })
-            ->when($category, function ($q) use ($categoryId) {
-                $q->whereHas('categories', function ($query) use ($categoryId) {
-                    $query->where('category_id', $categoryId);
-                });
-            })->with(['categories'])->sortByColumn(columns: $this->columns)->paginate($perPage);
+                ->when($category, function ($q) use ($categoryId) {
+                    $q->whereHas('categories', function ($query) use ($categoryId) {
+                        $query->where('category_id', $categoryId);
+                    });
+                })->with(['categories'])->sortByColumn(columns: $this->columns)->paginate($perPage);
             return [
                 'paginator' => $this->paginate($products),
                 'data' => ProductResource::collection(
@@ -358,7 +371,7 @@ class ProductService implements ProductServiceInterface
     public function allSummary()
     {
         $allQuery = http_build_query(request()->query());
-        return Cache::tags([$this->cacheTag])->remember('all-summary-products?'.$allQuery, 60, function () {
+        return Cache::tags([$this->cacheTag])->remember('all-summary-products?' . $allQuery, 60, function () {
             $products = $this->loadRelationships($this->productRepository->query()->orderBy('updated_at', 'desc'))->get();
             return ProductSummary::collection($products);
         });

@@ -40,13 +40,23 @@ class ImageService implements ImageServiceInterface
         return Cache::tags([$this->cacheTag])->remember('images/all?' . $this->allQueryUrl, 60, function () {
             $perPage = request()->query('per_page');
 
-            $image = $this->loadRelationships($this->repository->query()->sortByColumn(columns: $this->columns)->latest())->paginate($perPage);
-            return [
-                'paginator' => $this->paginate($image),
-                'data' => ImageResource::collection(
-                    $image->items()
-                ),
-            ];
+            $paginate = request()->query('paginate');
+            if ($paginate) {
+                $image = $this->loadRelationships($this->repository->query()->sortByColumn(columns: $this->columns)->latest())->paginate($perPage);
+                return [
+                    'paginator' => $this->paginate($image),
+                    'data' => ImageResource::collection(
+                        $image->items()
+                    ),
+                ];
+            }else {
+                $image = $this->loadRelationships($this->repository->query()->sortByColumn(columns: $this->columns)->latest())->get();
+                return [
+                    'data' => ImageResource::collection(
+                        $image
+                    ),
+                ];
+            }
         });
     }
 
