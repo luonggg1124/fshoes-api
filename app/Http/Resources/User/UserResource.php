@@ -30,6 +30,7 @@ class UserResource extends JsonResource
             'status' => $this->status,
             'profile' => new UserProfileResource($this->whenLoaded('profile')),
             'favoriteProducts' => ProductResource::collection($this->whenLoaded('favoriteProducts')),
+            'group' => $this->whenLoaded('group'),
             'group_id'=>$this->group_id,
             'is_admin' => $this->is_admin,
         ];

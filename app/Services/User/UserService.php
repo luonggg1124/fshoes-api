@@ -21,7 +21,7 @@ class UserService implements UserServiceInterface
 {
     use CanLoadRelationships, Cloudinary, Paginate;
 
-    protected array $relations = ['profile', 'interestingCategories', 'addresses', 'allAvatars', 'favoriteProducts'];
+    protected array $relations = ['profile', 'interestingCategories', 'addresses', 'allAvatars', 'favoriteProducts','group'];
     private array $columns = [
         'nickname',
         'name',
@@ -51,11 +51,21 @@ class UserService implements UserServiceInterface
         if ($sort !== 'desc' && $sort !== 'asc')
             $sort = 'asc';
         $perPage = request()->query('per_page');
-        $users = $this->loadRelationships($this->userRepository->query()->orderBy($column, $sort))->paginate($perPage);
+        $paginate = request()->query('paginate');
+        if($paginate){
+            $users = $this->loadRelationships($this->userRepository->query()->orderBy($column, $sort))->paginate($perPage);
         return [
             'paginator' => $this->paginate($users),
             'data' => UserResource::collection($users->items())
         ];
+        }else {
+            $users = $this->loadRelationships($this->userRepository->query()->orderBy($column, $sort))->get();
+        return [
+            
+            'data' => UserResource::collection($users)
+        ];
+        }
+        
     }
 
     public function create(array $data, array $options = ['avatar' => null, 'profile' => []])
