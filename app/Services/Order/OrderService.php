@@ -101,9 +101,9 @@ class OrderService implements OrderServiceInterface
                 $item->stock_qty = $item->stock_qty - $detail["quantity"];
                 $item->qty_sold = $item->qty_sold + $detail["quantity"];
                 
-                // $item->sales()->updateExistingPivot($item->currentSale()->id,[
-                //     'quantity' => $item->currentSale()->pivot->quantity+$detail["quantity"] ,
-                // ]);
+                $item->sales()->updateExistingPivot($item->currentSale()->id,[
+                    'quantity' => $item->currentSale()->pivot->quantity+$detail["quantity"] ,
+                ]);
                 
                 $item->save();
             }
