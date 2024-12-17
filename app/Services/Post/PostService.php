@@ -35,6 +35,17 @@ class PostService implements PostServiceInterface
         }
     }
 
+    function findBySlug(int|string $slug)
+    {
+        try{
+            $post = $this->postRepository->query()->where('slug' , $slug)->first();
+            $post->views++;
+            $post->save();
+            return response()->json(PostResource::make($post), 200);
+        }catch(ModelNotFoundException $e){
+            return response()->json(['message' => __('messages.error-not-found')], 404);
+        }
+    }
     function findByUserId(int|string $id)
     {
         try{
