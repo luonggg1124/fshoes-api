@@ -170,7 +170,7 @@ class CategoryService implements CategoryServiceInterface
     {
         $category = $this->categoryRepository->find($id);
         if (!$category) throw new ModelNotFoundException(__('messages.error-not-found'));
-        if ($category->is_main) return new CategoryResource($this->loadRelationships($category));
+        if ($category->is_main == 1) return new CategoryResource($this->loadRelationships($category));
         $category->update($data);
         $listPar = [];
         if (count($option['parents']) > 0) {
@@ -187,7 +187,6 @@ class CategoryService implements CategoryServiceInterface
     }
     public function delete(int|string $id)
     {
-
         $category = $this->categoryRepository->find($id);
         if (!$category) {
             throw new ModelNotFoundException(__('messages.error-not-found'));

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+
 
 class TestController extends Controller
 {
@@ -26,5 +27,16 @@ class TestController extends Controller
         ],200);
 
     }
-
+    public function changeLanguage(){
+        $arr = ['vi', 'en'];
+        $lang = request()->get('lang');
+        if(!in_array($lang, $arr)){
+            $lang = 'vi';
+        }
+        App::setLocale($lang);
+        return response()->json([
+            'test' => true,
+            'language' =>  App::getLocale()
+        ],200);
+    }
 }

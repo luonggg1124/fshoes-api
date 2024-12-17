@@ -112,7 +112,8 @@ return [
             'price_text' => 'Price',
             'subtotal_text' => 'Subtotal',
             'delivery_fee' => 'Delivery Fee',
-            'total_text' => 'Total'
+            'total_text' => 'Total',
+            'create_message_title' => 'Thank for your purchase!'
         ],
         'authentication-code' => [
             'title' => 'Your Fshoes Member profile code',

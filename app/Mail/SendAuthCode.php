@@ -30,7 +30,7 @@ class SendAuthCode extends Mailable
     {
         return new Envelope(
             from: env('MAIL_FROM_ADDRESS'),
-            subject: 'Your authentication code',
+            subject: __('messages.mail.authentication-code.title'),
         );
     }
 

@@ -130,7 +130,7 @@
 
                             <td>
                                 {{ __('messages.mail.order-success.invoice') }} #: {{ $order->id }}<br />
-                                {{ __('messages.mail.order-success..created') }}:
+                                {{ __('messages.mail.order-success.created') }}:
                                 {{ \Carbon\Carbon::parse($order->created_at)->format('d/m/Y H:i') }}<br />
                                 {{ __('messages.mail.order-success.status') }}: @switch($order->status)
                                     @case(0)
@@ -191,7 +191,7 @@
             </tr>
 
             <tr class="heading">
-                <td>{{ __('messages.mail.order-success.status_order.payment_method_title') }}</td>
+                <td>{{ __('messages.mail.order-success.payment_method_title') }}</td>
 
                 <td># @switch($order->payment_method)
                         @case (strtolower($order->payment_method) == 'banking')
@@ -207,7 +207,7 @@
                         @break
 
                         @case (strtolower($order->payment_method) == 'cash_on_delivery')
-                            {{ __('messages.mail.order-success.status_order.payment_method.cash_on_delivery') }}
+                            {{ __('messages.mail.order-success.payment_method.cash_on_delivery') }}
                         @break
                     @endswitch
                 </td>
@@ -215,7 +215,41 @@
             <tr class="heading">
                 <td>{{__('messages.mail.order-success.status')}}</td>
 
-                <td style="">{{ $order->status }}</td>
+                <td style="">
+                    @switch($order->status)
+                                    @case(0)
+                                        {{ __('messages.mail.order-success.status_order.cancelled') }}
+                                    @break
+
+                                    @case(1)
+                                        {{ __('messages.mail.order-success.status_order.waiting_confirm') }}
+                                    @break
+
+                                    @case(2)
+                                        {{ __('messages.mail.order-success.status_order.confirmed') }}
+                                    @break
+
+                                    @case(3)
+                                        {{ __('messages.mail.order-success.status_order.delivering') }}
+                                    @break
+
+                                    @case(4)
+                                        {{ __('messages.mail.order-success.status_order.delivered') }}
+                                    @break
+
+                                    @case(5)
+                                        Return Processing
+                                    @break
+
+                                    @case(6)
+                                        Denied Return
+                                    @break
+
+                                    @case(7)
+                                        Returned
+                                    @break
+                                @endswitch
+                </td>
             </tr>
             <tr class="heading">
                 <td>{{__('messages.mail.order-success.item_text')}}</td>
@@ -232,7 +266,7 @@
                             (x{{ $item->quantity }})
                         </td>
                         <?php $sum += $item->price; ?>
-                        <td> {{ number_format($item->price, 2, '.', ',') }} VND</td>
+                        <td> {{ number_format($item->price, 0, '.', ',') }} VND</td>
                     </tr>
                 @endforeach
             @endif
@@ -242,11 +276,11 @@
                 <td>
                     <div class="label-value" style="display: flex; justify-content: space-around">
                         <span class="label" style="text-align: left">{{__('messages.mail.order-success.subtotal_text')}}:</span>
-                        <span class="value">{{ number_format($sum, 2, '.', ',') }} VND</span>
+                        <span class="value">{{ number_format($sum, 0, '.', ',') }} VND</span>
                     </div>
                     <div class="label-value" style="display: flex; justify-content: space-between">
                         <span class="label" style="text-align: left">{{__('messages.mail.order-success.delivery_fee')}}:</span>
-                        <span class="value">+{{ number_format($order->shipping_cost, 2, '.', ',') }} VND</span>
+                        <span class="value">+{{ number_format($order->shipping_cost, 0, '.', ',') }} VND</span>
                     </div>
                     @if ($order->voucher_id)
                         <div class="label-value" style="display: flex; justify-content: space-between">
@@ -258,7 +292,7 @@
                     @endif
                     <div class="label-value" style="display: flex; justify-content: space-between">
                         <span class="label" style="margin-right: 10px">{{__('messages.mail.order-success.total_text')}}:</span>
-                        <span class="value">{{ number_format($order->total_amount, 2, '.', ',') }} VND</span>
+                        <span class="value">{{ number_format($order->total_amount, 0, '.', ',') }} VND</span>
                     </div>
                 </td>
             </tr>

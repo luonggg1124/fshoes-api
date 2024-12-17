@@ -36,7 +36,7 @@ class CreateOrder extends Mailable
     {
         return new Envelope(
             from: env('MAIL_FROM_ADDRESS'),
-            subject: 'Thank for your purchase!',
+            subject: __('messages.mail.order-success.create_message_title'),
         );
     }
 
