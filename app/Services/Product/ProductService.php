@@ -166,7 +166,7 @@ class ProductService implements ProductServiceInterface
             if (empty($data['status'])) $data['status'] = 0;
             $product = $this->productRepository->create($data);
             if($product->status == 0){
-                $product->created_at = now();
+                $product->deleted_at = now();
             }
             if (!$product) throw new \Exception(__('messages.error-not-found'));
             $product->slug = $this->slug($product->name, $product->id);
@@ -190,6 +190,9 @@ class ProductService implements ProductServiceInterface
 
             if (!$product) throw new \Exception(__('messages.error-not-found'));
             $product->update($data);
+            if($product->status){
+                $product->deleted_at = null;
+            }
             $product->slug = $this->slug($product->name, $product->id);
             $product->save();
             if (count($options['images']) > 0) {
