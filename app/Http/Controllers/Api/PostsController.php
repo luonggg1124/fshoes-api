@@ -62,7 +62,7 @@ class PostsController extends Controller
             $data["theme"] = $infor["path"];
             $data["public_id"] = $infor["public_id"];
         }
-        
+        return $data;
         return  $this->postService->update($id , $data);
     }
 
