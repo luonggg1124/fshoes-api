@@ -107,7 +107,9 @@ class ProductService implements ProductServiceInterface
         $allQuery = http_build_query(request()->query());
         return Cache::tags([$this->cacheTag])->remember('product-detail/' . $id . '?' . $allQuery, 60, function () use ($id) {
             $product = $this->productRepository->query()->find($id);
-            
+            if(!$product->status){
+                throw new ModelNotFoundException(__('messages.error-not-found'));
+            }
             if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
             if ($product->variations) {
                 $attributes = [];
@@ -165,9 +167,6 @@ class ProductService implements ProductServiceInterface
         return DB::transaction(function () use ($data, $options) {
             if (empty($data['status'])) $data['status'] = 0;
             $product = $this->productRepository->create($data);
-            if($product->status == 0){
-                $product->deleted_at = now();
-            }
             if (!$product) throw new \Exception(__('messages.error-not-found'));
             $product->slug = $this->slug($product->name, $product->id);
             $product->save();
@@ -190,9 +189,6 @@ class ProductService implements ProductServiceInterface
 
             if (!$product) throw new \Exception(__('messages.error-not-found'));
             $product->update($data);
-            if($product->status){
-                $product->deleted_at = null;
-            }
             $product->slug = $this->slug($product->name, $product->id);
             $product->save();
             if (count($options['images']) > 0) {
@@ -349,7 +345,7 @@ class ProductService implements ProductServiceInterface
                 $arrAttrVal = $intElements;
             }
 
-            $products = $this->productRepository->query()->when(count($arrAttrVal) > 0, function ($q) use ($arrAttrVal) {
+            $products = $this->productRepository->query()->where('status','!=',0)->when(count($arrAttrVal) > 0, function ($q) use ($arrAttrVal) {
                 $q->whereHas('variations', function ($q) use ($arrAttrVal) {
                     $q->whereHas('values', function ($q) use ($arrAttrVal) {
                         $q->whereIn('attribute_value_id', $arrAttrVal);

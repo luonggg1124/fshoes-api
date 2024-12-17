@@ -92,8 +92,8 @@ class CategoryService implements CategoryServiceInterface
                 $quantity = 15;
             }
             $listProduct = [];
-            $category = $this->categoryRepository->query()->with(['products'])->where('display', $serial)->first();
-            $productsInCategory = $category->products;
+            $category = $this->categoryRepository->query()->where('display', $serial)->first();
+            $productsInCategory = $category->products()->where('status','!=',0)->get();
             $listProduct = [...$productsInCategory];
             if (count($productsInCategory) < $quantity) {
                 $listAllProducts = $this->productRepository->all();
