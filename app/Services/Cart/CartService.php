@@ -51,7 +51,7 @@ class CartService implements CartServiceInterface
                 if (!$product) {
                     throw new ModelNotFoundException('Product not found');
                 }
-                if ($product->stock_qty == 0) {
+                if ($product->stock_qty == 0 || $data['quantity'] > $product->stock_qty) {
                     throw new \Exception('Product out of stock');
                 }
             }
@@ -60,7 +60,7 @@ class CartService implements CartServiceInterface
                 if (!$variation) {
                     throw new ModelNotFoundException('Product not found');
                 }
-                if ($variation->stock_qty == 0) {
+                if ($variation->stock_qty == 0 || $data['quantity'] > $variation->stock_qty) {
                     throw new \Exception('Product out of stock');
                 }
             }
