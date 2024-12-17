@@ -56,8 +56,7 @@ class PostsController extends Controller
      */
    public function update(Request $request, string $id)
     {
-        $data = $request->all();
-            return $data;
+        return $request->all();
         if($request->hasFile("theme")){
             $infor =  $this->uploadImageCloudinary($request->file("theme") , 'posts');
             $data["theme"] = $infor["path"];
