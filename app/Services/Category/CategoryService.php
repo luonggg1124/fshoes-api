@@ -93,10 +93,12 @@ class CategoryService implements CategoryServiceInterface
             }
             $listProduct = [];
             $category = $this->categoryRepository->query()->where('display', $serial)->first();
-            $productsInCategory = $category->products()->where('status','!=',0)->get();
+            
+            $productsInCategory = $category->products()->where('status',1)->get();
+            
             $listProduct = [...$productsInCategory];
             if (count($productsInCategory) < $quantity) {
-                $listAllProducts = $this->productRepository->all();
+                $listAllProducts = $this->productRepository->query()->where('status',1)->get();
                 $arrayId = $category->products()->orderBy('qty_sold', 'desc')->get()->pluck('id');
                 foreach ($listAllProducts as $p) {
                     if (!in_array($p->id, [...$arrayId])) {
@@ -108,7 +110,7 @@ class CategoryService implements CategoryServiceInterface
                 }
             }
             $category->products = $listProduct;
-            return CategoryResource::make($category);
+            return $category;
         });
     }
     public function findById(int|string $id)
