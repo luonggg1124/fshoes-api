@@ -56,7 +56,7 @@ class CartService implements CartServiceInterface
                 }
             }
             if (isset($data['product_variation_id'])) {
-                $variation = $this->variationRepository->find($data['product_id']);
+                $variation = $this->variationRepository->find($data['product_variation_id']);
                 if (!$variation) {
                     throw new ModelNotFoundException('Product not found');
                 }
