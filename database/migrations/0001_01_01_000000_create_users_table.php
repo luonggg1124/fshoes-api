@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('google_id')->nullable();
             $table->rememberToken();
-            $table->softDeletes();
+           
             $table->timestamps();
         });
 
