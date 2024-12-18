@@ -79,8 +79,10 @@ class UserService implements UserServiceInterface
                     'email' => __('messages.user.error-email')
                 ]);
             if (isset($data) && empty($data['group_id'])) $data['group_id'] = 1;
-            if(isset($data['is_admin']) && $data['is_admin']){
+            
+            if(isset($data['is_admin']) && $data['is_admin'] != 'false'){
                 $data['is_admin'] = true;
+               
             }
             else {
                 $data['is_admin'] = false;
@@ -183,7 +185,8 @@ class UserService implements UserServiceInterface
         if (!$user) throw new ModelNotFoundException(__('messages.error-not-found'));
         $update = DB::transaction(function () use ($user, $data, $options) {
             if (isset($data['email'])) unset($data['email']);
-            if(isset($data['is_admin']) && $data['is_admin']){
+           
+            if(isset($data['is_admin']) && $data['is_admin'] != 'false'){
                 $data['is_admin'] = true;
             }
             else {
