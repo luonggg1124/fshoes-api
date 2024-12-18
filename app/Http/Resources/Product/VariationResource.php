@@ -35,7 +35,7 @@ class VariationResource extends JsonResource
             'status' => $this->status,
             'stock_qty' => $this->stock_qty,
             'qty_sold' => $this->qty_sold,
-            'image_url' => $this->images[0]['url'],
+            'image_url' => count($this->images) > 0 ? $this->images[0]['url'] : $this->product->image_url,
             'qty_sale' => $this->saleQuantity(),
             'currentSale' => new SaleResource($this->currentSale()),
             'product' => new ProductResource($this->whenLoaded('product')),

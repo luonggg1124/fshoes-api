@@ -31,6 +31,10 @@ class AttributeValueController extends Controller
         try {
             
             $data = $request->values;
+            if(empty($data)){
+                $data = [];
+            }
+         
             $values = $this->service->createMany($aid, $data);
             return \response()->json([
                 'status' => true,
@@ -50,6 +54,12 @@ class AttributeValueController extends Controller
                     'status' => false,
                     'message' => $throw->getMessage()
                 ], 404);
+            }
+            if($throw instanceof \InvalidArgumentException){
+                return \response()->json([
+                    'status' => false,
+                    'message' => $throw->getMessage()
+                ], 422);
             }
             return \response()->json([
                 'status' => false,

@@ -9,6 +9,7 @@ Route::get('/', function () {
         'success' => true
     ]);
 });
+Route::get('/test-html', [App\Http\Controllers\TestController::class,'testHtml']);
 Route::get('login',function(){
     return 'login page';
 });

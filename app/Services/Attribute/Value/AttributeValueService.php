@@ -51,6 +51,9 @@ class AttributeValueService implements AttributeValueServiceInterface
         $attribute = $this->attributeRepository->find($aid);
         if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
         $list = [];
+
+        if(empty($data)) throw new \InvalidArgumentException(__('messages.invalid-value'));
+        
         foreach ($data as $val) {
             if (isset($val)) {
                 if (is_array($val)) {

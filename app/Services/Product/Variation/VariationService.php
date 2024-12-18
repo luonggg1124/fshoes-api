@@ -20,7 +20,7 @@ class VariationService implements VariationServiceInterface
     use CanLoadRelationships, Paginate, Cloudinary;
     protected $cacheTag = 'variations';
     protected $cacheTagProduct = 'products';
-    private array $relations = ['product', 'images', 'values','statistics'];
+    private array $relations = ['product', 'images', 'values','statistics','products'];
     private array $columns = [
         'id',
         'slug',
@@ -112,19 +112,29 @@ class VariationService implements VariationServiceInterface
     public function createMany(int|string $pid, array $data)
     {
         $list = [];
+      
         foreach ($data as $var) {
-            if (empty($var['values']))
+            if (empty($var['values'])){
                 $values = [];
-            else $values = $var['values'];
-            if (empty($var['images'])) $images = [];
-            else $images = $var['images'];
+            }
+            else {
+                $values = $var['values'];
+            }
+            if (empty($var['images'])) {
+                $images = [];
+            }
+            else {
+                $images = $var['images'];
+            }
+            
             $variation = $this->create($pid, $var, [
                 'values' => $values,
                 'images' => $images
             ]);
-
+           
             $list[] = $variation;
         }
+       
         if (empty($list) || count($list) < 1) throw new \Exception(__('messages.product.error-create.variant'));
         Cache::tags([$this->cacheTag])->flush();
         return VariationResource::collection($list);

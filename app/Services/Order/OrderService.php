@@ -4,6 +4,7 @@ namespace App\Services\Order;
 
 
 use App\Http\Traits\Paginate;
+use App\Jobs\PaidOrder;
 use Exception;
 use App\Models\Cart;
 use App\Models\Voucher;
@@ -28,7 +29,7 @@ class OrderService implements OrderServiceInterface
 {
     use Paginate;
     protected $cacheTag = 'orders';
-    private array $relations = ['products','variations','statistics'];
+    private array $relations = ['products', 'variations', 'statistics'];
     public function __construct(
         protected OrderRepositoryInterface       $orderRepository,
         protected OrderDetailRepositoryInterface $orderDetailRepository,
@@ -66,18 +67,16 @@ class OrderService implements OrderServiceInterface
     public function create(array $data, array $option = [])
     {
         try {
-            
             foreach ($data['order_details'] ?? [] as $detail) {
                 if ($detail["product_id"]) {
                     $item = $this->productRepository->query()->where('id', $detail["product_id"])->first();
                 } else {
                     $item = $this->variationRepository->query()->where('id', $detail["product_variation_id"])->first();
                 }
-                if ($item->stock_qty - $detail["quantity"] < 0) {
+                if ($item->stock_qty - $detail["quantity"] <= 0) {
                     if ($detail["product_id"]) {
-                        $message = "Product " . $item->name . " out of stock. There are only have " . $item->stock_qty . " units";
-                    } else  $message = "Variation " . $item->name . " out of stock. There are only have " . $item->stock_qty . " units";
-                    return response()->json(["message" => $message], 400);
+                        $message = __('messages.cart.product_word') . $item->name . __('messages.cart.out_of_stock') . $item->stock_qty .  __('messages.cart.units');
+                    } else  $message = __('messages.cart.variations_word') . $item->name . __('messages.cart.out_of_stock') . $item->stock_qty .  __('messages.cart.units');
                 }
             }
 
@@ -88,7 +87,7 @@ class OrderService implements OrderServiceInterface
                 if ($voucher->quantity < 0) return response()->json(["message" => __('messages.voucher.error-voucher')], 500);
                 $voucher->save();
             }
-            
+
             $order = $this->orderRepository->create($data);
             foreach ($data['order_details'] ?? [] as $detail) {
                 $detail['order_id'] = $order->id;
@@ -100,25 +99,28 @@ class OrderService implements OrderServiceInterface
                 }
                 $item->stock_qty = $item->stock_qty - $detail["quantity"];
                 $item->qty_sold = $item->qty_sold + $detail["quantity"];
-                
-                $item->sales()->updateExistingPivot($item->currentSale()->id,[
-                    'quantity' => $item->currentSale()->pivot->quantity+$detail["quantity"] ,
-                ]);
-                
+
+                if ($item->currentSale()) {
+                    $item->sales()->updateExistingPivot($item->currentSale()->id, [
+                        'quantity' => $item->currentSale()->pivot->quantity + $detail["quantity"],
+                    ]);
+                }
+
+
                 $item->save();
             }
             if (request()->user()) {
                 $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => null, "description" => request()->user()->name . " created order"]);
             } else $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => null, "description" => "Guess" . " created order"]);
 
-            if(isset($data['cart_ids'])){
-                foreach($data['cart_ids'] as $id){
-                        $this->cartRepository->delete($id);
+            if (isset($data['cart_ids'])) {
+                foreach ($data['cart_ids'] as $id) {
+                    $this->cartRepository->delete($id);
                 }
             }
-            Mail::to($order->receiver_email)->send(new CreateOrder($order->id));
-            dispatch(new \App\Jobs\CreateOrder($order->id, $order->receiver_email))->delay(now()->addSeconds(5));
-            Cache::tags([$this->cacheTag,...$this->relations])->flush();
+
+            dispatch(new \App\Jobs\CreateOrder($order->id, $order->receiver_email))->delay(now()->addSeconds(2));
+            Cache::tags([$this->cacheTag, ...$this->relations])->flush();
             return response()->json([
                 "message" => __('messages.created-success'),
                 'order' => $order
@@ -174,7 +176,7 @@ class OrderService implements OrderServiceInterface
                     $message = __('messages.order.error-returned');
                     break;
             }
-            
+
             $this->orderHistoryService->create(["order_id" => $id, "user_id" => null, "description" => $message]);
             return response()->json(["message" => __('messages.update-success')], 200);
         } catch (ModelNotFoundException $e) {
@@ -186,32 +188,32 @@ class OrderService implements OrderServiceInterface
 
     public function me()
     {
-        $listStatus = [0,1,2,3,4,5,6,7,8];
+        $listStatus = [0, 1, 2, 3, 4, 5, 6, 7, 8];
         $status = request()->query('status');
         $perPage = request()->query('per_page');
-        if(!in_array((int)$status,$listStatus)){
-            $status=null;
+        if (!in_array((int)$status, $listStatus)) {
+            $status = null;
         }
-        if(!is_int((int)$perPage) || $perPage < 0){
+        if (!is_int((int)$perPage) || $perPage < 0) {
             $perPage = 10;
         }
-       
+
         $user = $this->userRepository->find(request()->user()->id);
         if (!$user) throw  new UnauthorizedException(__('messages.order.error-order'));
         $orders = $user->orders()->when(
             $status !== null,
             function ($query) use ($status) {
-            
+
                 $query->where('status', $status);
             }
         )->with(['orderHistory'])->orderBy('created_at', 'desc')->paginate($perPage);
-        return 
-        [
-            'paginator' => $this->paginate($orders),
-            'data' => OrdersCollection::collection(
-                $orders->items()
-            ),
-        ];
+        return
+            [
+                'paginator' => $this->paginate($orders),
+                'data' => OrdersCollection::collection(
+                    $orders->items()
+                ),
+            ];
     }
 
     public function cancelOrder($id, $data)
@@ -224,12 +226,11 @@ class OrderService implements OrderServiceInterface
         $order->status = 0;
         $order->reason_cancelled = $data["reason_cancelled"];
         $voucher = $order->voucher;
-        if($voucher){
+        if ($voucher) {
             $user->voucherUsed()->detach([$voucher->id]);
         }
-        
         $order->save();
-        Cache::tags([$this->cacheTag,...$this->relations])->flush();
+        Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return new OrdersCollection($order);
     }
 
@@ -244,20 +245,23 @@ class OrderService implements OrderServiceInterface
                 "quantity" => $item->quantity
             ]);
         }
-        Cache::tags([$this->cacheTag,...$this->relations])->flush();
+        Cache::tags([$this->cacheTag, ...$this->relations])->flush();
     }
-    public function updatePaymentStatus(int|string $id,$paymentStatus = true,$paymentMethod = 'cash_on_delivery')
+    public function updatePaymentStatus(int|string $id, $paymentStatus = true, $paymentMethod = 'cash_on_delivery')
     {
         $order = $this->orderRepository->find($id);
-        if(!$order) throw new ModelNotFoundException(__('messages.error-not-found'));
-        if($paymentStatus){
-            $order->payment_status = 'paid'; 
-        }else{
-            $order->payment_status = 'not_yet_paid'; 
+        if (!$order) throw new ModelNotFoundException(__('messages.error-not-found'));
+        if ($paymentStatus) {
+            $order->payment_status = 'paid';
+        } else {
+            $order->payment_status = 'not_yet_paid';
         }
         $order->payment_method = $paymentMethod;
         $order->save();
-        Cache::tags([$this->cacheTag,...$this->relations])->flush();
+        if($order->payment_status){
+            dispatch(new PaidOrder($order->id,$order->receiver_email))->delay(now()->addSeconds(2));
+        }
+        Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return $order;
     }
 }

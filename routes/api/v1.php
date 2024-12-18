@@ -2,10 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Statistics\StatisticsController;
-
-
-
-
+use App\Http\Controllers\TestController;
 
 Route::group(['middleware' => ['auth:api','is_admin']], function () {
     Route::get('v1/statistics/overall', [StatisticsController::class, 'index']);
@@ -16,3 +13,4 @@ Route::group(['middleware' => ['auth:api','is_admin']], function () {
     Route::get('v1/statistics/count/order/waitings',[StatisticsController::class, 'countWaitingConfirmOrders']);
 });
 
+Route::get('change/language',[TestController::class,'changeLanguage']);

@@ -139,22 +139,22 @@ class ReviewService implements ReviewServiceInterface
     }
     public function getProduct(int|string $productId)
     {
-        // Lấy tất cả các review của sản phẩm
+    
         $reviews = $this->reviewRepository->findByProduct($productId);
 
-        // Nạp các quan hệ cho từng review (ví dụ: user, product)
+       
         return ReviewResource::collection($this->loadRelationships($reviews));
     }
 
     public function getByLikes()
     {
         $reviews = $this->reviewRepository->getByLikes();
-        return $this->loadRelationships($reviews);  // Nạp các quan hệ
+        return $this->loadRelationships($reviews); 
     }
 
     public function toggleLike(int $review_id, int $user_id)
     {
-        // Lấy review từ repository
+       
         $review = $this->reviewRepository->find($review_id);
         if (!$review) {
             throw new ModelNotFoundException(__('messages.error-not-found'));
@@ -168,7 +168,7 @@ class ReviewService implements ReviewServiceInterface
 
         $hasBought = OrderDetails::where('product_id', $productId)
             ->whereHas('order', function ($query) use ($userId) {
-                $query->where('user_id', $userId)->where('status', '>=', 4);
+                $query->where('user_id', $userId)->where('status', '>=', 3);
             })->exists();
 
 

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Cache;
 
 class TestController extends Controller
 {
@@ -26,5 +27,21 @@ class TestController extends Controller
         ],200);
 
     }
-
+    public function changeLanguage(){
+        $arr = ['vi', 'en'];
+        $lang = request()->get('lang');
+        if(!in_array($lang, $arr)){
+            $lang = 'vi';
+        }
+        
+        Cache::put('language',$lang,30*24*60*60*1000);
+        App::setLocale($lang);
+        return response()->json([
+            'status' => true,
+            'language' =>  App::getLocale()
+        ],200);
+    }
+    public function testHtml(){
+        return view('mail.paid-order');
+    }
 }

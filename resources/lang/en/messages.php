@@ -10,6 +10,7 @@ return [
     'restore-success' => 'Restore successfully',
     'error-required' => 'The field is required',
     'error-value' => 'The values must be an array',
+    'invalid-value' => 'Invalid argument',
     'review' => [
         'error-review-forbidden' => 'You can only review a product after purchasing it and only once per product.',
 
@@ -112,7 +113,8 @@ return [
             'price_text' => 'Price',
             'subtotal_text' => 'Subtotal',
             'delivery_fee' => 'Delivery Fee',
-            'total_text' => 'Total'
+            'total_text' => 'Total',
+            'create_message_title' => 'Thank for your purchase!'
         ],
         'authentication-code' => [
             'title' => 'Your Fshoes Member profile code',
@@ -121,16 +123,29 @@ return [
             'message_ignore' => 'If you\'ve already received this code or don\'t need it any more, ignore this email',
         ]
     ],
-    'cart' => [
-        'error-cart' => 'Unauthorized',
-        'error-cart-add' => 'Cannot add new cart.',
-        'error-quantity' => 'Not enough quantity.',
-        'error-delete-cart' => 'Cannot delete cart',
-    ],
+
     'statiscs' => [
         'error-statiscs' => 'Error system!',
+        'message_ignore' => 'If you\'ve already received this code or don\'t need it any more, ignore this email',
+    ],
+    'paid-order' => [
+        'title' => 'Order Successfully Paid',
+        'message_success' => 'Thank you for the successful payment of your order. We will deliver your order as soon as we confirm your order.',
+        'link_text' => 'See now',
 
     ],
+
+    'cart' => [
+        'error-cart' =>  'Unauthorized',
+        'error-cart-add' =>  'Cannot add new cart.',
+        'error-quantity' =>  'Not enough quantity.',
+        'error-delete-cart' =>  'Cannot delete cart',
+        'product_word' => 'Product',
+        'variations_word' => 'Variation',
+        'out_of_stock' => ' out of stock. There are only have ',
+        'units' => ' units'
+    ],
+
     'update_review_request' => [
         'title.sometimes.required' => 'Product title is required if present.',
         'title.string' => 'Product title must be a type of string.',
