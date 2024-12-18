@@ -20,7 +20,7 @@ class VariationService implements VariationServiceInterface
     use CanLoadRelationships, Paginate, Cloudinary;
     protected $cacheTag = 'variations';
     protected $cacheTagProduct = 'products';
-    private array $relations = ['product', 'images', 'values','statistics'];
+    private array $relations = ['product', 'images', 'values','statistics','products'];
     private array $columns = [
         'id',
         'slug',
