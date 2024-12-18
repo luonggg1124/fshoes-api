@@ -35,7 +35,7 @@ class UpdateCategoryRequest extends FormRequest
         $errors = $validator->errors();
         $response = response()->json([
             'errors' => $errors->messages()
-        ],400);
+        ], 400);
         throw new HttpResponseException($response);
     }
     public function messages(): array
@@ -43,6 +43,10 @@ class UpdateCategoryRequest extends FormRequest
         return [
             'name.required' => __('messages.update_category_request.name.required'),
             'name.string' => __('messages.update_category_request.name.string'),
+            'parents.array' => __('messages.update_category_request.parents.array'),
+            'parents.nullable' => __('messages.update_category_request.parents.nullable'),
+            'image_url.nullable' => __('messages.update_category_request.image_url.nullable'),
+            'image_url.string' => __('messages.update_category_request.image_url.string'),
         ];
     }
 }

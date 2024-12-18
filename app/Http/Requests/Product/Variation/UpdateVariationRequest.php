@@ -41,15 +41,26 @@ class UpdateVariationRequest extends FormRequest
         $errors = $validator->errors();
         $response = response()->json([
             'errors' => $errors->messages()
-        ],400);
+        ], 400);
         throw new HttpResponseException($response);
     }
     public function messages()
     {
         return [
-            'price.required' =>  __('messages.update_variation_request.price.required'),
+            'price.required' => __('messages.update_variation_request.price.required'),
             'stock_qty.required' => __('messages.update_variation_request.stock_qty.required'),
-            'stock_qty.numeric' =>  __('messages.update_variation_request.stock_qty.numeric'),
+            'stock_qty.numeric' => __('messages.update_variation_request.stock_qty.numeric'),
+            'variations.*.import_price.nullable' => __('messages.update_variation_request.variations.*.import_price.nullable'),
+            'sku.nullable' => __('messages.update_variation_request.sku.nullable'),
+            'sku.string' => __('messages.update_variation_request.sku.string'),
+            'description.nullable' => __('messages.update_variation_request.description.nullable'),
+            'short_description.nullable' => __('messages.update_variation_request.short_description.nullable'),
+            'status.nullable' => __('messages.update_variation_request.status.nullable'),
+            'attributes.array' => __('messages.update_variation_request.attributes.array'),
+            'images.nullable' => __('messages.update_variation_request.images.nullable'),
+            'images.array' => __('messages.update_variation_request.images.array'),
+            'values.required' => __('messages.update_variation_request.values.required'),
+            'values.array' => __('messages.update_variation_request.values.array'),
         ];
     }
 }

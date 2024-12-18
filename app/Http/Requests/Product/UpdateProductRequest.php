@@ -40,7 +40,7 @@ class UpdateProductRequest extends FormRequest
         $errors = $validator->errors();
         $response = response()->json([
             'errors' => $errors->messages()
-        ],400);
+        ], 400);
         throw new HttpResponseException($response);
     }
     public function messages()
@@ -49,16 +49,18 @@ class UpdateProductRequest extends FormRequest
             'name.required' => __('messages.create_product_request.name.required'),
             'name.string' => __('messages.create_product_request.name.string'),
             'name.max' => __('messages.create_product_request.name.max'),
-
-
+            'import_price.nullable' => __('messages.create_product_request.import_price.nullable'),
+            'description.nullable' => __('messages.create_product_request.description.nullable'),
             'price.required' => __('messages.create_product_request.price.required'),
-
+            'short_description.nullable' => __('messages.create_product_request.short_description.nullable'),
             'stock_qty.required' => __('messages.create_product_request.stock_qty.required'),
-            'stock_qty.numeric' =>  __('messages.create_product_request.stock_qty.numeric'),
-
+            'stock_qty.numeric' => __('messages.create_product_request.stock_qty.numeric'),
             'image_url.required' => __('messages.create_product_request.image_url.required'),
             'image_url.string' => __('messages.create_product_request.image_url.string'),
-
+            'images.nullable' => __('messages.create_product_request.images.nullable'),
+            'images.array' => __('messages.create_product_request.images.array'),
+            'categories.nullable' => __('messages.create_product_request.categories.nullable'),
+            'categories.array' => __('messages.create_product_request.categories.array'),
         ];
     }
 }

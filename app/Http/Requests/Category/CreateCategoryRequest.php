@@ -41,6 +41,8 @@ class CreateCategoryRequest extends FormRequest
         return [
             'name.required' => __('messages.create_category_request.name.required'),
             'name.string' => __('messages.create_category_request.name.string'),
+            'parents.array' => __('messages.create_category_request.parents.array'),
+            'parents.nullable' => __('messages.create_category_request.parents.nullable'),
         ];
     }
 }
