@@ -154,8 +154,10 @@ class UserController extends Controller
         try {
             $data = $request->all();
             $avatar = $request->avatar;
+            $profile = $request->profile;
             $user = $this->userService->create($data, [
-                'avatar' => $avatar
+                'avatar' => $avatar,
+                'profile' => $profile,
             ]);
             return response()->json([
                 'status' => true,
