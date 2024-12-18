@@ -45,9 +45,9 @@ class PostsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $slug)
     {
-        return  $this->postService->findById($id);
+        return  $this->postService->findBySlug($slug);
 
     }
 
@@ -57,12 +57,14 @@ class PostsController extends Controller
    public function update(Request $request, string $id)
     {
         $data = $request->all();
+        unset($data["_method"]);
+         unset($data["theme"]);
         if($request->hasFile("theme")){
             $infor =  $this->uploadImageCloudinary($request->file("theme") , 'posts');
             $data["theme"] = $infor["path"];
             $data["public_id"] = $infor["public_id"];
         }
-        
+    
         return  $this->postService->update($id , $data);
     }
 

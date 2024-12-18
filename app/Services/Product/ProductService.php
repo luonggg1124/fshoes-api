@@ -345,7 +345,7 @@ class ProductService implements ProductServiceInterface
                 $arrAttrVal = $intElements;
             }
 
-            $products = $this->productRepository->query()->when(count($arrAttrVal) > 0, function ($q) use ($arrAttrVal) {
+            $products = $this->productRepository->query()->where('status',1)->when(count($arrAttrVal) > 0, function ($q) use ($arrAttrVal) {
                 $q->whereHas('variations', function ($q) use ($arrAttrVal) {
                     $q->whereHas('values', function ($q) use ($arrAttrVal) {
                         $q->whereIn('attribute_value_id', $arrAttrVal);

@@ -92,11 +92,13 @@ class CategoryService implements CategoryServiceInterface
                 $quantity = 15;
             }
             $listProduct = [];
-            $category = $this->categoryRepository->query()->with(['products'])->where('display', $serial)->first();
-            $productsInCategory = $category->products;
+            $category = $this->categoryRepository->query()->where('display', $serial)->first();
+            
+            $productsInCategory = $category->products()->where('status',1)->get();
+            
             $listProduct = [...$productsInCategory];
             if (count($productsInCategory) < $quantity) {
-                $listAllProducts = $this->productRepository->all();
+                $listAllProducts = $this->productRepository->query()->where('status',1)->get();
                 $arrayId = $category->products()->orderBy('qty_sold', 'desc')->get()->pluck('id');
                 foreach ($listAllProducts as $p) {
                     if (!in_array($p->id, [...$arrayId])) {
@@ -108,7 +110,7 @@ class CategoryService implements CategoryServiceInterface
                 }
             }
             $category->products = $listProduct;
-            return CategoryResource::make($category);
+            return $category;
         });
     }
     public function findById(int|string $id)
@@ -170,7 +172,7 @@ class CategoryService implements CategoryServiceInterface
     {
         $category = $this->categoryRepository->find($id);
         if (!$category) throw new ModelNotFoundException(__('messages.error-not-found'));
-        if ($category->is_main) return new CategoryResource($this->loadRelationships($category));
+        if ($category->is_main == 1) return new CategoryResource($this->loadRelationships($category));
         $category->update($data);
         $listPar = [];
         if (count($option['parents']) > 0) {
@@ -187,7 +189,6 @@ class CategoryService implements CategoryServiceInterface
     }
     public function delete(int|string $id)
     {
-
         $category = $this->categoryRepository->find($id);
         if (!$category) {
             throw new ModelNotFoundException(__('messages.error-not-found'));

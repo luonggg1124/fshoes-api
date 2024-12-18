@@ -15,26 +15,6 @@ class SaleSeeder extends Seeder
     public function run(): void
     {
         //php artisan db:seed --class=DiscountSeeder
-        $discounts = Sale::factory(3)->create();
-        $count = 15;
-        foreach($discounts as $discount){
-            $products = Product::all();
-            foreach ($products as $product){
-                if($product->variations){
-                    $product->sales()->syncWithPivotValues([$discount->id],[
-                        'quantity' => 40
-                    ],false);
-                    $product->variations()->get()->pluck('id');
-                    $discount->variations()->syncWithPivotValues($product->variations()->get()->pluck('id'),[
-                        'quantity' => 10
-                    ],false);
-                }else{
-                    $discount->products()->syncWithPivotValues($product->id,[
-                        'quantity' => 8
-                    ],false);
-                }
-            }
-
-        }
+        
     }
 }

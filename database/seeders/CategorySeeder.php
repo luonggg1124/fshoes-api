@@ -15,7 +15,7 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         // php artisan db:seed --class=CategorySeeder
-        $mains = ["New & Featured",'Men','Women','Kids'];
+        $mains = ["Mới & Đặc Sắc",'Đàn Ông','Phụ Nữ','Trẻ Con'];
         foreach ($mains as $name) {
             $category = Category::query()->create([
                 'name' => $name,
@@ -25,7 +25,7 @@ class CategorySeeder extends Seeder
             $category->slug = $slug;
             $category->save();
         }
-        $homePage = ['Trend This Week','Best Selling','Shop By Sport'];
+        $homePage = ['Xu Hướng Tuần Này','Bán Chạy','Thể Thao'];
         $count = 1;
         foreach ($homePage as $c) {
             
@@ -38,7 +38,7 @@ class CategorySeeder extends Seeder
             $category->slug = $slug;
             $category->save();
         }
-        $children = ['New Arrival','Latest Shoes', 'Latest Clothing','Clothing','Boys','Girls','Newest Sneakers','Drunk','Cortez','Blazer','Bestsellers'];
+        $children = ['Hàng Mới Về','Giày Mới Nhất', 'Con Trai','Con Gái','Giày Thể Thao Mới','Nike','Adidas'];
         foreach ($children as $cat) {
             $category = Category::query()->create([
                 'name' => $cat,

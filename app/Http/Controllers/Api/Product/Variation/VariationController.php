@@ -40,13 +40,14 @@ class VariationController extends Controller
     public function store(string|int $pid, CreateVariationRequest $request){
         try {
             $variations = $request->variations;
-
+            
             if(empty($variations) || !is_array($variations) ||count($variations) < 1){
                 return response()->json([
                     'status' => false,
                     'message' => __('messages.product.error-variant'),
                 ],400);
             }
+            
             $list = $this->service->createMany($pid,$variations);
             return response()->json([
                 'status' => true,

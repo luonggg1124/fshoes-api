@@ -99,7 +99,7 @@ return [
             ],
             'payment_method_title' => 'Phương Thức Thanh Toán ',
             'payment_method' => [
-                'banking' => 'Chuyển Khoảng',
+                'banking' => 'Chuyển Khoản',
                 'momo' => 'Cổng Thanh Toán Momo',
                 'vnpay' => 'Cổng Thanh Toán VnPay',
                 'cash_on_delivery' => 'Thanh Toán Khi Nhận Hàng',
@@ -108,19 +108,33 @@ return [
             'price_text' => 'Giá',
             'subtotal_text' => 'Tổng Phụ',
             'delivery_fee' => 'Phí Vận Chuyển',
-            'total_text' => 'Tổng'
+            'total_text' => 'Tổng',
+            'create_message_title' => 'Cảm ơn đã mua hàng!'
         ],
         'authentication-code' => [
             'title' => 'Mã Xác Thực Tài Khoản Fshoes Của Bạn',
             'span_code' => 'Đây là mã xác minh một lần mà bạn đã yêu cầu',
             'message_time' => 'Mã này sẽ có hiệu lực trong 5 phút',
             'message_ignore' => 'Nếu bạn đã nhận được mã này hoặc không cần nó nữa, hãy bỏ qua email này',
+        ],
+        'paid-order' => [
+            'title' => 'Đơn Hàng Đã Thanh Toán Thành Công',
+            'message_success' => 'Cảm ơn bạn đã thanh toán thành công đơn hàng của bạn. Chúng tôi sẽ tiến hành giao hàng cho bạn ngay khi đã xác nhận đơn hàng.',
+            'link_text' => 'Xem ngay đơn hàng'
         ]
     ],
     'cart' => [
+
     'error-cart' =>  'Chưa được phép', 
     'error-cart-add' =>  'Không thể thêm giỏ hàng mới.',
     'error-quantity' =>  'Không đủ số lượng.',
     'error-delete-cart' =>  'Không thể xóa giỏ hàng',
 ],
+
+        'product_word' => 'Sản phẩm',
+        'variations_word' => 'biến thể',
+        'out_of_stock' => ' hết hàng. Chỉ còn có ',
+        'units' => ' chiếc có sẵn'
+    ]
+
 ];
