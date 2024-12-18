@@ -20,11 +20,11 @@ class GroupSeeder extends Seeder
             "product" => ["view", "add"],
         ]);
         Groups::create([
-            "group_name" => "Customer",
+            "group_name" => "Nhân Viên",
             "permissions" => $permissions,
         ]);
         Groups::create([
-            "group_name" => "Administrators",
+            "group_name" => "Quản Trị",
             "permissions" => $permissions,
         ]);
     }
