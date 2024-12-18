@@ -117,4 +117,10 @@ return [
             'message_ignore' => 'Nếu bạn đã nhận được mã này hoặc không cần nó nữa, hãy bỏ qua email này',
         ]
     ],
+    'cart' => [
+    'error-cart' =>  'Chưa được phép', 
+    'error-cart-add' =>  'Không thể thêm giỏ hàng mới.',
+    'error-quantity' =>  'Không đủ số lượng.',
+    'error-delete-cart' =>  'Không thể xóa giỏ hàng',
+],
 ];

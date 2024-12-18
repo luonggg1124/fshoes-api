@@ -50,4 +50,5 @@ class ProductSeeder extends Seeder
         $sportsCat = Category::query()->where('name', 'Shop By Sport')->first();
         $sportsCat->products()->attach($sportProducts);
     }
+    
 }

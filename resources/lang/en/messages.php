@@ -121,5 +121,11 @@ return [
             'message_ignore' => 'If you\'ve already received this code or don\'t need it any more, ignore this email', 
         ]
     ],
+    'cart' => [
+        'error-cart' =>  'Unauthorized',
+        'error-cart-add' =>  'Cannot add new cart.',
+        'error-quantity' =>  'Not enough quantity.',
+        'error-delete-cart' =>  'Cannot delete cart',
+    ],
 
 ];

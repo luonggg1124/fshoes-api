@@ -17,7 +17,7 @@ class CartService implements CartServiceInterface
         $allCart = $this->cartRepository->query()->with(['product', 'product_variation', 'product_variation.product']);
         $user = request()->user();
         if (!$user) {
-            throw new UnauthorizedException('Unauthorized!');
+            throw new UnauthorizedException(__('messages.cart.error-cart'));
         }
         $allCart->where('user_id', $user->id);
         $allCart->latest();
@@ -29,7 +29,7 @@ class CartService implements CartServiceInterface
     {
         $cart = $this->cartRepository->query()->where('id', $id)->with(["product", "product_variation", 'product_variation.product'])->first();
         if (!$cart) {
-            throw new ModelNotFoundException('Cart not found');
+            throw new ModelNotFoundException(__('messages.error-not-found'));
         }
         return new CartCollection($cart);
     }
@@ -38,7 +38,7 @@ class CartService implements CartServiceInterface
         try {
             $cart = $this->cartRepository->query()->where('user_id', $data['user_id']);
             if (!isset($data['product_variation_id']) && !isset($data['product_id'])) {
-                throw new \Exception('Cannot add new cart');
+                throw new \Exception(__('messages.cart.error-cart-add'));
             }
 
             if (isset($data['product_id'])) {
@@ -55,7 +55,7 @@ class CartService implements CartServiceInterface
                 return $this->cartRepository->create($data);
             }
         } catch (\Exception $e) {
-            throw new \Exception('Cannot add new cart');
+            throw new \Exception(__('messages.cart.error-cart-add'));
         }
     }
     function update(int|string $id, array $data, array $option = [])
@@ -67,14 +67,14 @@ class CartService implements CartServiceInterface
             if ($quantity < $data['quantity']) {
                 $cart->quantity = $quantity;
                 $cart->save();
-                throw new \Exception('Not enough quantity');
+                throw new \Exception(__('messages.cart.error-quantity'));
             }
         }else {
             $quantity = $cart->product->stock_qty;
             if ($quantity < $data['quantity']) {
                 $cart->quantity = $quantity;
                 $cart->save();
-                throw new \Exception('Not enough quantity');
+                throw new \Exception(__('messages.cart.error-quantity'));
             }
         }
         $cart->quantity = $data['quantity'];
@@ -86,9 +86,9 @@ class CartService implements CartServiceInterface
         try {
             $cart = $this->cartRepository->find($id);
             if ($cart) $cart->delete($id);
-            else  throw new \Exception('Not found');
+            else  throw new \Exception(__('messages.error-not-found'));
         } catch (\Exception $e) {
-            throw new \Exception('Cannot delete cart');
+            throw new \Exception(__('messages.cart.error-delete-cart'));
         }
     }
 }
