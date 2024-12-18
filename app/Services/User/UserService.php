@@ -100,11 +100,12 @@ class UserService implements UserServiceInterface
                     'given_name' => '',
                     'family_name' => '',
                     'detail_address' => '',
-                    'birth_date' => '',
+                    'birth_date' => null,
                 ];
                 
             }else {
                 $birthDate = $options['profile']['birth_date'];
+                
                 if($birthDate) $birthDate = Carbon::createFromFormat('d/m/Y', $options['profile']['birth_date'])->format('Y-m-d');
                 $options['profile'] = [
                     ...$options['profile'],
