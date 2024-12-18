@@ -81,7 +81,7 @@ class UserService implements UserServiceInterface
             if (isset($data) && empty($data['group_id'])) $data['group_id'] = 1;
             $data['status'] = 'active';
             $data['nickname'] = $this->createNickname($data['name']);
-
+           
             $data['password'] = Hash::make($data['password']);
             $user = $this->userRepository->create($data);
 
