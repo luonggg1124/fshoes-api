@@ -40,7 +40,9 @@ class ChangePasswordRequest extends FormRequest
     {
         return [
             'password.required' => __('messages.password_request.password.required'),
+            'password.string' => __('messages.password_request.password.string'),
             'newPassword.required' => __('messages.password_request.newPassword.required'),
+            'newPassword.string' => __('messages.password_request.newPassword.string'),
             'newPassword.min' => __('messages.password_request.newPassword.min'),
 
         ];

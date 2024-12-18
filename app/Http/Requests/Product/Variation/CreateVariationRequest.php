@@ -42,15 +42,27 @@ class CreateVariationRequest extends FormRequest
         $errors = $validator->errors();
         $response = response()->json([
             'errors' => $errors->messages()
-        ],400);
+        ], 400);
         throw new HttpResponseException($response);
     }
     public function messages()
     {
         return [
-            'variations.*.price.required' =>  __('messages.create_variation_request.name.string'),
+            'variations.*.price.required' => __('messages.create_variation_request.name.string'),
             'variations.*.stock_qty.required' => __('messages.create_variation_request.variations.*.stock_qty.required'),
-            'variations.*.stock_qty.numeric' =>  __('messages.create_variation_request.variations.*.stock_qty.numeric'),
+            'variations.*.stock_qty.numeric' => __('messages.create_variation_request.variations.*.stock_qty.numeric'),
+            'variations.array' => __('messages.create_variation_request.variations.array'),
+            'variations.*.import_price.nullable' => __('messages.create_variation_request.variations.*.import_price.nullable'),
+            'variations.*.sku.nullable' => __('messages.create_variation_request.variations.*.sku.nullable'),
+            'variations.*.sku.string' => __('messages.create_variation_request.variations.*.sku.string'),
+            'variations.*.description.nullable' => __('messages.create_variation_request.variations.*.description.nullable'),
+            'variations.*.short_description.nullable' => __('messages.create_variation_request.variations.*.short_description.nullable'),
+            'variations.*.status.nullable' => __('messages.create_variation_request.variations.*.status.nullable'),
+            'variations.*.attributes.array' => __('messages.create_variation_request.variations.*.attributes.array'),
+            'variations.*.images.nullable' => __('messages.create_variation_request.variations.*.images.nullable'),
+            'variations.*.images.array' => __('messages.create_variation_request.variations.*.images.array'),
+            'variations.*.values.required' => __('messages.create_variation_request.variations.*.values.required'),
+            'variations.*.values.array' => __('messages.create_variation_request.variations.*.values.array'),
         ];
     }
 }

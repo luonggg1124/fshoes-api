@@ -27,7 +27,7 @@ class UpdateSaleRequest extends FormRequest
     {
         return [
             'name' => 'nullable|string',
-            'type' => ['required','string',Rule::in(['fixed','percent'])],
+            'type' => ['required', 'string', Rule::in(['fixed', 'percent'])],
             'value' => 'required|numeric',
             'is_active' => 'nullable|boolean',
             'start_date' => 'required|date_format:Y-m-d H:i:s|before:end_date',
@@ -41,21 +41,28 @@ class UpdateSaleRequest extends FormRequest
         $errors = $validator->errors();
         $response = response()->json([
             'errors' => $errors->messages()
-        ],400);
+        ], 400);
         throw new HttpResponseException($response);
     }
     public function messages(): array
     {
-        
+
         return [
             'name.string' => __('messages.update_sale_request.name.string'),
             'type.in' => __('messages.update_sale_request.type.in'),
+            'type.required' => ('The type field is required.'),
             'value.numeric' => __('messages.update_sale_request.value.number'),
             'value.required' => 'The value is required',
             'start_date.required' => 'The start date is required',
+            'end_date.required' => 'The start date is required',
+            'end_date.format' => 'The end date must be in the format.',
+            'end_date_after' => 'The end date must be after the start date.',
             'start_date.date_format' => 'Invalid format date',
             'start_date.date' => __('messages.update_sale_request.start_date.date'),
             'start_date.before' => __('messages.update_sale_request.start_date.before'),
+            'variations.nullable' => 'The variations field is optional.',
+            'variations.array' => 'The variations field must be an array.'
+
         ];
     }
 }
