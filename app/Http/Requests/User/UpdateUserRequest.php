@@ -28,7 +28,11 @@ class UpdateUserRequest extends FormRequest
             'password' => 'required|string|min:6',
             'group' => 'nullable|integer|exists:groups,id',
             'profile' => 'nullable|array',
-             'group_id' => 'required|integer|exists:groups'
+            'verify_code' => 'string|nullable',
+            'group_id' => 'required|integer|exists:groups',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|dimensions:min_width=100,min_height=100|max:2048',
+            'is_admin' => 'nullable|boolean',
+            'active' => 'nullable|boolean'
         ];
     }
     protected function failedValidation(Validator $validator)

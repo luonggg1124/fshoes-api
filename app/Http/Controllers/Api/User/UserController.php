@@ -153,7 +153,10 @@ class UserController extends Controller
     {
         try {
             $data = $request->all();
-            $user = $this->userService->create($data);
+            $avatar = $request->avatar;
+            $user = $this->userService->create($data, [
+                'avatar' => $avatar
+            ]);
             return response()->json([
                 'status' => true,
                 'message' => __('messages.created-success'),
