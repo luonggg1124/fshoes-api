@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Resources\User\UserResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Repositories\User\UserRepositoryInterface;
+use Carbon\Carbon;
+use Illuminate\Validation\UnauthorizedException;
 
 
 class UserService implements UserServiceInterface
@@ -77,7 +79,6 @@ class UserService implements UserServiceInterface
                     'email' => __('messages.user.error-email')
                 ]);
             if (isset($data) && empty($data['group_id'])) $data['group_id'] = 1;
-
             $data['status'] = 'active';
             $data['nickname'] = $this->createNickname($data['name']);
 
@@ -92,7 +93,23 @@ class UserService implements UserServiceInterface
                 $user->avatar_url = $avatar['avatar_url'];
                 $user->save();
             }
-
+            if(empty($options['profile']) ){
+                
+               
+                $options['profile'] = [
+                    'given_name' => '',
+                    'family_name' => '',
+                    'detail_address' => '',
+                    'birth_date' => '',
+                ];
+                
+            }else {
+                $options['profile'] = [
+                    ...$options['profile'],
+                    'birth_date' => Carbon::createFromFormat('d/m/Y', $options['profile']['birth_date'])->format('Y-m-d') 
+                ];
+            }
+          
             $this->createProfile($user->id, $options['profile']);
             return $user;
         }, 3);
@@ -175,7 +192,9 @@ class UserService implements UserServiceInterface
     public function delete(int|string $id)
     {
         $user = $this->userRepository->find($id);
+        $authUser = request()->user();
         if (!$user) throw new ModelNotFoundException(__('messages.error-not-found'));
+        if($authUser->id == $user->id) throw new UnauthorizedException(__('messages.forbidden'));
         $user->delete();
         return true;
     }

@@ -71,6 +71,10 @@ class PostService implements PostServiceInterface
 
             return PostResource::make($post);
         } catch (QueryException $exception) {
+            logger()->error($exception->getMessage(),[
+                'line' => $exception->getLine(),
+                'message' => $exception->getTrace()
+            ]);
             if ($exception->getCode() === '23000') {
                 return response()->json(['message' => __('messages.post.error-already-exists')], 422);
             }

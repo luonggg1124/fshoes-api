@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\User\UserServiceInterface;
+use Illuminate\Validation\UnauthorizedException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\UploadedFile;
@@ -152,7 +153,12 @@ class UserController extends Controller
     {
         try {
             $data = $request->all();
-            $user = $this->userService->create($data);
+            $avatar = $request->avatar;
+            $profile = $request->profile;
+            $user = $this->userService->create($data, [
+                'avatar' => $avatar,
+                'profile' => $profile,
+            ]);
             return response()->json([
                 'status' => true,
                 'message' => __('messages.created-success'),
@@ -221,6 +227,12 @@ class UserController extends Controller
                     'status' => false,
                     'message' => $throw->getMessage()
                 ], 404);
+            }
+            if($throw instanceof UnauthorizedException){
+                return response()->json([
+                    'status' => false,
+                   'message' => $throw->getMessage()
+                ], 403);
             }
             return response()->json([
                 'status' => false,

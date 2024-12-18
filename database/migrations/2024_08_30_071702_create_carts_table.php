@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('product_variation_id')->nullable()->constrained('product_variations');
             $table->foreignId('product_id')->nullable()->constrained('products');
             $table->integer('quantity');

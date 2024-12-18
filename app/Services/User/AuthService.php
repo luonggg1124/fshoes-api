@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Exception;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Validation\UnauthorizedException;
 use PHPUnit\Event\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
@@ -56,6 +57,7 @@ class AuthService extends UserService
     ])
     {
         $user = $this->userRepository->findByColumnOrEmail($credentials['email']);
+       
         if (!$user) throw new ModelNotFoundException(__('messages.error-not-found'));
         $count = Cache::tags(['auth'])->get('password_wrong_limit?email=' . $credentials['email']);
         if ($count == 5) {
@@ -66,6 +68,9 @@ class AuthService extends UserService
             Cache::tags(['auth'])->put('password_wrong_limit?email=' . $credentials['email'], $count ? $count + 1 : 1, 5 * 60);
             throw new InvalidArgumentException(__('messages.user.error-wrong-password'));
         };
+        if($user->status =='banned') {
+            throw new UnauthorizedException(__('messages.auth.banned'));
+        }
         $token = auth()->login($user);
         $refresh_token = auth()->claims([
             'exp' => now()->addDays(30)->timestamp,

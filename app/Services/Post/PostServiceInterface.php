@@ -10,4 +10,5 @@ interface PostServiceInterface {
     function delete(int|string $id);
     function restore(int|string $id);
     function forceDelete(int|string $id);
+    function findBySlug(int|string $slug);
 }

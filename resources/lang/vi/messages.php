@@ -11,6 +11,10 @@ return [
     'error-required' => 'Trường này là bắt buộc',
     'error-value' => 'Các giá trị phải là một mảng',
     'invalid-value' => 'Đối số không hợp lệ',
+    'forbidden' => 'Hành động này bị cấm',
+    'auth' => [
+        'banned' => 'Tài khoản này đã bị khóa.Vui lòng thử lại sau.'
+    ],
     'review' => [
         'error-review-forbidden' => 'Bạn chỉ có thể đánh giá một sản phẩm sau khi mua và chỉ một lần cho mỗi sản phẩm.',
     ],

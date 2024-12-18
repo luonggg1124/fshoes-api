@@ -27,9 +27,13 @@ class CreateUserRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'group' => 'nullable|integer|exists:groups,id',
             'profile' => 'nullable|array',
+            'profile.birthdate' => 'nullable|date|before:today',
             'verify_code' => 'string|nullable',
+            'group_id' => 'required|integer|exists:groups,id',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|dimensions:min_width=100,min_height=100|max:2048',
+            'is_admin' => 'nullable',
+            'active' => 'nullable|boolean'
         ];
     }
     protected function failedValidation(Validator $validator)
