@@ -10,6 +10,7 @@ return [
     'restore-success' => 'Restore successfully',
     'error-required' => 'The field is required',
     'error-value' => 'The values must be an array',
+    'forbidden' => 'Forbidden',
     'invalid-value' => 'Invalid argument',
     'auth' => [
         'banned' => 'This account is banned.Please try later.'

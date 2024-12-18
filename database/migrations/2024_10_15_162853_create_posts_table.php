@@ -18,8 +18,8 @@ return new class extends Migration
             $table->text('theme')->nullable();
             $table->string('public_id')->nullable();
             $table->longText('content');
-            $table->foreignId('topic_id')->constrained('topics');
-            $table->foreignId('author_id')->constrained('users');
+            $table->foreignId('topic_id')->constrained('topics')->onDelete('cascade');
+            $table->foreignId('author_id')->constrained('users')->onDelete('cascade');
             $table->integer('views')->default(0);
             $table->softDeletes();
             $table->timestamps();

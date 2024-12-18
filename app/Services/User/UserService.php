@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Resources\User\UserResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Repositories\User\UserRepositoryInterface;
+use Illuminate\Validation\UnauthorizedException;
 
 
 class UserService implements UserServiceInterface
@@ -175,7 +176,9 @@ class UserService implements UserServiceInterface
     public function delete(int|string $id)
     {
         $user = $this->userRepository->find($id);
+        $authUser = request()->user();
         if (!$user) throw new ModelNotFoundException(__('messages.error-not-found'));
+        if($authUser->id == $user->id) throw new UnauthorizedException(__('messages.forbidden'));
         $user->delete();
         return true;
     }
