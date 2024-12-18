@@ -41,7 +41,7 @@ class CreateUserRequest extends FormRequest
         $errors = $validator->errors();
         $response = response()->json([
             'errors' => $errors->messages()
-        ],400);
+        ], 400);
         throw new HttpResponseException($response);
     }
     public function messages()
@@ -58,8 +58,14 @@ class CreateUserRequest extends FormRequest
             'password.required' => __('messages.create_user_request.password.required'),
             'password.string' => __('messages.create_user_request.password.string'),
             'password.min' => __('messages.create_user_request.password.min'),
-
+            
             'group.exists' => __('messages.create_user_request.group.exists'),
+            'group.nullable' => __('messages.create_user_request.group.nullable'),
+            'group.integer' => __('messages.create_user_request.group.integer'),
+            'profile.nullable' => __('messages.create_user_request.profile.nullable'),
+            'profile.array' => __('messages.create_user_request.profile.array'),
+            'verify_code.string' => __('messages.create_user_request.verify_code.string'),
+            'verify_code.nullable' => __('messages.create_user_request.verify_code.nullable'),
 
         ];
     }

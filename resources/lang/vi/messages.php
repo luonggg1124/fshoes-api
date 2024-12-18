@@ -184,6 +184,12 @@ return [
         'password.string' => 'Mật khẩu phải là một chuỗi.',
         'password.min' => 'Mật khẩu phải ít nhất là 6 ký tự.',
         'group.exists' => 'Nhóm không tồn tại.',
+        'group.nullable' => 'Nhóm là tùy chọn.',
+        'group.integer' => 'Nhóm phải là một số nguyên.',
+        'profile.nullable' => 'Hồ sơ là tùy chọn.',
+        'profile.array' => 'Hồ sơ phải là một mảng.',
+        'verify_code.string' => 'Mã xác thực phải là một chuỗi văn bản.',
+        'verify_code.nullable' => 'Mã xác thực là tùy chọn.',
     ],
     'update_user_request' => [
         'name.required' => 'Tên người dùng là bắt buộc.',
@@ -193,6 +199,10 @@ return [
         'password.string' => 'Mật khẩu phải là một chuỗi.',
         'password.min' => 'Mật khẩu phải ít nhất là 6 ký tự.',
         'group.exists' => 'Nhóm không tồn tại.',
+        'group.nullable' => 'Nhóm là tùy chọn.',
+        'group.integer' => 'Nhóm phải là một số nguyên.',
+        'profile.nullable' => 'Hồ sơ là tùy chọn.',
+        'profile.array' => 'Hồ sơ phải là một mảng.',
     ],
     'create_sale_request' => [
         'name.string' => 'Tên khuyến mãi phải là một chuỗi văn bản.',
