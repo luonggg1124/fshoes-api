@@ -229,7 +229,6 @@ class OrderService implements OrderServiceInterface
         if ($voucher) {
             $user->voucherUsed()->detach([$voucher->id]);
         }
-
         $order->save();
         Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return new OrdersCollection($order);

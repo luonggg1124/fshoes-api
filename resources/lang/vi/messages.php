@@ -125,16 +125,17 @@ return [
     ],
     'cart' => [
 
-    'error-cart' =>  'Chưa được phép', 
-    'error-cart-add' =>  'Không thể thêm giỏ hàng mới.',
-    'error-quantity' =>  'Không đủ số lượng.',
-    'error-delete-cart' =>  'Không thể xóa giỏ hàng',
-],
-
+        'error-cart' =>  'Chưa được phép',
+        'error-cart-add' =>  'Không thể thêm giỏ hàng mới.',
+        'error-quantity' =>  'Không đủ số lượng.',
+        'error-delete-cart' =>  'Không thể xóa giỏ hàng',
         'product_word' => 'Sản phẩm',
         'variations_word' => 'biến thể',
         'out_of_stock' => ' hết hàng. Chỉ còn có ',
         'units' => ' chiếc có sẵn'
-    ]
+    ],
+
+
+
 
 ];

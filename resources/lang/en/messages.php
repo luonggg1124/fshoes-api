@@ -133,12 +133,13 @@ return [
         'error-cart-add' =>  'Cannot add new cart.',
         'error-quantity' =>  'Not enough quantity.',
         'error-delete-cart' =>  'Cannot delete cart',
-    ],
         'product_word' => 'Product',
         'variations_word' => 'Variation',
         'out_of_stock' => ' out of stock. There are only have ',
         'units' => ' units'
-    ]
+    ],
+        
+    
 
 
 ];
