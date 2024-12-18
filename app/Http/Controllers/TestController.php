@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Support\Facades\App;
-
+use Illuminate\Support\Facades\Cache;
 
 class TestController extends Controller
 {
@@ -33,9 +33,10 @@ class TestController extends Controller
         if(!in_array($lang, $arr)){
             $lang = 'vi';
         }
-        App::setLocale($lang);
+        Cache::put('language',$lang,24*60*60*1000);
+        
         return response()->json([
-            'test' => true,
+            'status' => true,
             'language' =>  App::getLocale()
         ],200);
     }
