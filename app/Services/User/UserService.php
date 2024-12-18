@@ -79,7 +79,12 @@ class UserService implements UserServiceInterface
                     'email' => __('messages.user.error-email')
                 ]);
             if (isset($data) && empty($data['group_id'])) $data['group_id'] = 1;
-            if(isset($data['is_admin'])) $data['is_admin'] = true;
+            if(isset($data['is_admin']) && $data['is_admin']){
+                $data['is_admin'] = true;
+            }
+            else {
+                $data['is_admin'] = false;
+            }
             $data['status'] = 'active';
             $data['nickname'] = $this->createNickname($data['name']);
            
@@ -177,7 +182,13 @@ class UserService implements UserServiceInterface
         $user = $this->userRepository->find($id);
         if (!$user) throw new ModelNotFoundException(__('messages.error-not-found'));
         $update = DB::transaction(function () use ($user, $data, $options) {
-            if (isset($data['password'])) unset($data['password']);
+            if (isset($data['email'])) unset($data['email']);
+            if(isset($data['is_admin']) && $data['is_admin']){
+                $data['is_admin'] = true;
+            }
+            else {
+                $data['is_admin'] = false;
+            }
             $user->update($data);
 
             if (isset($options['avatar'])) {

@@ -48,8 +48,8 @@ Route::group(['middleware' => ['auth:api', 'is_admin']], function () {
     Route::put('status/product/{id}', [ProductController::class, 'updateProductStatus'])->name('product.update.status');
     Route::apiResource('product.variation', VariationController::class)->parameters(['product' => 'pid', 'variation' => 'id']);
 
-    Route::apiResource('user', UserController::class)->parameter('user', 'id')->except('update');
-    Route::post('user/{id}', [UserController::class, 'update'])->name('user.update');
+    Route::apiResource('user', UserController::class)->parameter('user', 'id');
+   
 
     Route::put('sale/switch/active/{id}', [SaleController::class, 'switchActive']);
     Route::apiResource('sale', SaleController::class)->parameters(['sale' => 'id'])->except('index');
