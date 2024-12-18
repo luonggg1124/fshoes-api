@@ -27,7 +27,8 @@ class UpdateUserRequest extends FormRequest
             'name' => 'required|string|max:255',
             'password' => 'required|string|min:6',
             'group' => 'nullable|integer|exists:groups,id',
-            'profile' => 'nullable|array'
+            'profile' => 'nullable|array',
+             'group_id' => 'required|integer|exists:groups'
         ];
     }
     protected function failedValidation(Validator $validator)

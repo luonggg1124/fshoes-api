@@ -30,6 +30,7 @@ class CreateUserRequest extends FormRequest
             'group' => 'nullable|integer|exists:groups,id',
             'profile' => 'nullable|array',
             'verify_code' => 'string|nullable',
+            'group_id' => 'required|integer|exists:groups'
         ];
     }
     protected function failedValidation(Validator $validator)
