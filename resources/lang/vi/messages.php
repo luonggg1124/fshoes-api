@@ -112,11 +112,21 @@ return [
             'create_message_title' => 'Cảm ơn đã mua hàng!'
         ],
         'authentication-code' => [
-            
             'title' => 'Mã Xác Thực Tài Khoản Fshoes Của Bạn',
             'span_code' => 'Đây là mã xác minh một lần mà bạn đã yêu cầu',
             'message_time' => 'Mã này sẽ có hiệu lực trong 5 phút',
             'message_ignore' => 'Nếu bạn đã nhận được mã này hoặc không cần nó nữa, hãy bỏ qua email này',
+        ],
+        'paid-order' => [
+            'title' => 'Đơn Hàng Đã Thanh Toán Thành Công',
+            'message_success' => 'Cảm ơn bạn đã thanh toán thành công đơn hàng của bạn. Chúng tôi sẽ tiến hành giao hàng cho bạn ngay khi đã xác nhận đơn hàng.',
+            'link_text' => 'Xem ngay đơn hàng'
         ]
     ],
+    'cart' => [
+        'product_word' => 'Sản phẩm',
+        'variations_word' => 'biến thể',
+        'out_of_stock' => ' hết hàng. Chỉ còn có ',
+        'units' => ' chiếc có sẵn'
+    ]
 ];

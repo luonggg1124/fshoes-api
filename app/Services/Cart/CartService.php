@@ -49,7 +49,7 @@ class CartService implements CartServiceInterface
             if (isset($data['product_id'])) {
                 $product = $this->productRepository->find($data['product_id']);
                 if (!$product) {
-                    throw new ModelNotFoundException('Product not found');
+                    throw new ModelNotFoundException(__('messages.error-not-found'));
                 }
                 if ($product->stock_qty == 0 || $data['quantity'] > $product->stock_qty) {
                     throw new \Exception('Product out of stock');

@@ -120,7 +120,19 @@ return [
             'span_code' => 'Here\'s the one-time verification code you requested',
             'message_time' => 'This code will be valid for 5 minutes',
             'message_ignore' => 'If you\'ve already received this code or don\'t need it any more, ignore this email', 
+        ],
+        'paid-order' => [
+            'title' => 'Order Successfully Paid',
+            'message_success' => 'Thank you for the successful payment of your order. We will deliver your order as soon as we confirm your order.',
+            'link_text' => 'See now',
+           
         ]
     ],
+    'cart' => [
+        'product_word' => 'Product',
+        'variations_word' => 'Variation',
+        'out_of_stock' => ' out of stock. There are only have ',
+        'units' => ' units'
+    ]
 
 ];

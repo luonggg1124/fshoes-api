@@ -34,10 +34,13 @@ class TestController extends Controller
             $lang = 'vi';
         }
         Cache::put('language',$lang,30*24*60*60*1000);
-        
+        App::setLocale($lang);
         return response()->json([
             'status' => true,
             'language' =>  App::getLocale()
         ],200);
+    }
+    public function testHtml(){
+        return view('mail.paid-order');
     }
 }

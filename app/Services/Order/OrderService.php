@@ -4,6 +4,7 @@ namespace App\Services\Order;
 
 
 use App\Http\Traits\Paginate;
+use App\Jobs\PaidOrder;
 use Exception;
 use App\Models\Cart;
 use App\Models\Voucher;
@@ -66,18 +67,16 @@ class OrderService implements OrderServiceInterface
     public function create(array $data, array $option = [])
     {
         try {
-
             foreach ($data['order_details'] ?? [] as $detail) {
                 if ($detail["product_id"]) {
                     $item = $this->productRepository->query()->where('id', $detail["product_id"])->first();
                 } else {
                     $item = $this->variationRepository->query()->where('id', $detail["product_variation_id"])->first();
                 }
-                if ($item->stock_qty - $detail["quantity"] < 0) {
+                if ($item->stock_qty - $detail["quantity"] <= 0) {
                     if ($detail["product_id"]) {
-                        $message = "Product " . $item->name . " out of stock. There are only have " . $item->stock_qty . " units";
-                    } else  $message = "Variation " . $item->name . " out of stock. There are only have " . $item->stock_qty . " units";
-                    return response()->json(["message" => $message], 400);
+                        $message = __('messages.cart.product_word') . $item->name . __('messages.cart.out_of_stock') . $item->stock_qty .  __('messages.cart.units');
+                    } else  $message = __('messages.cart.variations_word') . $item->name . __('messages.cart.out_of_stock') . $item->stock_qty .  __('messages.cart.units');
                 }
             }
 
@@ -119,8 +118,8 @@ class OrderService implements OrderServiceInterface
                     $this->cartRepository->delete($id);
                 }
             }
-            Mail::to($order->receiver_email)->send(new CreateOrder($order->id));
-            dispatch(new \App\Jobs\CreateOrder($order->id, $order->receiver_email))->delay(now()->addSeconds(5));
+
+            dispatch(new \App\Jobs\CreateOrder($order->id, $order->receiver_email))->delay(now()->addSeconds(2));
             Cache::tags([$this->cacheTag, ...$this->relations])->flush();
             return response()->json([
                 "message" => __('messages.created-success'),
@@ -260,6 +259,9 @@ class OrderService implements OrderServiceInterface
         }
         $order->payment_method = $paymentMethod;
         $order->save();
+        if($order->payment_status){
+            dispatch(new PaidOrder($order->id,$order->receiver_email))->delay(now()->addSeconds(2));
+        }
         Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return $order;
     }
