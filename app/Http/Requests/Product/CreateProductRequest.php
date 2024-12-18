@@ -45,18 +45,18 @@ class CreateProductRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'Product name is required',
-            'name.string' => 'Product name must be a type of string',
-            'name.max' => 'Product name is too long,255 characters is maximum',
+            'name.required' => __('messages.create_product_request.name.required'),
+            'name.string' => __('messages.create_product_request.name.string'),
+            'name.max' => __('messages.create_product_request.name.max'),
 
 
-            'price.required' => 'Product price is required',
+            'price.required' => __('messages.create_product_request.price.required'),
 
-            'stock_qty.required' => 'Product stock quantity is required',
-            'stock_qty.numeric' =>  'Product stock quantity  must be a type of number',
+            'stock_qty.required' => __('messages.create_product_request.stock_qty.required'),
+            'stock_qty.numeric' =>  __('messages.create_product_request.stock_qty.numeric'),
 
-            'image_url.required' => 'Product image is required',
-            'image_url.string' => 'Product image not found.Try again!',
+            'image_url.required' => __('messages.create_product_request.image_url.required'),
+            'image_url.string' => __('messages.create_product_request.image_url.string'),
 
 
         ];

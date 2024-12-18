@@ -37,11 +37,11 @@ class PostRequest extends FormRequest
     public function messages(): array
     {
         return [
-            "title.required" => "The title is required.",
-            "slug.required" => "The slug is required.",
-            "content.required" => "Content is required.",
-            "topic_id.required" => "The topic ID is required.",
-            "author_id.required" => "The author ID is required.",
+            "title.required" => __('messages.post_request.title.required'),
+            "slug.required" => __('messages.post_request.slug.required'),
+            "content.required" => __('messages.post_request.content.required'),
+            "topic_id.required" => __('messages.post_request.topic_id.required'),
+            "author_id.required" => __('messages.post_request.author_id.required'),
         ];
     }
 

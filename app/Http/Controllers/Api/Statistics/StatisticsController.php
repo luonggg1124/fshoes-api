@@ -24,13 +24,13 @@ class StatisticsController extends Controller
             logger()->error($e->getMessage());
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong!',
+                'message' => __('messages.error-internal-server'),
             ],500);
        }catch(\Throwable $th){
         logger()->error($th->getMessage());
             return response()->json([
                 'status' => false,
-                'message' => 'Error system!',
+                'message' => __('messages.statiscs.error-statiscs'),
             ],500);
        }
     }
@@ -46,13 +46,13 @@ class StatisticsController extends Controller
              logger()->error($e->getMessage());
              return response()->json([
                  'status' => false,
-                 'message' => 'Something went wrong!',
+                 'message' => __('messages.error-internal-server'),
              ],500);
         }catch(\Throwable $th){
          logger()->error($th->getMessage());
              return response()->json([
                  'status' => false,
-                 'message' => 'Error system!',
+                 'message' => __('messages.statiscs.error-statiscs'),
              ],500);
         }
      }
@@ -68,13 +68,13 @@ class StatisticsController extends Controller
              logger()->error($e->getMessage());
              return response()->json([
                  'status' => false,
-                 'message' => 'Something went wrong!',
+                 'message' => __('messages.error-internal-server'),
              ],500);
         }catch(\Throwable $th){
          logger()->error($th->getMessage());
              return response()->json([
                  'status' => false,
-                 'message' => 'Error system!',
+                 'message' => __('messages.statiscs.error-statiscs'),
              ],500);
         }
      }
@@ -90,13 +90,13 @@ class StatisticsController extends Controller
                 logger()->error($e->getMessage());
                 return response()->json([
                     'status' => false,
-                    'message' => 'Something went wrong!',
+                    'message' => __('messages.error-internal-server'),
                 ],500);
            }catch(\Throwable $th){
             logger()->error($th->getMessage());
                 return response()->json([
                     'status' => false,
-                    'message' => 'Error system!',
+                    'message' => __('messages.statiscs.error-statiscs'),
                 ],500);
            }
      }
@@ -111,13 +111,13 @@ class StatisticsController extends Controller
                 logger()->error($e->getMessage());
                 return response()->json([
                     'status' => false,
-                    'message' => 'Something went wrong!',
+                    'message' => __('messages.error-internal-server'),
                 ],500);
            }catch(\Throwable $th){
             logger()->error($th->getMessage());
                 return response()->json([
                     'status' => false,
-                    'message' => 'Error system!',
+                    'message' => __('messages.statiscs.error-statiscs'),
                 ],500);
            }
      }

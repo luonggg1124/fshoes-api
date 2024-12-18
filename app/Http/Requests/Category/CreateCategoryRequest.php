@@ -39,8 +39,8 @@ class CreateCategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'The name field is required.',
-            'name.string' => 'The name must be a string.',
+            'name.required' => __('messages.create_category_request.name.required'),
+            'name.string' => __('messages.create_category_request.name.string'),
         ];
     }
 }

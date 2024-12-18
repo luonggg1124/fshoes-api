@@ -42,21 +42,21 @@ class CreateReviewRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'product_id.required' => 'The product ID is required.',
-            'product_id.exists' => 'The selected product does not exist in the system.',
+            'product_id.required' => __('messages.create_review_request.product_id.required'),
+            'product_id.exists' => __('messages.create_review_request.product_id.exists'),
 
 
-            'title.required' => 'The title is required.',
-            'title.string' => 'The title must be a string.',
-            'title.max' => 'The title may not exceed 255 characters.',
+            'title.required' => __('messages.create_review_request.title.required'),
+            'title.string' => __('messages.create_review_request.title.string'),
+            'title.max' => __('messages.create_review_request.title.max'),
 
-            'text.required' => 'The review text is required.',
-            'text.string' => 'The review text must be a string.',
+            'text.required' => __('messages.create_review_request.text.required'),
+            'text.string' => __('messages.create_review_request.text.string'),
 
-            'rating.required' => 'The rating is required.',
-            'rating.integer' => 'The rating must be an integer.',
-            'rating.min' => 'The rating must be at least 1.',
-            'rating.max' => 'The rating may not be greater than 5.',
+            'rating.required' => __('messages.create_review_request.rating.required'),
+            'rating.integer' => __('messages.create_review_request.rating.integer'),
+            'rating.min' => __('messages.create_review_request.rating.min'),
+            'rating.max' => __('messages.create_review_request.rating.max'),
         ];
     }
 }

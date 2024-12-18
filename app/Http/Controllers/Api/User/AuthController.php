@@ -273,7 +273,7 @@ class AuthController extends Controller
                 'message' => __('messages.error-internal-server')
             ], 500);
         } catch (Throwable $th) {
-            logger()->error($e->getMessage());
+            logger()->error($th->getMessage());
             return response()->json([
                 'status' => false,
                 'message' => __('messages.user.error-system')

@@ -41,8 +41,8 @@ class UpdateCategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'The name field is required.',
-            'name.string' => 'The name must be a string.',
+            'name.required' => __('messages.update_category_request.name.required'),
+            'name.string' => __('messages.update_category_request.name.string'),
         ];
     }
 }

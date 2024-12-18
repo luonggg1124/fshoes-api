@@ -48,11 +48,11 @@ class CreateSaleRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.string' => 'The sale name must be a string.',
-            'type.in' => 'The sale type must be fixed or percent.',
-            'value.number' => 'The sale value must be a number.',
-            'start_date.date' => 'The sale start date must be a date.',
-            'start_date.before' => 'The sale start date must not be after the end date.',
+            'name.string' => __('messages.create_sale_request.name.string'),
+            'type.in' => __('messages.create_sale_request.type.in'),
+            'value.number' => __('messages.create_sale_request.value.number'),
+            'start_date.date' => __('messages.create_sale_request.start_date.date'),
+            'start_date.before' => __('messages.create_sale_request.start_date.before'),
 
 
         ];

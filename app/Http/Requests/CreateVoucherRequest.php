@@ -36,12 +36,12 @@ class CreateVoucherRequest extends FormRequest
     public function messages(): array
     {
         return [
-            "code.required" => "Voucher Code is required.",
-            "discount.required" => "Discount is required.",
-            "date_start.required" => "Date start is required.",
-            "date_end.required" =>"Date end is required",
-            "quantity.required"=>"Quantity is required",
-            "status.required"=>"Status is required"
+            "code.required" => __('messages.create_voucher_request.product_id.required'),
+            "discount.required" => __('messages.create_voucher_request.discount.required'),
+            "date_start.required" => __('messages.create_voucher_request.date_start.required'),
+            "date_end.required" =>__('messages.create_voucher_request.date_end.required'),
+            "quantity.required"=>__('messages.create_voucher_request.quantity.required'),
+            "status.required"=>__('messages.create_voucher_request.status.required'),
         ];
     }
     protected function failedValidation(Validator $validator)
