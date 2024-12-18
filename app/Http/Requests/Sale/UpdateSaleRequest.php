@@ -5,6 +5,7 @@ namespace App\Http\Requests\Sale;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\App;
 use Illuminate\Validation\Rule;
 
 class UpdateSaleRequest extends FormRequest
@@ -45,12 +46,16 @@ class UpdateSaleRequest extends FormRequest
     }
     public function messages(): array
     {
+        
         return [
-            'name.string' => 'The sale name must be a string.',
-            'type.in' => 'The sale type must be fixed or percent.',
-            'value.number' => 'The sale value must be a number.',
-            'start_date.date' => 'The sale start date must be a date.',
-            'start_date.before' => 'The sale start date must not be after the end date.',
+            'name.string' => __('messages.update_sale_request.name.string'),
+            'type.in' => __('messages.update_sale_request.type.in'),
+            'value.numeric' => __('messages.update_sale_request.value.number'),
+            'value.required' => 'The value is required',
+            'start_date.required' => 'The start date is required',
+            'start_date.date_format' => 'Invalid format date',
+            'start_date.date' => __('messages.update_sale_request.start_date.date'),
+            'start_date.before' => __('messages.update_sale_request.start_date.before'),
         ];
     }
 }

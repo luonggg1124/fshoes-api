@@ -42,20 +42,20 @@ class CreateOrderRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'receiver_email.required' => 'Receiver email is required',
-            'receiver_email.email' => 'Invalid Email',
-            'total_amount.required' => 'Total amount is required',
-            'payment_method.required' => 'Payment method is required',
-            'payment_status.required' => 'Payment status is required',
-            'shipping_method.required' => 'Shipping method is required',
-            'shipping_cost.required' => 'Shipping cost is required',
-            'amount_collected.required' => 'Amount collected is required',
-            "receiver_full_name.required" => "Receiver full name is required",
-            "phone.required" => "Phone is required",
-            "city.required" => "City is required",
-            "country.required" => "Country is required",
-            "address.required" => "Address is required",
-            "status.required" => "Status is required"
+            'receiver_email.required' => __('messages.create_order_request.receiver_email.required'),
+            'receiver_email.email' => __('messages.create_order_request.receiver_email.email'),
+            'total_amount.required' => __('messages.create_order_request.total_amount.required'),
+            'payment_method.required' => __('messages.create_order_request.payment_method.required'),
+            'payment_status.required' => __('messages.create_order_request.payment_status.required'),
+            'shipping_method.required' => __('messages.create_order_request.shipping_method.required'),
+            'shipping_cost.required' => __('messages.create_order_request.shipping_cost.required'),
+            'amount_collected.required' => __('messages.create_order_request.amount_collected.required'),
+            "receiver_full_name.required" => __('messages.create_order_request.receiver_full_name.required'),
+            "phone.required" => __('messages.create_order_request.phone.required'),
+            "city.required" => __('messages.create_order_request.city.required'),
+            "country.required" => __('messages.create_order_request.country.required'),
+            "address.required" => __('messages.create_order_request.address.required'),
+            "status.required" => __('messages.create_order_request.status.required')
         ];
     }
 

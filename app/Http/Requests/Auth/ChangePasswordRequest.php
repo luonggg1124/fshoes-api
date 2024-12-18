@@ -39,9 +39,9 @@ class ChangePasswordRequest extends FormRequest
     public function messages()
     {
         return [
-            'password.required' => 'Password is required',
-            'newPassword.required' => 'New Password is required',
-            'newPassword.min' => 'New Password must be at least 8 characters',
+            'password.required' => __('messages.password_request.password.required'),
+            'newPassword.required' => __('messages.password_request.newPassword.required'),
+            'newPassword.min' => __('messages.password_request.newPassword.min'),
 
         ];
     }

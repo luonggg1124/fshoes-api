@@ -42,17 +42,17 @@ class UpdateReviewRequest extends FormRequest
     {
         return [
 
-            'title.sometimes.required' => 'Product title is required if present.',
-            'title.string' => 'Product title must be a type of string.',
-            'title.max' => 'Product title is too long; 255 characters is maximum.',
+            'title.sometimes.required' => __('messages.update_review_request.title.sometimes.required'),
+            'title.string' => __('messages.update_review_request.title.string'),
+            'title.max' => __('messages.update_review_request.title.max'),
 
-            'text.sometimes.required' => 'Review text is required if present.',
-            'text.string' => 'Review text must be a type of string.',
+            'text.sometimes.required' => __('messages.update_review_request.text.sometimes.required'),
+            'text.string' => __('messages.update_review_request.text.string'),
 
-            'rating.sometimes.required' => 'Rating is required if present.',
-            'rating.integer' => 'Rating must be an integer.',
-            'rating.min' => 'Rating must be at least 1.',
-            'rating.max' => 'Rating may not be greater than 5.',
+            'rating.sometimes.required' => __('messages.update_review_request.rating.sometimes.required'),
+            'rating.integer' => __('messages.update_review_request.rating.integer'),
+            'rating.min' => __('messages.update_review_request.rating.min'),
+            'rating.max' =>  __('messages.update_review_request.rating.max'),
         ];
     }
 }

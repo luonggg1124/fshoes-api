@@ -20,7 +20,7 @@ class IsAdmin
         }
         return response()->json([
             'status' => false,
-            'message' => 'Unauthorized'
+            'message' => __('messages.error_middleware.error_isAdmin')
         ],403);
     }
 }

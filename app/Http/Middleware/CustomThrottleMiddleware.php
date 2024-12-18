@@ -22,7 +22,7 @@ class CustomThrottleMiddleware
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
            
             return response()->json([
-                'message' => 'Too many requests, please try again later.',
+                'message' => __('messages.error_middleware.error_custom'),
                 'status' => false
             ], 429);
         }

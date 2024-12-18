@@ -47,9 +47,9 @@ class UpdateVariationRequest extends FormRequest
     public function messages()
     {
         return [
-            'price.required' => 'Variation price is required',
-            'stock_qty.required' => 'Variation stock quantity is required',
-            'stock_qty.numeric' =>  'Variation stock quantity  must be a type of number',
+            'price.required' =>  __('messages.update_variation_request.price.required'),
+            'stock_qty.required' => __('messages.update_variation_request.stock_qty.required'),
+            'stock_qty.numeric' =>  __('messages.update_variation_request.stock_qty.numeric'),
         ];
     }
 }

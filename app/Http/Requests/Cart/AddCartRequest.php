@@ -31,8 +31,8 @@ class AddCartRequest extends FormRequest
     public function messages(): array
     {
         return [
-           "user_id.require"=>"User is is required",
-           "quantity.require"=>"Quantity is required"
+           "user_id.require"=>__('messages.add_cart_request.user_id.require'),
+           "quantity.require"=>__('messages.add_cart_request.quantity.require')
         ];
     }
 

@@ -41,17 +41,17 @@ class UpdateUserRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'User name is required',
-            'name.string' => 'Product name must be a type of string',
-            'name.max' => 'Product name is too long,255 characters is maximum',
+            'name.required' => __('messages.create_user_request.name.required'),
+            'name.string' => __('messages.create_user_request.name.string'),
+            'name.max' => __('messages.create_user_request.name.max'),
 
-            'password.required' => 'Password is required',
-            'password.string' => 'Password must be a type of string',
-            'password.min' => 'Password must be at least 6 characters',
+            'password.required' => __('messages.create_user_request.password.required'),
+            'password.string' => __('messages.create_user_request.password.string'),
+            'password.min' => __('messages.create_user_request.password.min'),
 
 
 
-            'group.exists' => 'Group does not exist',
+            'group.exists' => __('messages.create_user_request.group.exists'),
 
         ];
     }
