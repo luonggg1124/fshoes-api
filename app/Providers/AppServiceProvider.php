@@ -102,6 +102,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        
         $lang = Cache::get('language');
         if(!$lang || !in_array($lang, ['vi','en'])){
             $lang = 'vi';

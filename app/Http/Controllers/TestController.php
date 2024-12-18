@@ -33,6 +33,7 @@ class TestController extends Controller
         if(!in_array($lang, $arr)){
             $lang = 'vi';
         }
+        
         Cache::put('language',$lang,30*24*60*60*1000);
         App::setLocale($lang);
         return response()->json([
