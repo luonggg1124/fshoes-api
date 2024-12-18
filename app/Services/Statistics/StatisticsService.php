@@ -75,6 +75,8 @@ class StatisticsService implements StatisticsServiceInterface
             $percentage = 100;
         } else if ($count > 0) {
             $percentage = ($count / $totalExceptNew) * 100;
+        }else if{$count == 0}{
+            $percentage = 0;
         }
 
         return [
