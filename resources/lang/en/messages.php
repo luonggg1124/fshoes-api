@@ -190,6 +190,12 @@ return [
         'password.string' => 'Password must be a type of string',
         'password.min' => 'Password must be at least 6 characters',
         'group.exists' => 'Group does not exist',
+        'group.nullable' => 'Group is optional.',
+        'group.integer' => 'Group must be an integer.',
+        'profile.nullable' => 'Profile is optional.',
+        'profile.array' => 'Profile must be an array.',
+        'verify_code.string' => 'Verification code must be a string.',
+        'verify_code.nullable' => 'Verification code is optional.',
     ],
     'update_user_request' => [
         'name.required' => 'User name is required',
@@ -199,6 +205,10 @@ return [
         'password.string' => 'Password must be a type of string',
         'password.min' => 'Password must be at least 6 characters',
         'group.exists' => 'Group does not exist',
+        'group.nullable' => 'Group is optional.',
+        'group.integer' => 'Group must be an integer.',
+        'profile.nullable' => 'Profile is optional.',
+        'profile.array' => 'Profile must be an array.',
     ],
     'create_sale_request' => [
         'name.string' => 'The sale name must be a string.',
