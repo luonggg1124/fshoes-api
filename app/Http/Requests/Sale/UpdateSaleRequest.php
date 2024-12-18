@@ -50,18 +50,18 @@ class UpdateSaleRequest extends FormRequest
         return [
             'name.string' => __('messages.update_sale_request.name.string'),
             'type.in' => __('messages.update_sale_request.type.in'),
-            'type.required' => ('The type field is required.'),
+            'type.required' => __('messages.update_sale_request.type.required'),
             'value.numeric' => __('messages.update_sale_request.value.number'),
-            'value.required' => 'The value is required',
-            'start_date.required' => 'The start date is required',
-            'end_date.required' => 'The start date is required',
-            'end_date.format' => 'The end date must be in the format.',
-            'end_date_after' => 'The end date must be after the start date.',
-            'start_date.date_format' => 'Invalid format date',
+            'value.required' => __('messages.update_sale_request.value.required'),
+            'start_date.required' => __('messages.update_sale_request.start_date.required'),
+            'end_date.required' => __('messages.update_sale_request.end_date.required'),
+            'end_date.format' => __('messages.update_sale_request.end_date.format'),
+            'end_date_after' => __('messages.update_sale_request.end_date_after'),
+            'start_date.date_format' => __('messages.update_sale_request.start_date.date_format'),
             'start_date.date' => __('messages.update_sale_request.start_date.date'),
             'start_date.before' => __('messages.update_sale_request.start_date.before'),
-            'variations.nullable' => 'The variations field is optional.',
-            'variations.array' => 'The variations field must be an array.'
+            'variations.nullable' => __('messages.update_sale_request.variations.nullable'),
+            'variations.array' => __('messages.update_sale_request.variations.array'),
 
         ];
     }
