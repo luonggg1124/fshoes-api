@@ -89,7 +89,7 @@ class User extends Authenticatable implements JWTSubject
     }
     public function group():BelongsTo
     {
-        return $this->belongsTo(Groups::class);
+        return $this->belongsTo(Groups::class,'group_id');
     }
     public function reviews():HasMany
     {
