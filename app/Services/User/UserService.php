@@ -79,6 +79,7 @@ class UserService implements UserServiceInterface
                     'email' => __('messages.user.error-email')
                 ]);
             if (isset($data) && empty($data['group_id'])) $data['group_id'] = 1;
+            if(isset($data['is_admin'])) $data['is_admin'] = true;
             $data['status'] = 'active';
             $data['nickname'] = $this->createNickname($data['name']);
            
@@ -112,7 +113,8 @@ class UserService implements UserServiceInterface
                     'birth_date' =>  $birthDate
                 ];
             }
-            if(isset($data['is_admin'])) $data['is_admin'] = true;
+            
+           
             $this->createProfile($user->id, $options['profile']);
             return $user;
         }, 3);
