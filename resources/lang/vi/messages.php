@@ -59,6 +59,7 @@ return [
         'error-returned-processing' => 'Đơn hàng đã được trả lại và đang được xử lý',
         'error-returned' => 'Đơn hàng đã được trả lại',
         'error-can-not-order' => 'Không thể hủy đơn hàng',
+        'cant-cancel' => 'Đơn hàng đã được thanh toán không thể hủy'
     ],
     'voucher' => [
         'error-voucher' => 'Voucher đã hết lượt sử dụng',

@@ -62,6 +62,7 @@ return [
         'error-returned-processing' => 'Order returned processing',
         'error-returned' => 'Order is returned',
         'error-can-not-order' => 'Cannot cancel order',
+        'cant-cancel' => 'The order is already paid.Can not be canceled.'
     ],
     'voucher' => [
         'error-voucher' => 'Voucher is out of uses',
