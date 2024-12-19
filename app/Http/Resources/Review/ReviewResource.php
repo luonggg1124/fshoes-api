@@ -8,6 +8,7 @@ use App\Http\Traits\ResourceSummary;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 
 class ReviewResource extends JsonResource
 {
@@ -29,8 +30,19 @@ class ReviewResource extends JsonResource
             'text' => $this->text,
             'rating' => $this->rating,
             'likes_count' => $this->likes()->count(),
+            
 
         ];
+        $user = request()->user();
+        if(isset($user->id)){
+            $liked = DB::table('review_like')->where('review_id',$this->id)->where('user_id',$user->id)->exists();
+            if($liked){
+                $resource['liked'] = true;
+            }else{
+                $resource['liked'] = false;
+            }
+        }
+       
         if($this->shouldSummaryRelation($this->model))
             $resource = [
                 'id' => $this->id,
