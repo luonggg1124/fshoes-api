@@ -7,7 +7,6 @@ use App\Repositories\Groups\GroupsRepositoryInterface;
 use GuzzleHttp\Utils;
 use Illuminate\Database\QueryException;
 use Mockery\Exception;
-use function GuzzleHttp\json_decode;
 use function GuzzleHttp\json_encode;
 
 class GroupsService implements GroupsServiceInterface
