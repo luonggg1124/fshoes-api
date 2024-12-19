@@ -66,7 +66,6 @@ class StatisticsService implements StatisticsServiceInterface
     }
     public function statisticsTotalAndPercentage($from, $to, BaseRepositoryInterface|BaseRepository $repository)
     {
-
         $count = $this->countByDateForStatistics($from, $to, $repository);
         $countAll = $repository->query()->count();
         $totalExceptNew = $countAll - $count;
@@ -166,6 +165,7 @@ class StatisticsService implements StatisticsServiceInterface
                 })->groupBy('product_id')
                 ->orderByDesc('total_sold_quantity')
                 ->get();
+               
             return BestSellingProductResource::collection($bestSellingProducts);
         });
     }

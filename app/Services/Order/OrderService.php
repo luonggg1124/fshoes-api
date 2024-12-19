@@ -48,7 +48,7 @@ class OrderService implements OrderServiceInterface
         }
         $orders->latest();
         return OrdersCollection::collection(
-            $orders->paginate()
+            $orders->get()
         );
     }
 
@@ -238,12 +238,28 @@ class OrderService implements OrderServiceInterface
     {
         $details = $this->orderRepository->find($id)->orderDetails;
         foreach ($details as $item) {
-            Cart::create([
-                "user_id" => request()->user()->id,
-                "product_variation_id" => $item->product_variation_id ?? null,
-                "product_id" => $item->product_id ?? null,
-                "quantity" => $item->quantity
-            ]);
+            if($item->product_variation_id){
+                $variation = $this->variationRepository->find($item->product_variation_id);
+                if($variation){
+                    Cart::create([
+                        "user_id" => request()->user()->id,
+                        "product_variation_id" => $variation->id ,
+                        "product_id" =>  null,
+                        "quantity" => $item->quantity
+                    ]);
+                }
+            }else if($item->product_id){
+                $product = $this->productRepository->find($item->product_id);
+                if($product){
+                    Cart::create([
+                        "user_id" => request()->user()->id,
+                        "product_variation_id" => null ,
+                        "product_id" =>   $product->id,
+                        "quantity" => $item->quantity
+                    ]);
+                }
+            }
+            
         }
         Cache::tags([$this->cacheTag, ...$this->relations])->flush();
     }

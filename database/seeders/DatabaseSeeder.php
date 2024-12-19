@@ -82,7 +82,7 @@ class DatabaseSeeder extends Seeder
             'family_name' => 'Nguyen',
            
         ]);
-        User::factory(20)->create();
+        User::factory(50)->create();
         $this->call([
             CategorySeeder::class,
             ProductSeeder::class,
