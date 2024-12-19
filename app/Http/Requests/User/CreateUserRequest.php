@@ -59,14 +59,14 @@ class CreateUserRequest extends FormRequest
             'password.string' => __('messages.create_user_request.password.string'),
             'password.min' => __('messages.create_user_request.password.min'),
             
-            'group.exists' => __('messages.create_user_request.group.exists'),
-            'group.nullable' => __('messages.create_user_request.group.nullable'),
-            'group.integer' => __('messages.create_user_request.group.integer'),
+            'group_id.exists' => __('messages.create_user_request.group.exists'),
+            'group_id.nullable' => __('messages.create_user_request.group.nullable'),
+            'group_id.integer' => __('messages.create_user_request.group.integer'),
             'profile.nullable' => __('messages.create_user_request.profile.nullable'),
             'profile.array' => __('messages.create_user_request.profile.array'),
             'verify_code.string' => __('messages.create_user_request.verify_code.string'),
             'verify_code.nullable' => __('messages.create_user_request.verify_code.nullable'),
-
+            
         ];
     }
 }
