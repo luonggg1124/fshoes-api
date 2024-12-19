@@ -50,12 +50,10 @@ class StatisticsService implements StatisticsServiceInterface
                 $startDate = $this->oneWeekAgo();
                 $endDate = $this->now();
             }
-
             $totalNewUsers = $this->statisticsTotalAndPercentage($startDate, $endDate, $this->userRepository);
             $totalNewProducts = $this->statisticsTotalAndPercentage($startDate, $endDate, $this->productRepository);
             $totalNewOrders = $this->statisticsTotalAndPercentage($startDate, $endDate, $this->orderRepository);
-            $totalAmountOrder = $this->calculatorSumRecordsGetByDateForStatistics('total_amount', $startDate, $endDate, $this->orderRepository);
-
+            $totalAmountOrder = $this->totalAvenueOrder();
             return [
                 'users' => $totalNewUsers,
                 'products' => $totalNewProducts,
@@ -103,6 +101,29 @@ class StatisticsService implements StatisticsServiceInterface
             ]);
         })->orderBy($orderByColumn, $direction)->get();
         return $records;
+    }
+    public function totalAvenueOrder(){
+        $startDate = request()->query('from');
+            $endDate = request()->query('to');
+
+            if (!$this->isValidTime($startDate)) {
+                $startDate = $this->oneWeekAgo();
+            }
+
+            if (!$this->isValidTime($endDate)) {
+                $endDate = $this->now();
+            }
+            if (!$this->isGreaterDate($startDate, $endDate)) {
+                $startDate = $this->oneWeekAgo();
+                $endDate = $this->now();
+            }
+        $sum = $this->orderRepository->query()->where('status','>',3)->when($startDate && $endDate, function ($q) use ($startDate, $endDate) {
+            $q->whereBetween('created_at', [
+                Carbon::createFromFormat('Y-m-d', $startDate)->startOfDay(),
+                Carbon::createFromFormat('Y-m-d', $endDate)->endOfDay()
+            ]);
+        })->sum('total_amount');
+        return $sum;
     }
     private function calculatorSumRecordsGetByDateForStatistics(string $column = 'id', string $from = '', string $to = '', BaseRepositoryInterface|BaseRepository $repository)
     {

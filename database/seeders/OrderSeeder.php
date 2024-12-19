@@ -60,9 +60,9 @@ class OrderSeeder extends Seeder
                 }else {
                     $orderDetail = OrderDetails::query()->create([
                         'order_id' => $order->id,
-                        'product_variation_id' => $pro->id || null,
-                        'product_id' => $pro->product->id,
-                        'price' => $pro->price || $pro->price,
+                        'product_variation_id' =>  null,
+                        'product_id' => $pro->id,
+                        'price' => $pro->price ,
                         'quantity' => 1,
                         'total_amount' => $pro->price,
                     ]);
