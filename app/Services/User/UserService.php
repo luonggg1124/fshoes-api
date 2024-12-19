@@ -111,14 +111,6 @@ class UserService implements UserServiceInterface
                     'birth_date' => null,
                 ];
                 
-            }else {
-                $birthDate = $options['profile']['birth_date'];
-                
-                if($birthDate) $birthDate = Carbon::createFromFormat('Y/m/d', $options['profile']['birth_date'])->format('Y-m-d');
-                $options['profile'] = [
-                    ...$options['profile'],
-                    'birth_date' =>  $birthDate
-                ];
             }
             
            
@@ -201,13 +193,7 @@ class UserService implements UserServiceInterface
             }
 
             if (isset($data['profile'])) {
-                $birthDate = $options['profile']['birth_date'];
                 
-                if($birthDate) $birthDate = Carbon::createFromFormat('Y/m/d', $options['profile']['birth_date'])->format('Y-m-d');
-                $options['profile'] = [
-                    ...$options['profile'],
-                    'birth_date' =>  $birthDate
-                ];
                 $user->profile()->update($data['profile']);
             };
             return $user;
