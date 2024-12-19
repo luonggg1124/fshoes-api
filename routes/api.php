@@ -82,8 +82,7 @@ Route::group(['middleware' => ['auth:api','user_banned']], function () {
 
     Route::put('update-profile', [UserController::class, 'updateProfile'])->name('update-profile');
     Route::post('change-password', [AuthController::class, 'changePassword'])->name('user.changePassword');
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('auth/me', [AuthController::class, 'me']);
+   
 
     Route::get('user/get-favorite/product', [UserController::class, 'getFavoriteProduct'])->name('get.favorite.product');
     Route::post('user/add-favorite/product/{product_id}', [UserController::class, 'addFavoriteProduct'])->name('add.favorite.product');
@@ -102,9 +101,13 @@ Route::group(['middleware' => ['auth:api','user_banned']], function () {
 
     //Discount End
     //Image
+    Route::apiResource('cart', CartController::class);
     Route::post('update/user/avatar', [UserController::class, 'updateAvatar']);
     Route::get('vouchers/code/{code}', [VouchersController::class, 'getVoucherByCode']);
 });
+
+Route::middleware('api')->post('logout', [AuthController::class, 'logout']);
+Route::middleware('api')->get('auth/me', [AuthController::class, 'me']);
 
 Route::middleware('customize_throttle:1,1')->post('forgot/password', [AuthController::class, 'forgotPassword'])->name('forgotPassword');
 Route::post('reset/password', [AuthController::class, 'resetPassword'])->name('resetPassword');
@@ -125,7 +128,7 @@ Route::get('main/categories', [CategoryController::class, 'mains'])->name('main.
 
 
 //Cart
-Route::apiResource('cart', CartController::class);
+
 
 //Order
 Route::apiResource('orders', OrdersController::class);

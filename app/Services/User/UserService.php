@@ -16,6 +16,7 @@ use App\Http\Resources\User\UserResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Repositories\User\UserRepositoryInterface;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\UnauthorizedException;
 
 
@@ -23,7 +24,7 @@ class UserService implements UserServiceInterface
 {
     use CanLoadRelationships, Cloudinary, Paginate;
 
-    protected array $relations = ['profile', 'interestingCategories', 'addresses', 'allAvatars', 'favoriteProducts','group'];
+    protected array $relations = ['profile', 'interestingCategories', 'addresses', 'allAvatars', 'favoriteProducts','group','statistics'];
     private array $columns = [
         'nickname',
         'name',
@@ -113,6 +114,7 @@ class UserService implements UserServiceInterface
             $this->createProfile($user->id, $options['profile']);
             return $user;
         }, 3);
+        Cache::tags([...$this->relations])->flush();
         return new UserResource($this->loadRelationships($user));
     }
 
@@ -203,6 +205,7 @@ class UserService implements UserServiceInterface
             };
             return $user;
         }, 3);
+        Cache::tags([...$this->relations])->flush();
         return new UserResource($this->loadRelationships($update));
     }
 
@@ -213,6 +216,7 @@ class UserService implements UserServiceInterface
         if (!$user) throw new ModelNotFoundException(__('messages.error-not-found'));
         if($authUser->id == $user->id) throw new UnauthorizedException(__('messages.forbidden'));
         $user->delete();
+        Cache::tags([...$this->relations])->flush();
         return true;
     }
 

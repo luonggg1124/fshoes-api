@@ -15,6 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\UnauthorizedException;
 use Illuminate\Validation\ValidationException;
 use PHPUnit\Event\InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
@@ -126,6 +127,9 @@ class AuthController extends Controller
 
             return $this->respondWithToken($token['access_token'], $token['refresh_token'], $token['user']);
         } catch (\Throwable $throwable) {
+            logger()->error($throwable->getMessage(),[
+                'line' => $throwable->getLine(),
+            ]);
             if ($throwable instanceof JWTException) {
                 return response()->json([
                     'status' => false,
@@ -149,6 +153,12 @@ class AuthController extends Controller
                    'status' => false,
                    'message' => $throwable->getMessage()
                 ], 429);
+            }
+            if($throwable instanceof UnauthorizedException){
+                return response()->json([
+                    'status' => false,
+                   'message' => $throwable->getMessage()
+                ], 403);
             }
             return response()->json([
                 'status' => false,
