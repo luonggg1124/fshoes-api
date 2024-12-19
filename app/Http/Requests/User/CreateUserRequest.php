@@ -33,7 +33,7 @@ class CreateUserRequest extends FormRequest
             'group_id' => 'nullable|integer|exists:groups,id',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|dimensions:min_width=100,min_height=100|max:2048',
             'is_admin' => 'nullable',
-            'active' => 'nullable|boolean'
+            'status' => 'nullable'
         ];
     }
     protected function failedValidation(Validator $validator)

@@ -32,7 +32,7 @@ class UpdateUserRequest extends FormRequest
             'group_id' => 'required|integer|exists:groups,id',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|dimensions:min_width=100,min_height=100|max:2048',
             'is_admin' => 'required',
-            'active' => 'required|boolean'
+            'status' => 'required'
             
         ];
     }
