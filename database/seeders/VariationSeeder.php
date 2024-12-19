@@ -42,7 +42,7 @@ class VariationSeeder extends Seeder
         ]);
         
 
-        foreach (Product::query()->where('id','>',15)->take(15)->get() as $p) {
+        foreach (Product::query()->take(15)->get() as $p) {
             $attributes = [
                 'color' => Attribute::query()->find(1)->values()->take(2)->pluck('id'),
                 'size' => Attribute::query()->find(2)->values()->take(2)->pluck('id'),

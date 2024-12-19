@@ -82,7 +82,6 @@ class UserService implements UserServiceInterface
             
             if(isset($data['is_admin']) && $data['is_admin'] != 'false'){
                 $data['is_admin'] = true;
-               
             }
             else {
                 $data['is_admin'] = false;
@@ -92,7 +91,6 @@ class UserService implements UserServiceInterface
            
             $data['password'] = Hash::make($data['password']);
             $user = $this->userRepository->create($data);
-
             if (!$user)
                 throw new \Exception(__('messages.user.error-could-not-create'));
 
@@ -102,8 +100,6 @@ class UserService implements UserServiceInterface
                 $user->save();
             }
             if(empty($options['profile']) ){
-                
-               
                 $options['profile'] = [
                     'given_name' => '',
                     'family_name' => '',
@@ -112,7 +108,7 @@ class UserService implements UserServiceInterface
                 ];
                 
             }
-            
+         
            
             $this->createProfile($user->id, $options['profile']);
             return $user;
@@ -184,6 +180,11 @@ class UserService implements UserServiceInterface
             else {
                 $data['is_admin'] = false;
             }
+            if(isset($data['password'])){
+                $data['password'] = Hash::make($data['password']);
+            }else{
+                unset($data['password']);
+            }
             $user->update($data);
 
             if (isset($options['avatar'])) {
@@ -193,8 +194,12 @@ class UserService implements UserServiceInterface
             }
 
             if (isset($data['profile'])) {
+                if($user->profile){
+                    $user->profile()->update($data['profile']);
+                }   else{
+                    $this->createProfile($user->id, $options['profile']);
+                }
                 
-                $user->profile()->update($data['profile']);
             };
             return $user;
         }, 3);
@@ -216,7 +221,7 @@ class UserService implements UserServiceInterface
         $user = $this->userRepository->findByNickname($nickname);
         return new UserResource($this->loadRelationships($user));
     }
-
+    
     public function getFavoriteProduct()
     {
         $user = request()->user();
