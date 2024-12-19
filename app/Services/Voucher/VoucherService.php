@@ -30,26 +30,23 @@ class VoucherService implements VoucherServiceInterface
     {
         $voucher = $this->vouchersRepository->query()->withTrashed()->find($id);
         if ($voucher) return response()->json(VoucherResource::make($voucher) , 200);
-        else return response()->json(["message"=>"Voucher Not Found"] , 404);
+        else return response()->json(["message"=>__('messages.error-not-found')] , 404);
 
     }
 
     function findByCode(int|string $code)
     {
         $voucher = $this->vouchersRepository->query()->where('code', $code)->first();
-        if(!$voucher) throw new ModelNotFoundException('Invalid Voucher Code');
+        if(!$voucher) throw new ModelNotFoundException(__('messages.voucher.invalid-voucher'));
         if($voucher->date_start > Carbon::now()){
-            throw new UnprocessableEntityHttpException('Invalid voucher');
+            throw new UnprocessableEntityHttpException(__('messages.voucher.invalid-voucher'));
         } else if($voucher->date_end < Carbon::now()){
-            throw new UnprocessableEntityHttpException('Voucher has expired');
+            throw new UnprocessableEntityHttpException(__('messages.voucher.voucher-expired'));
         }
-        
-        if($voucher->quantity === 0) throw new UnprocessableEntityHttpException('The number of voucher uses has expired'); 
+        if($voucher->quantity === 0) throw new UnprocessableEntityHttpException('messages.voucher.number-expired'); 
         $vouchersUsed = [...request()->user()->voucherUsed()->get()->pluck('id')];
-       
-        $used = in_array($voucher->id,$vouchersUsed);
-        
-        if($used){ throw new UnprocessableEntityHttpException('You used the voucher');
+        $used = in_array($voucher->id,$vouchersUsed);    
+        if($used){ throw new UnprocessableEntityHttpException(__('messages.voucher.used'));
         }
         return VoucherResource::make($voucher);
     }
@@ -62,12 +59,12 @@ class VoucherService implements VoucherServiceInterface
 
         } catch (QueryException $exception) {
             if ($exception->getCode() == 23000) {
-                return response()->json(["message" => "Voucher code already exists"], 400);
+                return response()->json(["message" => __('messages.voucher.already-exists')], 400);
             }
-            return response()->json(["message" => "Can't create new voucher"], 500);
+            return response()->json(["message" => __('messages.voucher.cant-create')], 500);
         }
         catch (Exception $exception) {
-            return response()->json(["message" => "Can't create new voucher"], 500);
+            return response()->json(["message" => __('messages.voucher.cant-create')], 500);
         }
     }
 
@@ -76,9 +73,9 @@ class VoucherService implements VoucherServiceInterface
        try {
         $voucher = $this->vouchersRepository->update($id, $data);
 
-        return response()->json(["message"=>"Update successfully","voucher"=>VoucherResource::make($voucher)], 200);
+        return response()->json(["message"=> __("messages.update-success"),"voucher"=>VoucherResource::make($voucher)], 200);
     } catch (ModelNotFoundException $exception) {
-        return response()->json(["message" => "Voucher not found"], 404);
+        return response()->json(["message" => __("messages.error-not-found")], 404);
     } catch (QueryException $exception) {
         if ($exception->getCode() == 23000) {
             return response()->json([

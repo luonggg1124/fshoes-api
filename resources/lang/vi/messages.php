@@ -61,7 +61,13 @@ return [
         'error-can-not-order' => 'Không thể hủy đơn hàng',
     ],
     'voucher' => [
-        'error-voucher' => 'Mã giảm giá đã hết lượt sử dụng',
+        'error-voucher' => 'Voucher đã hết lượt sử dụng',
+        'invalid-voucher' => 'Mã voucher không hợp lệ',
+        'voucher-expired' => 'Voucher đã hết hạn',
+        'number-expired' => 'Số lượt sử dụng voucher đã hết',
+        'used' => 'Bạn đã sử dụng voucher này',
+        'already-exists' => 'Mã voucher đã tồn tại',
+        'cant-create' => 'Không thể tạo mới voucher',
     ],
     'topic' => [
         'error-can-not' => 'Không thể tìm thấy chủ đề',

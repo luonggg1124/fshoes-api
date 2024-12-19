@@ -65,6 +65,12 @@ return [
     ],
     'voucher' => [
         'error-voucher' => 'Voucher is out of uses',
+        'invalid-voucher' => 'Invalid Voucher Code',
+        'voucher-expired' => 'Voucher has expired',
+        'number-expired' => 'The number of voucher uses has expired',
+        'used' => 'You used the voucher',
+        'already-exists' => 'Voucher code already exists',
+        'cant-create'=> 'Can\'t create new voucher',
 
     ],
     'topic' => [
@@ -600,4 +606,5 @@ return [
         'error_isAdmin' => 'Unauthorized',
         'user_banned' => 'This account is already banned!'
     ],
+    
 ];
