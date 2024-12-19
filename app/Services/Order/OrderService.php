@@ -87,7 +87,6 @@ class OrderService implements OrderServiceInterface
                 if ($voucher->quantity < 0) return response()->json(["message" => __('messages.voucher.error-voucher')], 500);
                 $voucher->save();
             }
-
             $order = $this->orderRepository->create($data);
             foreach ($data['order_details'] ?? [] as $detail) {
                 $detail['order_id'] = $order->id;
@@ -105,7 +104,6 @@ class OrderService implements OrderServiceInterface
                         'quantity' => $item->currentSale()->pivot->quantity + $detail["quantity"],
                     ]);
                 }
-
 
                 $item->save();
             }
@@ -226,6 +224,25 @@ class OrderService implements OrderServiceInterface
         $order->status = 0;
         $order->reason_cancelled = $data["reason_cancelled"];
         $voucher = $order->voucher;
+        $items = $order->orderDetails;
+        if($items){
+            foreach ($items as $item) {
+                if($item->product_variation_id){
+                    $variation = $this->variationRepository->find($item->product_variation_id);
+                    $product = $this->productRepository->find($variation->product->id);
+                    if($variation && $product && $variation->stock_qty > 0){
+                        $variation->stock_qty += $item->quantity;
+                        $variation->save();
+                    }
+                }else if($item->product_id){
+                    $product = $this->productRepository->find($item->product_id);
+                    if($product && $product->stock_qty){
+                        $product->stock_qty += $item->quantity;
+                        $product->save();
+                    }
+                }
+            }
+        }
         if ($voucher) {
             $user->voucherUsed()->detach([$voucher->id]);
         }
@@ -239,10 +256,9 @@ class OrderService implements OrderServiceInterface
         $details = $this->orderRepository->find($id)->orderDetails;
         foreach ($details as $item) {
             if($item->product_variation_id){
-
                 $variation = $this->variationRepository->find($item->product_variation_id);
                 $product = $this->productRepository->find($variation->product->id);
-                if($variation && $product){
+                if($variation && $product && $variation->stock_qty > 0){
                     Cart::create([
                         "user_id" => request()->user()->id,
                         "product_variation_id" => $variation->id ,
@@ -252,7 +268,7 @@ class OrderService implements OrderServiceInterface
                 }
             }else if($item->product_id){
                 $product = $this->productRepository->find($item->product_id);
-                if($product){
+                if($product && $product->stock_qty){
                     Cart::create([
                         "user_id" => request()->user()->id,
                         "product_variation_id" => null ,

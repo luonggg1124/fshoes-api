@@ -46,10 +46,11 @@ class OrderSeeder extends Seeder
             $total = 0;
             foreach ($products as $p) {
                 $pro = Product::query()->find(random_int(1,count($products)));
-                if($pro->variations){
+                if(!$pro) break;
+                if(count($pro->variations) > 0){
                     $orderDetail = OrderDetails::query()->create([
                         'order_id' => $order->id,
-                        'product_variation_id' => $pro->variations()->first()->id ?? null,
+                        'product_variation_id' => $pro->variations[0]->id ?? null,
                         'product_id' => $pro->id,
                         'price' => $pro->variations()->first()->price || $pro->price,
                         'quantity' => 1,
@@ -59,9 +60,9 @@ class OrderSeeder extends Seeder
                 }else {
                     $orderDetail = OrderDetails::query()->create([
                         'order_id' => $order->id,
-                        'product_variation_id' => $pro->id ?? null,
+                        'product_variation_id' => $pro->id || null,
                         'product_id' => $pro->product->id,
-                        'price' => $pro->price ?? $pro->price,
+                        'price' => $pro->price || $pro->price,
                         'quantity' => 1,
                         'total_amount' => $pro->price,
                     ]);
