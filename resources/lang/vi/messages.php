@@ -588,6 +588,7 @@ return [
     'error_middleware' => [
         'error_custom' => 'Quá nhiều yêu cầu, vui lòng thử lại sau.',
         'error_isAdmin' => 'Không được phép.',
+        'user_banned' => 'Tài khoản đã bị cấm!'
     ],
 
 ];

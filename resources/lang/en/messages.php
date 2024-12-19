@@ -597,5 +597,6 @@ return [
     'error_middleware' => [
         'error_custom' => 'Too many requests, please try again later.',
         'error_isAdmin' => 'Unauthorized',
+        'user_banned' => 'This account is already banned!'
     ],
 ];

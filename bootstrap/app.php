@@ -21,7 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'is_admin' => App\Http\Middleware\IsAdmin::class,
-            'customize_throttle' => App\Http\Middleware\CustomThrottleMiddleware::class
+            'customize_throttle' => App\Http\Middleware\CustomThrottleMiddleware::class,
+            'user_banned' => App\Http\Middleware\UserBanned::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

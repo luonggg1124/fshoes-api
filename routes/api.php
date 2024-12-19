@@ -38,7 +38,7 @@ Route::get('auth/unauthorized', function () {
 
 
 //Admin
-Route::group(['middleware' => ['auth:api', 'is_admin']], function () {
+Route::group(['middleware' => ['auth:api', 'is_admin','user_banned']], function () {
     Route::apiResource('product', ProductController::class)->parameter('product', 'id')->except('index', 'show');
     Route::get('product/with/trashed', [ProductController::class, 'productWithTrashed'])->name('product.with.trashed');
     Route::get('product/trashed', [ProductController::class, 'productTrashed'])->name('product.list.trashed');
@@ -78,9 +78,7 @@ Route::get('sales/stream', [SaleController::class, 'stream'])->name('sale.stream
 
 
 // Auth
-Route::group(['middleware' => ['auth:api']], function () {
-
-
+Route::group(['middleware' => ['auth:api','user_banned']], function () {
 
     Route::put('update-profile', [UserController::class, 'updateProfile'])->name('update-profile');
     Route::post('change-password', [AuthController::class, 'changePassword'])->name('user.changePassword');
@@ -105,13 +103,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     //Discount End
     //Image
     Route::post('update/user/avatar', [UserController::class, 'updateAvatar']);
-
-
-    // Attribute - Attribute Value Start
-
-    //Attribute - Attribute Value End
-
-
     Route::get('vouchers/code/{code}', [VouchersController::class, 'getVoucherByCode']);
 });
 
@@ -163,8 +154,6 @@ Route::get('product/by/attribute-values', [ProductController::class, 'productsBy
 Route::get('products/all/summary', [ProductController::class, 'allSummary'])->name('product.all.summary');
 
 //Product End
-
-
 
 // Review
 
