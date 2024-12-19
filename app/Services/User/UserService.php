@@ -242,6 +242,7 @@ class UserService implements UserServiceInterface
         if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
         $user->favoriteProducts()->syncWithoutDetaching($productId);
         $products = $user->favoriteProducts()->with(['categories'])->get();
+        Cache::tags([...$this->relations])->flush();
         return ProductResource::collection($products);
     }
 
@@ -253,6 +254,7 @@ class UserService implements UserServiceInterface
         if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
         $user->favoriteProducts()->detach($productId);
         $products = $user->favoriteProducts()->with(['categories'])->get();
+        Cache::tags([...$this->relations])->flush();
         return ProductResource::collection($products);
     }
 
@@ -284,7 +286,7 @@ class UserService implements UserServiceInterface
             return $user;
         }, 3);
 
-
+        Cache::tags([...$this->relations])->flush();
         return new UserResource($this->loadRelationships($updatedUser));
     }
 
@@ -305,6 +307,7 @@ class UserService implements UserServiceInterface
         $userModel->avatar_url = $avatar['path'];
         $userModel->avatar_public_id = $avatar['public_id'];
         $userModel->save();
+        Cache::tags([...$this->relations])->flush();
         return new UserResource($this->loadRelationships($userModel));
     }
 }

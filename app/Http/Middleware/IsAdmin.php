@@ -16,6 +16,7 @@ class IsAdmin
     public function handle(Request $request, Closure $next): Response
     {
         if(auth('api')->check() && auth('api')->user()->is_admin){
+            
             return $next($request);
         }
         return response()->json([

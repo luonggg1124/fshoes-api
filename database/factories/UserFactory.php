@@ -33,7 +33,7 @@ class UserFactory extends Factory
             'google_id' => null,
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-            'group_id'=>fake()->randomElement([1,2]),
+            'group_id'=>fake()->randomElement([2,3]),
             'created_at' => $this->faker->dateTimeBetween('-3 months', 'now'),
             'updated_at' => $this->faker->dateTimeBetween('-3 months', 'now'),
         ];
