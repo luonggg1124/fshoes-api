@@ -8,6 +8,7 @@ use App\Services\Attribute\Value\AttributeValueServiceInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 
 class AttributeValueController extends Controller
 {
@@ -138,6 +139,12 @@ class AttributeValueController extends Controller
                     'status' => false,
                     'message' => $throwable->getMessage()
                 ], 404);
+            }
+            if($throwable instanceof InvalidArgumentException){
+                return response()->json([
+                    'status' => false,
+                    'message' => $throwable->getMessage()
+                ], 422);
             }
             return response()->json([
                 'status' => false,

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 
 class AttributeController extends Controller
 {
@@ -133,6 +134,12 @@ class AttributeController extends Controller
                     'status' => false,
                    'error' => $throw->getMessage()
                 ],404);
+            }
+            if($throw instanceof InvalidArgumentException){
+                return response()->json([
+                    'status' => false,
+                    'message' => $throw->getMessage()
+                ], 422);
             }
             return \response()->json([
                 'status' => false,

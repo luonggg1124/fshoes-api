@@ -106,6 +106,10 @@ class AttributeValueService implements AttributeValueServiceInterface
         if (!$attribute) throw new ModelNotFoundException(message: __('messages.error-not-found'));
         $value = $attribute->values()->find($id);
         if (!$value) throw new ModelNotFoundException(message: __('messages.error-not-found'));
+        if(count([...$value->variations]) > 0){
+            throw new \InvalidArgumentException(__('messages.error-delete-attribute-variations'));
+        }
+      
         $value->delete();
         Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return true;

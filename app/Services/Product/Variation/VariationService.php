@@ -112,7 +112,6 @@ class VariationService implements VariationServiceInterface
     public function createMany(int|string $pid, array $data)
     {
         $list = [];
-      
         foreach ($data as $var) {
             if (empty($var['values'])){
                 $values = [];
@@ -126,15 +125,12 @@ class VariationService implements VariationServiceInterface
             else {
                 $images = $var['images'];
             }
-            
             $variation = $this->create($pid, $var, [
                 'values' => $values,
                 'images' => $images
             ]);
-           
             $list[] = $variation;
         }
-       
         if (empty($list) || count($list) < 1) throw new \Exception(__('messages.product.error-create.variant'));
         Cache::tags([$this->cacheTag])->flush();
         return VariationResource::collection($list);

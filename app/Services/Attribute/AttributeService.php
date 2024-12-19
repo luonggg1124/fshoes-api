@@ -65,6 +65,15 @@ class AttributeService implements AttributeServiceInterface
     {
         $attribute = $this->attributeRepository->find($id);
         if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
+        $values = $attribute->values;
+        if(count($values) > 0){
+            foreach($values as $val){
+                $variations = $val->variations;
+                if(count($variations) > 0){
+                    throw new \InvalidArgumentException(__('messages.error-delete-attribute-variations'));
+                }
+            }
+        }
         $attribute->values()->delete();
         $attribute->delete();
         Cache::tags([$this->cacheTag,...$this->relations])->flush();

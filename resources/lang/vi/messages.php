@@ -12,6 +12,7 @@ return [
     'error-value' => 'Các giá trị phải là một mảng',
     'invalid-value' => 'Đối số không hợp lệ',
     'forbidden' => 'Hành động này bị cấm',
+    'error-delete-attribute-variations' => 'Giá trị này đã được thêm vào sản phẩm.Hãy xóa các biến thể sản phẩm trước!',
     'auth' => [
         'banned' => 'Tài khoản này đã bị khóa.Vui lòng thử lại sau.'
     ],

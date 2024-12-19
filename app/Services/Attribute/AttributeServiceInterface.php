@@ -13,4 +13,5 @@ interface AttributeServiceInterface
     function update(string|int $id, array $data);
 
     function find(int|string $id);
+    function delete(int|string $id);
 }

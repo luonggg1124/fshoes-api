@@ -12,6 +12,7 @@ return [
     'error-value' => 'The values must be an array',
     'forbidden' => 'Forbidden',
     'invalid-value' => 'Invalid argument',
+    'error-delete-attribute-variations' => 'This value has already been added to the product.Please remove the product variations first!',
     'auth' => [
         'banned' => 'This account is banned.Please try later.'
     ],
