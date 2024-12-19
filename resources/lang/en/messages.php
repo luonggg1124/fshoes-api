@@ -151,233 +151,449 @@ return [
     ],
 
     'update_review_request' => [
-        'title.sometimes.required' => 'Product title is required if present.',
-        'title.string' => 'Product title must be a type of string.',
-        'title.max' => 'Product title is too long; 255 characters is maximum.',
-        'text.sometimes.required' => 'Review text is required if present.',
-        'text.string' => 'Review text must be a type of string.',
-        'rating.sometimes.required' => 'Rating is required if present.',
-        'rating.integer' => 'Rating must be an integer.',
-        'rating.min' => 'Rating must be at least 1.',
-        'rating.max' => 'Rating may not be greater than 5.',
+        'title' => [
+            'sometimes.required' => 'Product title is required if present.',
+            'string' => 'Product title must be a type of string.',
+            'max' => 'Product title is too long; 255 characters is maximum.',
+        ],
+        'text' => [
+            'sometimes.required' => 'Review text is required if present.',
+            'string' => 'Review text must be a type of string.',
+        ],
+        'rating' => [
+            'sometimes.required' => 'Rating is required if present.',
+            'integer' => 'Rating must be an integer.',
+            'min' => 'Rating must be at least 1.',
+            'max' => 'Rating may not be greater than 5.',
+        ],
     ],
     'create_review_request' => [
-        'product_id.required' => 'The product ID is required.',
-        'product_id.exists' => 'The selected product does not exist in the system.',
-        'title.required' => 'The title is required.',
-        'title.string' => 'The title must be a string.',
-        'title.max' => 'The title may not exceed 255 characters.',
-        'text.required' => 'The review text is required.',
-        'text.string' => 'The review text must be a string.',
-        'rating.required' => 'The rating is required.',
-        'rating.integer' => 'The rating must be an integer.',
-        'rating.min' => 'The rating must be at least 1.',
-        'rating.max' => 'The rating may not be greater than 5.',
+        'product_id' => [
+            'required' => 'The product ID is required.',
+            'exists' => 'The selected product does not exist in the system.',
+        ],
+        'title' => [
+            'required' => 'The title is required.',
+            'string' => 'The title must be a string.',
+            'max' => 'The title may not exceed 255 characters.',
+        ],
+        'text' => [
+            'required' => 'The review text is required.',
+            'string' => 'The review text must be a string.',
+        ],
+        'rating' => [
+            'required' => 'The rating is required.',
+            'integer' => 'The rating must be an integer.',
+            'min' => 'The rating must be at least 1.',
+            'max' => 'The rating may not be greater than 5.',
+        ],
     ],
+
     'create_voucher_request' => [
-        'code.required' => 'Voucher Code is required.',
-        'discount.required' => 'Discount is required.',
-        'date_start.required' => 'Date start is required.',
-        'date_end.required' => 'Date end is required',
-        'quantity.required' => 'Quantity is required',
-        'status.required' => 'Status is required',
+        'code' => [
+            'required' => 'Voucher Code is required.',
+        ],
+        'discount' => [
+            'required' => 'Discount is required.',
+        ],
+        'date_start' => [
+            'required' => 'Start date is required.',
+        ],
+        'date_end' => [
+            'required' => 'End date is required.',
+        ],
+        'quantity' => [
+            'required' => 'Quantity is required.',
+        ],
+        'status' => [
+            'required' => 'Status is required.',
+        ],
     ],
+
     'create_user_request' => [
-        'name.required' => 'User name is required',
-        'name.string' => 'Product name must be a type of string',
-        'name.max' => 'Product name is too long,255 characters is maximum',
-        'email.required' => 'Email is required',
-        'email.string' => 'Email must be a type of string',
-        'email.max' => 'Email is too long,255 characters is maximum',
-        'email.unique' => 'Email already exists',
-        'password.required' => 'Password is required',
-        'password.string' => 'Password must be a type of string',
-        'password.min' => 'Password must be at least 6 characters',
-        'group.exists' => 'Group does not exist',
-        'group.nullable' => 'Group is optional.',
-        'group.integer' => 'Group must be an integer.',
-        'profile.nullable' => 'Profile is optional.',
-        'profile.array' => 'Profile must be an array.',
-        'verify_code.string' => 'Verification code must be a string.',
-        'verify_code.nullable' => 'Verification code is optional.',
+        'name' => [
+            'required' => 'User name is required',
+            'string' => 'Product name must be a type of string',
+            'max' => 'Product name is too long,255 characters is maximum',
+        ],
+        'email' => [
+            'required' => 'Email is required',
+            'string' => 'Email must be a type of string',
+            'max' => 'Email is too long,255 characters is maximum',
+            'unique' => 'Email already exists',
+        ],
+        'password' => [
+            'required' => 'Password is required',
+            'string' => 'Password must be a type of string',
+            'min' => 'Password must be at least 6 characters',
+        ],
+        'groups' => [
+            'exists' => 'Group does not exist',
+            'nullable' => 'Group is optional.',
+            'integer' => 'Group must be an integer.',
+        ],
+        'profile' => [
+            'nullable' => 'Profile is optional.',
+            'array' => 'Profile must be an array.',
+        ],
+        'verify_code' => [
+            'nullable' => 'Verification code is optional.',
+            'string' => 'Verification code must be a string.',
+        ],
     ],
     'update_user_request' => [
-        'name.required' => 'User name is required',
-        'name.string' => 'Product name must be a type of string',
-        'name.max' => 'Product name is too long,255 characters is maximum',
-        'password.required' => 'Password is required',
-        'password.string' => 'Password must be a type of string',
-        'password.min' => 'Password must be at least 6 characters',
-        'group.exists' => 'Group does not exist',
-        'group.nullable' => 'Group is optional.',
-        'group.integer' => 'Group must be an integer.',
-        'profile.nullable' => 'Profile is optional.',
-        'profile.array' => 'Profile must be an array.',
+        'name' => [
+            'required' => 'User name is required',
+            'string' => 'Product name must be a type of string',
+            'max' => 'Product name is too long,255 characters is maximum',
+        ],
+        'password' => [
+            'required' => 'Password is required',
+            'string' => 'Password must be a type of string',
+            'min' => 'Password must be at least 6 characters',
+        ],
+        'group' => [
+            'exists' => 'Group does not exist',
+            'nullable' => 'Group is optional.',
+            'integer' => 'Group must be an integer.',
+        ],
+        'profile' => [
+            'nullable' => 'Profile is optional.',
+            'array' => 'Profile must be an array.',
+        ],
     ],
     'create_sale_request' => [
-        'name.string' => 'The sale name must be a string.',
-        'type.in' => 'The sale type must be fixed or percent.',
-        'value.number' => 'The sale value must be a number.',
-        'start_date.date' => 'The sale start date must be a date.',
-        'start_date.before' => 'The sale start date must not be after the end date.',
-        'type.required' => 'The type field is required.',
-        'type.string' => 'The type must be a string.',
-        'value.required' => 'The value field is required.',
-        'is_active.nullable' => 'The is_active field is optional.',
-        'is_active.boolean' => 'The is_active field must be true or false.',
-        'start_date.required' => 'The start date is required.',
-        'end_date.required' => 'The end date is required.',
-        'end_date.date_format' => 'The end date must be in the format "Y-m-d H:i:s".',
-        'end_date.after' => 'The end date must be after the start date.',
-        'product.nullable' => 'The products field is optional.',
-        'product.array' => 'The products field must be an array.',
-        'variations.nullable' => 'The variations field is optional.',
-        'variations.array' => 'The variations field must be an array.',
-        'applyAll.nullable' => 'The applyAll field is optional.',
-        'applyAll.boolean' => 'The applyAll field must be true or false.',
+        'name' => [
+            'string' => 'The sale name must be a string.',
+        ],
+        'type' => [
+            'in' => 'The sale type must be fixed or percent.',
+        ],
+        'value' => [
+            'number' => 'The sale value must be a number.',
+        ],
+        'start_date' => [
+            'date' => 'The sale start date must be a date.',
+            'before' => 'The sale start date must not be after the end date.',
+        ],
+        'is_active' => [
+            'nullable' => 'The is_active field is optional.',
+            'boolean' => 'The is_active field must be true or false.',
+        ],
+        'end_date' => [
+            'required' => 'The end date is required.',
+            'date_format' => 'The end date must be in the format.',
+            'after' => 'The end date must be after the start date.',
+        ],
+        'products' => [
+            'nullable' => 'The products field is optional.',
+            'array' => 'The products field must be an array.',
+        ],
+        'variations' => [
+            'nullable' => 'The variations field is optional.',
+            'array' => 'The variations field must be an array.',
+        ],
+        'applyAll' => [
+            'nullable' => 'The applyAll field is optional.',
+            'boolean' => 'The applyAll field must be true or false.',
+        ],
     ],
     'update_sale_request' => [
-        'name.string' => 'The sale name must be a string.',
-        'type.in' => 'The sale type must be fixed or percent.',
-        'value.number' => 'The sale value must be a number.',
-        'start_date.date' => 'The sale start date must be a date.',
-        'start_date.before' => 'The sale start date must not be after the end date.',
-        'type.required' => ('The type field is required.'),
-        'value.required' => 'The value is required',
-        'start_date.required' => 'The start date is required',
-        'end_date.required' => 'The start date is required',
-        'end_date.format' => 'The end date must be in the format.',
-        'end_date_after' => 'The end date must be after the start date.',
-        'start_date.date_format' => 'Invalid format date',
-        'variations.nullable' => 'The variations field is optional.',
-        'variations.array' => 'The variations field must be an array.'
+        'name' => [
+            'string' => 'The sale name must be a string.',
+        ],
+        'type' => [
+            'in' => 'The sale type must be fixed or percent.',
+        ],
+        'value' => [
+            'number' => 'The sale value must be a number.',
+        ],
+        'start_date' => [
+            'date' => 'The sale start date must be a date.',
+            'before' => 'The sale start date must not be after the end date.',
+            'date_format' => 'Invalid format date',
+            'required' => 'The start date is required',
+        ],
+
+        'end_date' => [
+            'after' => 'The end date must be after the start date.',
+            'format' => 'The end date must be in the format.',
+            'required' => 'The start date is required',
+        ],
+        'variations' => [
+            'nullable' => 'The variations field is optional.',
+            'array' => 'The variations field must be an array.',
+        ],
     ],
+
     'create_variation_request' => [
-        'variations.*.price.required' => 'Product price is required',
-        'variations.*.stock_qty.required' => 'Product stock quantity is required',
-        'variations.*.stock_qty.numeric' => 'Product stock quantity  must be a type of number',
-        'variations.array' => 'The variations field must be an array.',
-        'variations.*.import_price.nullable' => 'The import price for each variation is optional.',
-        'variations.*.sku.nullable' => 'The SKU for each variation is optional.',
-        'variations.*.sku.string' => 'The SKU for each variation must be a string.',
-        'variations.*.description.nullable' => 'The description for each variation is optional.',
-        'variations.*.short_description.nullable' => 'The short description for each variation is optional.',
-        'variations.*.status.nullable' => 'The status for each variation is optional.',
-        'variations.*.attributes.array' => 'The attributes for each variation must be an array.',
-        'variations.*.images.nullable' => 'The images for each variation are optional.',
-        'variations.*.images.array' => 'The images for each variation must be an array.',
-        'variations.*.values.required' => 'The values for each variation are required.',
-        'variations.*.values.array' => 'The values for each variation must be an array.',
+        'variations' => [
+            'array' => 'The variations field must be an array.',
+            '.*.price' => [
+                'required' => 'Product price is required',
+            ],
+            '.*.stock_qty' => [
+                'required' => 'Product stock quantity is required',
+                'numeric' => 'Product stock quantity must be a type of number',
+            ],
+            '.*.import_price' => [
+                'nullable' => 'The import price for each variation is optional.',
+            ],
+            '.*.sku' => [
+                'nullable' => 'The SKU for each variation is optional.',
+                'string' => 'The SKU for each variation must be a string.',
+            ],
+            '.*.description' => [
+                'nullable' => 'The description for each variation is optional.',
+            ],
+            '.*.short_description' => [
+                'nullable' => 'The short description for each variation is optional.',
+            ],
+            '.*.status' => [
+                'nullable' => 'The status for each variation is optional.',
+            ],
+            '.*.attributes' => [
+                'array' => 'The attributes for each variation must be an array.',
+            ],
+            '.*.images' => [
+                'nullable' => 'The images for each variation are optional.',
+                'array' => 'The images for each variation must be an array.',
+            ],
+            '.*.values' => [
+                'required' => 'The values for each variation are required.',
+                'array' => 'The values for each variation must be an array.',
+            ],
+        ],
     ],
     'update_variation_request' => [
-        'price.required' => 'Variation price is required',
-        'stock_qty.required' => 'Variation stock quantity is required',
-        'stock_qty.numeric' => 'Variation stock quantity  must be a type of number',
-        'variations.*.import_price.nullable' => 'The import price for variations is optional.',
-        'sku.nullable' => 'The SKU is optional.',
-        'sku.string' => 'The SKU must be a string.',
-        'description.nullable' => 'The description is optional.',
-        'short_description.nullable' => 'The short description is optional.',
-        'status.nullable' => 'The status is optional.',
-        'attributes.array' => 'The attributes must be an array.',
-        'images.nullable' => 'The images field is optional.',
-        'images.array' => 'The images field must be an array.',
-        'values.required' => 'The values field is required.',
-        'values.array' => 'The values field must be an array.',
+        'price' => [
+            'required' => 'Variation price is required',
+        ],
+        'stock_qty' => [
+            'required' => 'Variation stock quantity is required',
+            'numeric' => 'Variation stock quantity must be a type of number',
+        ],
+        'sku' => [
+            'nullable' => 'The SKU is optional.',
+            'string' => 'The SKU must be a string.',
+        ],
+        'description' => [
+            'nullable' => 'The description is optional.',
+        ],
+        'short_description' => [
+            'nullable' => 'The short description is optional.',
+        ],
+        'status' => [
+            'nullable' => 'The status is optional.',
+        ],
+        'attributes' => [
+            'array' => 'The attributes must be an array.',
+        ],
+        'images' => [
+            'nullable' => 'The images field is optional.',
+            'array' => 'The images field must be an array.',
+        ],
+        'values' => [
+            'required' => 'The values field is required.',
+            'array' => 'The values field must be an array.',
+        ],
+        'variations' => [
+            '.*.import_price' => [
+                'nullable' => 'The import price for each variation is optional.',
+            ],
+        ],
     ],
+
     'create_product_request' => [
-        'name.required' => 'Product name is required',
-        'name.string' => 'Product name must be a type of string',
-        'name.max' => 'Product name is too long,255 characters is maximum',
-        'price.required' => 'Product price is required',
-        'stock_qty.required' => 'Product stock quantity is required',
-        'stock_qty.numeric' => 'Product stock quantity  must be a type of number',
-        'image_url.required' => 'Product image is required',
-        'image_url.string' => 'Product image not found.Try again!',
-        'import_price.nullable' => 'The import price is optional.',
-        'description.nullable' => 'The description is optional.',
-        'short_description.nullable' => 'The short description is optional.',
-        'images.nullable' => 'The images field is optional.',
-        'images.array' => 'The images field must be an array.',
-        'categories.nullable' => 'The categories field is optional.',
-        'categories.array' => 'The categories field must be an array.',
+        'name' => [
+            'required' => 'Product name is required',
+            'string' => 'Product name must be a type of string',
+            'max' => 'Product name is too long, 255 characters is maximum',
+        ],
+        'price' => [
+            'required' => 'Product price is required',
+        ],
+        'stock_qty' => [
+            'required' => 'Product stock quantity is required',
+            'numeric' => 'Product stock quantity must be a type of number',
+        ],
+        'image_url' => [
+            'required' => 'Product image is required',
+            'string' => 'Product image not found. Try again!',
+        ],
+        'import_price' => [
+            'nullable' => 'The import price is optional.',
+        ],
+        'description' => [
+            'nullable' => 'The description is optional.',
+        ],
+        'short_description' => [
+            'nullable' => 'The short description is optional.',
+        ],
+        'images' => [
+            'nullable' => 'The images field is optional.',
+            'array' => 'The images field must be an array.',
+        ],
+        'categories' => [
+            'nullable' => 'The categories field is optional.',
+            'array' => 'The categories field must be an array.',
+        ],
     ],
     'update_product_request' => [
-        'name.required' => 'Product name is required',
-        'name.string' => 'Product name must be a type of string',
-        'name.max' => 'Product name is too long,255 characters is maximum',
-        'price.required' => 'Product price is required',
-        'stock_qty.required' => 'Product stock quantity is required',
-        'stock_qty.numeric' => 'Product stock quantity  must be a type of number',
-        'image_url.required' => 'Product image is required',
-        'image_url.string' => 'Product image not found.Try again!',
-        'import_price.nullable' => 'The import price is optional.',
-        'description.nullable' => 'The description is optional.',
-        'short_description.nullable' => 'The short description is optional.',
-        'images.nullable' => 'The images field is optional.',
-        'images.array' => 'The images field must be an array.',
-        'categories.nullable' => 'The categories field is optional.',
-        'categories.array' => 'The categories field must be an array.',
+        'name' => [
+            'required' => 'Product name is required.',
+            'string' => 'Product name must be a string.',
+            'max' => 'Product name is too long, maximum 255 characters.',
+        ],
+        'price' => [
+            'required' => 'Product price is required.',
+        ],
+        'stock_qty' => [
+            'required' => 'Product stock quantity is required.',
+            'numeric' => 'Product stock quantity must be a number.',
+        ],
+        'image_url' => [
+            'required' => 'Product image is required.',
+            'string' => 'Product image not found. Please try again!',
+        ],
+        'import_price' => [
+            'nullable' => 'Import price is optional.',
+        ],
+        'description' => [
+            'nullable' => 'Description is optional.',
+        ],
+        'short_description' => [
+            'nullable' => 'Short description is optional.',
+        ],
+        'images' => [
+            'nullable' => 'Images field is optional.',
+            'array' => 'Images field must be an array.',
+        ],
+        'categories' => [
+            'nullable' => 'Categories field is optional.',
+            'array' => 'Categories field must be an array.',
+        ],
     ],
+
     'post_request' => [
-        "title.required" => "The title is required.",
-        "slug.required" => "The slug is required.",
-        "content.required" => "Content is required.",
-        "topic_id.required" => "The topic ID is required.",
-        "author_id.required" => "The author ID is required.",
+        'title' => [
+            'required' => 'The title is required.',
+        ],
+        'slug' => [
+            'required' => 'The slug is required.',
+        ],
+        'content' => [
+            'required' => 'Content is required.',
+        ],
+        'topic_id' => [
+            'required' => 'The topic ID is required.',
+        ],
+        'author_id' => [
+            'required' => 'The author ID is required.',
+        ],
     ],
+
     'create_order_request' => [
-        'receiver_email.required' => 'Receiver email is required',
-        'receiver_email.email' => 'Invalid Email',
-        'total_amount.required' => 'Total amount is required',
-        'payment_method.required' => 'Payment method is required',
-        'payment_status.required' => 'Payment status is required',
-        'shipping_method.required' => 'Shipping method is required',
-        'shipping_cost.required' => 'Shipping cost is required',
-        'amount_collected.required' => 'Amount collected is required',
-        "receiver_full_name.required" => "Receiver full name is required",
-        "phone.required" => "Phone is required",
-        "city.required" => "City is required",
-        "country.required" => "Country is required",
-        "address.required" => "Address is required",
-        "status.required" => "Status is required",
-        'total_amount.numeric' => 'The total amount must be a numeric value.',
-        'payment_method.string' => 'The payment method must be a string.',
-        'payment_status.string' => 'The payment status must be a string.',
-        'shipping_method.string' => 'The shipping method must be a string.',
-        'shipping_cost.numeric' => 'The shipping cost must be a numeric value.',
-        'amount_collected.numeric' => 'The amount collected must be a numeric value.',
-        'receiver_full_name.string' => 'The receiver is full name must be a string.',
-        'phone.string' => 'The phone number must be a string.',
-        'city.string' => 'The city must be a string.',
-        'country.string' => 'The country must be a string.',
-        'address.string' => 'The address must be a string.',
+        'receiver_email' => [
+            'required' => 'Receiver email is required',
+            'email' => 'Invalid Email',
+        ],
+        'total_amount' => [
+            'required' => 'Total amount is required',
+            'numeric' => 'The total amount must be a numeric value.',
+        ],
+        'payment_method' => [
+            'required' => 'Payment method is required',
+            'string' => 'The payment method must be a string.',
+        ],
+        'payment_status' => [
+            'required' => 'Payment status is required',
+            'string' => 'The payment status must be a string.',
+        ],
+        'shipping_method' => [
+            'required' => 'Shipping method is required',
+            'string' => 'The shipping method must be a string.',
+        ],
+        'shipping_cost' => [
+            'required' => 'Shipping cost is required',
+            'numeric' => 'The shipping cost must be a numeric value.',
+        ],
+        'amount_collected' => [
+            'required' => 'Amount collected is required',
+            'numeric' => 'The amount collected must be a numeric value.',
+        ],
+        'receiver_full_name' => [
+            'required' => 'Receiver full name is required',
+            'string' => 'The receiver full name must be a string.',
+        ],
+        'phone' => [
+            'required' => 'Phone is required',
+            'string' => 'The phone number must be a string.',
+        ],
+        'city' => [
+            'required' => 'City is required',
+            'string' => 'The city must be a string.',
+        ],
+        'country' => [
+            'required' => 'Country is required',
+            'string' => 'The country must be a string.',
+        ],
+        'address' => [
+            'required' => 'Address is required',
+            'string' => 'The address must be a string.',
+        ],
+        'status' => [
+            'required' => 'Status is required',
+        ],
     ],
+
     'create_category_request' => [
-        'name.required' => 'The name field is required.',
-        'name.string' => 'The name must be a string.',
-        'parents.array' => 'The parents must be an array.',
-        'parents.nullable' => 'The parents can be left empty.',
+        'name' => [
+            'required' => 'The name field is required.',
+            'string' => 'The name must be a string.',
+        ],
+        'parents' => [
+            'array' => 'The parents must be an array.',
+            'nullable' => 'The parents can be left empty.',
+        ],
     ],
+
     'update_category_request' => [
-        'name.required' => 'The name field is required.',
-        'name.string' => 'The name must be a string.',
-        'parents.array' => 'The parents must be an array.',
-        'parents.nullable' => 'The parents can be left empty.',
-        'image_url.nullable' => 'The image URL can be left empty.',
-        'image_url.string' => 'The image URL must be a string.',
+        'name' => [
+            'required' => 'The name field is required.',
+            'string' => 'The name must be a string.',
+        ],
+        'parents' => [
+            'array' => 'The parents must be an array.',
+            'nullable' => 'The parents can be left empty.',
+        ],
+        'image_url' => [
+            'nullable' => 'The image URL can be left empty.',
+            'string' => 'The image URL must be a string.',
+        ],
     ],
+
     'add_cart_request' => [
-        "user_id.require" => "User is is required",
-        "quantity.require" => "Quantity is required"
+        'user_id' => [
+            'require' => 'User ID is required.',
+        ],
+        'quantity' => [
+            'require' => 'Quantity is required.',
+        ],
     ],
+
     'password_request' => [
-        'password.required' => 'Password is required',
-        'newPassword.required' => 'New Password is required',
-        'newPassword.min' => 'New Password must be at least 8 characters',
-        'password.string' => 'The password must be a string.',
-        'newPassword.string' => 'The new password must be a string.',
+        'password' => [
+            'required' => 'Password is required.',
+            'string' => 'The password must be a string.',
+        ],
+        'newPassword' => [
+            'required' => 'New Password is required.',
+            'min' => 'New Password must be at least 8 characters.',
+            'string' => 'The new password must be a string.',
+        ],
     ],
+
     'error_middleware' => [
         'error_custom' => 'Too many requests, please try again later.',
         'error_isAdmin' => 'Unauthorized',

@@ -141,234 +141,450 @@ return [
         'error-statiscs' => 'Lỗi hệ thống!',
     ],
     'update_review_request' => [
-        'title.sometimes.required' => 'Tiêu đề sản phẩm là bắt buộc nếu có.',
-        'title.string' => 'Tiêu đề sản phẩm phải là một chuỗi.',
-        'title.max' => 'Tiêu đề sản phẩm quá dài; tối đa là 255 ký tự.',
-        'text.sometimes.required' => 'Nội dung đánh giá là bắt buộc nếu có.',
-        'text.string' => 'Nội dung đánh giá phải là một chuỗi.',
-        'rating.sometimes.required' => 'Đánh giá là bắt buộc nếu có.',
-        'rating.integer' => 'Đánh giá phải là một số nguyên.',
-        'rating.min' => 'Đánh giá phải ít nhất là 1.',
-        'rating.max' => 'Đánh giá không được lớn hơn 5.',
+        'title' => [
+            'sometimes.required' => 'Tiêu đề sản phẩm là bắt buộc nếu có.',
+            'string' => 'Tiêu đề sản phẩm phải là một chuỗi.',
+            'max' => 'Tiêu đề sản phẩm quá dài; tối đa là 255 ký tự.',
+        ],
+        'text' => [
+            'sometimes.required' => 'Nội dung đánh giá là bắt buộc nếu có.',
+            'string' => 'Nội dung đánh giá phải là một chuỗi.',
+        ],
+        'rating' => [
+            'sometimes.required' => 'Đánh giá là bắt buộc nếu có.',
+            'integer' => 'Đánh giá phải là một số nguyên.',
+            'min' => 'Đánh giá phải ít nhất là 1.',
+            'max' => 'Đánh giá không thể lớn hơn 5.',
+        ],
     ],
     'create_review_request' => [
-        'product_id.required' => 'ID sản phẩm là bắt buộc.',
-        'product_id.exists' => 'Sản phẩm được chọn không tồn tại trong hệ thống.',
-        'title.required' => 'Tiêu đề là bắt buộc.',
-        'title.string' => 'Tiêu đề phải là một chuỗi.',
-        'title.max' => 'Tiêu đề không được vượt quá 255 ký tự.',
-        'text.required' => 'Nội dung đánh giá là bắt buộc.',
-        'text.string' => 'Nội dung đánh giá phải là một chuỗi.',
-        'rating.required' => 'Đánh giá là bắt buộc.',
-        'rating.integer' => 'Đánh giá phải là một số nguyên.',
-        'rating.min' => 'Đánh giá phải ít nhất là 1.',
-        'rating.max' => 'Đánh giá không được lớn hơn 5.',
+        'product_id' => [
+            'required' => 'Mã sản phẩm là bắt buộc.',
+            'exists' => 'Sản phẩm được chọn không tồn tại trong hệ thống.',
+        ],
+        'title' => [
+            'required' => 'Tiêu đề là bắt buộc.',
+            'string' => 'Tiêu đề phải là một chuỗi.',
+            'max' => 'Tiêu đề không được vượt quá 255 ký tự.',
+        ],
+        'text' => [
+            'required' => 'Nội dung đánh giá là bắt buộc.',
+            'string' => 'Nội dung đánh giá phải là một chuỗi.',
+        ],
+        'rating' => [
+            'required' => 'Đánh giá là bắt buộc.',
+            'integer' => 'Đánh giá phải là một số nguyên.',
+            'min' => 'Đánh giá phải ít nhất là 1.',
+            'max' => 'Đánh giá không thể lớn hơn 5.',
+        ],
     ],
     'create_voucher_request' => [
-        'code.required' => 'Mã voucher là bắt buộc.',
-        'discount.required' => 'Chiết khấu là bắt buộc.',
-        'date_start.required' => 'Ngày bắt đầu là bắt buộc.',
-        'date_end.required' => 'Ngày kết thúc là bắt buộc.',
-        'quantity.required' => 'Số lượng là bắt buộc.',
-        'status.required' => 'Trạng thái là bắt buộc.',
+        'code' => [
+            'required' => 'Mã voucher là bắt buộc.',
+        ],
+        'discount' => [
+            'required' => 'Chiết khấu là bắt buộc.',
+        ],
+        'date_start' => [
+            'required' => 'Ngày bắt đầu là bắt buộc.',
+        ],
+        'date_end' => [
+            'required' => 'Ngày kết thúc là bắt buộc.',
+        ],
+        'quantity' => [
+            'required' => 'Số lượng là bắt buộc.',
+        ],
+        'status' => [
+            'required' => 'Trạng thái là bắt buộc.',
+        ],
     ],
+
     'create_user_request' => [
-        'name.required' => 'Tên người dùng là bắt buộc.',
-        'name.string' => 'Tên người dùng phải là một chuỗi.',
-        'name.max' => 'Tên người dùng quá dài; tối đa là 255 ký tự.',
-        'email.required' => 'Email là bắt buộc.',
-        'email.string' => 'Email phải là một chuỗi.',
-        'email.max' => 'Email quá dài; tối đa là 255 ký tự.',
-        'email.unique' => 'Email đã tồn tại.',
-        'password.required' => 'Mật khẩu là bắt buộc.',
-        'password.string' => 'Mật khẩu phải là một chuỗi.',
-        'password.min' => 'Mật khẩu phải ít nhất là 6 ký tự.',
-        'group.exists' => 'Nhóm không tồn tại.',
-        'group.nullable' => 'Nhóm là tùy chọn.',
-        'group.integer' => 'Nhóm phải là một số nguyên.',
-        'profile.nullable' => 'Hồ sơ là tùy chọn.',
-        'profile.array' => 'Hồ sơ phải là một mảng.',
-        'verify_code.string' => 'Mã xác thực phải là một chuỗi văn bản.',
-        'verify_code.nullable' => 'Mã xác thực là tùy chọn.',
+        'name' => [
+            'required' => 'Tên người dùng là bắt buộc.',
+            'string' => 'Tên người dùng phải là một chuỗi ký tự.',
+            'max' => 'Tên người dùng quá dài, tối đa là 255 ký tự.',
+        ],
+        'email' => [
+            'required' => 'Email là bắt buộc.',
+            'string' => 'Email phải là một chuỗi ký tự.',
+            'max' => 'Email quá dài, tối đa là 255 ký tự.',
+            'unique' => 'Email đã tồn tại.',
+        ],
+        'password' => [
+            'required' => 'Mật khẩu là bắt buộc.',
+            'string' => 'Mật khẩu phải là một chuỗi ký tự.',
+            'min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
+        ],
+        'groups' => [
+            'exists' => 'Nhóm không tồn tại.',
+            'nullable' => 'Nhóm là tùy chọn.',
+            'integer' => 'Nhóm phải là một số nguyên.',
+        ],
+        'profile' => [
+            'nullable' => 'Hồ sơ là tùy chọn.',
+            'array' => 'Hồ sơ phải là một mảng.',
+        ],
+        'verify_code' => [
+            'nullable' => 'Mã xác minh là tùy chọn.',
+            'string' => 'Mã xác minh phải là một chuỗi ký tự.',
+        ],
     ],
+
     'update_user_request' => [
-        'name.required' => 'Tên người dùng là bắt buộc.',
-        'name.string' => 'Tên người dùng phải là một chuỗi.',
-        'name.max' => 'Tên người dùng quá dài; tối đa là 255 ký tự.',
-        'password.required' => 'Mật khẩu là bắt buộc.',
-        'password.string' => 'Mật khẩu phải là một chuỗi.',
-        'password.min' => 'Mật khẩu phải ít nhất là 6 ký tự.',
-        'group.exists' => 'Nhóm không tồn tại.',
-        'group.nullable' => 'Nhóm là tùy chọn.',
-        'group.integer' => 'Nhóm phải là một số nguyên.',
-        'profile.nullable' => 'Hồ sơ là tùy chọn.',
-        'profile.array' => 'Hồ sơ phải là một mảng.',
+        'name' => [
+            'required' => 'Tên người dùng là bắt buộc.',
+            'string' => 'Tên người dùng phải là một chuỗi ký tự.',
+            'max' => 'Tên người dùng quá dài, tối đa là 255 ký tự.',
+        ],
+        'password' => [
+            'required' => 'Mật khẩu là bắt buộc.',
+            'string' => 'Mật khẩu phải là một chuỗi ký tự.',
+            'min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
+        ],
+        'group' => [
+            'exists' => 'Nhóm không tồn tại.',
+            'nullable' => 'Nhóm là tùy chọn.',
+            'integer' => 'Nhóm phải là một số nguyên.',
+        ],
+        'profile' => [
+            'nullable' => 'Hồ sơ là tùy chọn.',
+            'array' => 'Hồ sơ phải là một mảng.',
+        ],
     ],
+
     'create_sale_request' => [
-        'name.string' => 'Tên khuyến mãi phải là một chuỗi văn bản.',
-        'type.in' => 'Loại khuyến mãi phải là "fixed" hoặc "percent".',
-        'value.number' => 'Giá trị khuyến mãi phải là một số.',
-        'start_date.date' => 'Ngày bắt đầu khuyến mãi phải là một ngày hợp lệ.',
-        'start_date.before' => 'Ngày bắt đầu khuyến mãi không được phép sau ngày kết thúc.',
-        'type.required' => 'Trường loại khuyến mãi là bắt buộc.',
-        'type.string' => 'Loại khuyến mãi phải là một chuỗi văn bản.',
-        'value.required' => 'Trường giá trị khuyến mãi là bắt buộc.',
-        'is_active.nullable' => 'Trường "is_active" là tùy chọn.',
-        'is_active.boolean' => 'Trường "is_active" phải là true hoặc false.',
-        'start_date.required' => 'Ngày bắt đầu là bắt buộc.',
-        'end_date.required' => 'Ngày kết thúc là bắt buộc.',
-        'end_date.date_format' => 'Ngày kết thúc phải có định dạng "Y-m-d H:i:s".',
-        'end_date.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
-        'product.nullable' => 'Trường sản phẩm là tùy chọn.',
-        'product.array' => 'Trường sản phẩm phải là một mảng.',
-        'variations.nullable' => 'Trường biến thể là tùy chọn.',
-        'variations.array' => 'Trường biến thể phải là một mảng.',
-        'applyAll.nullable' => 'Trường applyAll là tùy chọn.',
-        'applyAll.boolean' => 'Trường applyAll phải là true hoặc false.',
+        'name' => [
+            'string' => 'Tên chương trình giảm giá phải là một chuỗi ký tự.',
+        ],
+        'type' => [
+            'in' => 'Loại giảm giá phải là "cố định" hoặc "phần trăm".',
+        ],
+        'value' => [
+            'number' => 'Giá trị giảm giá phải là một số.',
+        ],
+        'start_date' => [
+            'date' => 'Ngày bắt đầu giảm giá phải là một ngày hợp lệ.',
+            'before' => 'Ngày bắt đầu giảm giá không được sau ngày kết thúc.',
+        ],
+        'is_active' => [
+            'nullable' => 'Trường trạng thái hoạt động là tùy chọn.',
+            'boolean' => 'Trường trạng thái hoạt động phải là đúng hoặc sai.',
+        ],
+        'end_date' => [
+            'required' => 'Ngày kết thúc là bắt buộc.',
+            'date_format' => 'Ngày kết thúc phải đúng định dạng.',
+            'after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
+        ],
+        'products' => [
+            'nullable' => 'Trường sản phẩm là tùy chọn.',
+            'array' => 'Trường sản phẩm phải là một mảng.',
+        ],
+        'variations' => [
+            'nullable' => 'Trường biến thể là tùy chọn.',
+            'array' => 'Trường biến thể phải là một mảng.',
+        ],
+        'applyAll' => [
+            'nullable' => 'Trường áp dụng tất cả là tùy chọn.',
+            'boolean' => 'Trường áp dụng tất cả phải là đúng hoặc sai.',
+        ],
     ],
+
     'update_sale_request' => [
-        'name.string' => 'Tên khuyến mãi phải là một chuỗi văn bản.',
-        'type.in' => 'Loại khuyến mãi phải là "fixed" hoặc "percent".',
-        'value.number' => 'Giá trị khuyến mãi phải là một số.',
-        'start_date.date' => 'Ngày bắt đầu khuyến mãi phải là một ngày hợp lệ.',
-        'start_date.before' => 'Ngày bắt đầu khuyến mãi không được phép sau ngày kết thúc.',
-        'type.required' => 'Trường loại là bắt buộc.',
-        'value.required' => 'Trường giá trị là bắt buộc.',
-        'start_date.required' => 'Ngày bắt đầu là bắt buộc.',
-        'end_date.required' => 'Ngày kết thúc là bắt buộc.',
-        'end_date.format' => 'Ngày kết thúc phải có định dạng đúng.',
-        'end_date_after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
-        'start_date.date_format' => 'Định dạng ngày không hợp lệ.',
-        'variations.nullable' => 'Trường biến thể là tùy chọn.',
-        'variations.array' => 'Trường biến thể phải là một mảng.',
+        'name' => [
+            'string' => 'Tên chương trình giảm giá phải là một chuỗi ký tự.',
+        ],
+        'type' => [
+            'in' => 'Loại giảm giá phải là "cố định" hoặc "phần trăm".',
+        ],
+        'value' => [
+            'number' => 'Giá trị giảm giá phải là một số.',
+        ],
+        'start_date' => [
+            'date' => 'Ngày bắt đầu giảm giá phải là một ngày hợp lệ.',
+            'before' => 'Ngày bắt đầu giảm giá không được sau ngày kết thúc.',
+            'date_format' => 'Định dạng ngày không hợp lệ.',
+            'required' => 'Ngày bắt đầu là bắt buộc.',
+        ],
+        'end_date' => [
+            'after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
+            'format' => 'Ngày kết thúc phải đúng định dạng.',
+            'required' => 'Ngày kết thúc là bắt buộc.',
+        ],
+        'variations' => [
+            'nullable' => 'Trường biến thể là tùy chọn.',
+            'array' => 'Trường biến thể phải là một mảng.',
+        ],
     ],
+
     'create_variation_request' => [
-        'variations.*.price.required' => 'Giá sản phẩm biến thể là bắt buộc.',
-        'variations.*.stock_qty.required' => 'Số lượng sản phẩm biến thể trong kho là bắt buộc.',
-        'variations.*.stock_qty.numeric' => 'Số lượng sản phẩm biến thể trong kho phải là một số.',
-        'variations.array' => 'Trường biến thể phải là một mảng.',
-        'variations.*.import_price.nullable' => 'Giá nhập khẩu cho mỗi biến thể là tùy chọn.',
-        'variations.*.sku.nullable' => 'SKU cho mỗi biến thể là tùy chọn.',
-        'variations.*.sku.string' => 'SKU cho mỗi biến thể phải là một chuỗi văn bản.',
-        'variations.*.description.nullable' => 'Mô tả cho mỗi biến thể là tùy chọn.',
-        'variations.*.short_description.nullable' => 'Mô tả ngắn cho mỗi biến thể là tùy chọn.',
-        'variations.*.status.nullable' => 'Trạng thái cho mỗi biến thể là tùy chọn.',
-        'variations.*.attributes.array' => 'Các thuộc tính cho mỗi biến thể phải là một mảng.',
-        'variations.*.images.nullable' => 'Hình ảnh cho mỗi biến thể là tùy chọn.',
-        'variations.*.images.array' => 'Hình ảnh cho mỗi biến thể phải là một mảng.',
-        'variations.*.values.required' => 'Các giá trị cho mỗi biến thể là bắt buộc.',
-        'variations.*.values.array' => 'Các giá trị cho mỗi biến thể phải là một mảng.',
+        'variations' => [
+            'array' => 'Trường biến thể phải là một mảng.',
+            '.*.price' => [
+                'required' => 'Giá sản phẩm là bắt buộc.',
+            ],
+            '.*.stock_qty' => [
+                'required' => 'Số lượng tồn kho của sản phẩm là bắt buộc.',
+                'numeric' => 'Số lượng tồn kho của sản phẩm phải là một số.',
+            ],
+            '.*.import_price' => [
+                'nullable' => 'Giá nhập khẩu của từng biến thể là tùy chọn.',
+            ],
+            '.*.sku' => [
+                'nullable' => 'Mã SKU của từng biến thể là tùy chọn.',
+                'string' => 'Mã SKU của từng biến thể phải là một chuỗi ký tự.',
+            ],
+            '.*.description' => [
+                'nullable' => 'Mô tả của từng biến thể là tùy chọn.',
+            ],
+            '.*.short_description' => [
+                'nullable' => 'Mô tả ngắn của từng biến thể là tùy chọn.',
+            ],
+            '.*.status' => [
+                'nullable' => 'Trạng thái của từng biến thể là tùy chọn.',
+            ],
+            '.*.attributes' => [
+                'array' => 'Thuộc tính của từng biến thể phải là một mảng.',
+            ],
+            '.*.images' => [
+                'nullable' => 'Hình ảnh của từng biến thể là tùy chọn.',
+                'array' => 'Hình ảnh của từng biến thể phải là một mảng.',
+            ],
+            '.*.values' => [
+                'required' => 'Giá trị của từng biến thể là bắt buộc.',
+                'array' => 'Giá trị của từng biến thể phải là một mảng.',
+            ],
+        ],
     ],
+
     'update_variation_request' => [
-        'price.required' => 'Giá biến thể là bắt buộc.',
-        'stock_qty.required' => 'Số lượng sản phẩm biến thể trong kho là bắt buộc.',
-        'stock_qty.numeric' => 'Số lượng sản phẩm biến thể trong kho phải là một số.',
-        'variations.*.import_price.nullable' => 'Giá nhập khẩu cho các biến thể là tùy chọn.',
-        'sku.nullable' => 'SKU là tùy chọn.',
-        'sku.string' => 'SKU phải là một chuỗi văn bản.',
-        'description.nullable' => 'Mô tả là tùy chọn.',
-        'short_description.nullable' => 'Mô tả ngắn là tùy chọn.',
-        'status.nullable' => 'Trạng thái là tùy chọn.',
-        'attributes.array' => 'Các thuộc tính phải là một mảng.',
-        'images.nullable' => 'Trường hình ảnh là tùy chọn.',
-        'images.array' => 'Trường hình ảnh phải là một mảng.',
-        'values.required' => 'Trường giá trị là bắt buộc.',
-        'values.array' => 'Trường giá trị phải là một mảng.',
+        'price' => [
+            'required' => 'Giá biến thể là bắt buộc.',
+        ],
+        'stock_qty' => [
+            'required' => 'Số lượng tồn kho của biến thể là bắt buộc.',
+            'numeric' => 'Số lượng tồn kho của biến thể phải là một số.',
+        ],
+        'sku' => [
+            'nullable' => 'Mã SKU là tùy chọn.',
+            'string' => 'Mã SKU phải là một chuỗi ký tự.',
+        ],
+        'description' => [
+            'nullable' => 'Mô tả là tùy chọn.',
+        ],
+        'short_description' => [
+            'nullable' => 'Mô tả ngắn là tùy chọn.',
+        ],
+        'status' => [
+            'nullable' => 'Trạng thái là tùy chọn.',
+        ],
+        'attributes' => [
+            'array' => 'Thuộc tính phải là một mảng.',
+        ],
+        'images' => [
+            'nullable' => 'Trường hình ảnh là tùy chọn.',
+            'array' => 'Trường hình ảnh phải là một mảng.',
+        ],
+        'values' => [
+            'required' => 'Trường giá trị là bắt buộc.',
+            'array' => 'Trường giá trị phải là một mảng.',
+        ],
+        'variations' => [
+            '.*.import_price' => [
+                'nullable' => 'Giá nhập khẩu của từng biến thể là tùy chọn.',
+            ],
+        ],
     ],
+
     'create_product_request' => [
-        'name.required' => 'Tên sản phẩm là bắt buộc.',
-        'name.string' => 'Tên sản phẩm phải là một chuỗi văn bản.',
-        'name.max' => 'Tên sản phẩm quá dài, tối đa 255 ký tự.',
-        'price.required' => 'Giá sản phẩm là bắt buộc.',
-        'stock_qty.required' => 'Số lượng sản phẩm trong kho là bắt buộc.',
-        'stock_qty.numeric' => 'Số lượng sản phẩm trong kho phải là một số.',
-        'image_url.required' => 'Hình ảnh sản phẩm là bắt buộc.',
-        'image_url.string' => 'Không tìm thấy hình ảnh sản phẩm. Vui lòng thử lại!',
-        'import_price.nullable' => 'Giá nhập khẩu là tùy chọn.',
-        'description.nullable' => 'Mô tả là tùy chọn.',
-        'short_description.nullable' => 'Mô tả ngắn là tùy chọn.',
-        'images.nullable' => 'Trường hình ảnh là tùy chọn.',
-        'images.array' => 'Trường hình ảnh phải là một mảng.',
-        'categories.nullable' => 'Trường danh mục là tùy chọn.',
-        'categories.array' => 'Trường danh mục phải là một mảng.',
+        'name' => [
+            'required' => 'Tên sản phẩm là bắt buộc.',
+            'string' => 'Tên sản phẩm phải là một chuỗi ký tự.',
+            'max' => 'Tên sản phẩm quá dài, tối đa 255 ký tự.',
+        ],
+        'price' => [
+            'required' => 'Giá sản phẩm là bắt buộc.',
+        ],
+        'stock_qty' => [
+            'required' => 'Số lượng tồn kho của sản phẩm là bắt buộc.',
+            'numeric' => 'Số lượng tồn kho của sản phẩm phải là một số.',
+        ],
+        'image_url' => [
+            'required' => 'Ảnh sản phẩm là bắt buộc.',
+            'string' => 'Không tìm thấy ảnh sản phẩm. Vui lòng thử lại!',
+        ],
+        'import_price' => [
+            'nullable' => 'Giá nhập khẩu là tùy chọn.',
+        ],
+        'description' => [
+            'nullable' => 'Mô tả là tùy chọn.',
+        ],
+        'short_description' => [
+            'nullable' => 'Mô tả ngắn là tùy chọn.',
+        ],
+        'images' => [
+            'nullable' => 'Trường hình ảnh là tùy chọn.',
+            'array' => 'Trường hình ảnh phải là một mảng.',
+        ],
+        'categories' => [
+            'nullable' => 'Trường danh mục là tùy chọn.',
+            'array' => 'Trường danh mục phải là một mảng.',
+        ],
     ],
+
     'update_product_request' => [
-        'name.required' => 'Tên sản phẩm là bắt buộc',
-        'name.string' => 'Tên sản phẩm phải là một chuỗi văn bản',
-        'name.max' => 'Tên sản phẩm quá dài, tối đa 255 ký tự',
-        'price.required' => 'Giá sản phẩm là bắt buộc',
-        'stock_qty.required' => 'Số lượng sản phẩm trong kho là bắt buộc',
-        'stock_qty.numeric' => 'Số lượng sản phẩm trong kho phải là một số',
-        'image_url.required' => 'Hình ảnh sản phẩm là bắt buộc',
-        'image_url.string' => 'Không tìm thấy hình ảnh sản phẩm. Vui lòng thử lại!',
-        'import_price.nullable' => 'Giá nhập khẩu là tùy chọn.',
-        'description.nullable' => 'Mô tả là tùy chọn.',
-        'short_description.nullable' => 'Mô tả ngắn là tùy chọn.',
-        'images.nullable' => 'Trường hình ảnh là tùy chọn.',
-        'images.array' => 'Trường hình ảnh phải là một mảng.',
-        'categories.nullable' => 'Trường danh mục là tùy chọn.',
-        'categories.array' => 'Trường danh mục phải là một mảng.',
+        'name' => [
+            'required' => 'Tên sản phẩm là bắt buộc.',
+            'string' => 'Tên sản phẩm phải là một chuỗi văn bản.',
+            'max' => 'Tên sản phẩm quá dài, tối đa 255 ký tự.',
+        ],
+        'price' => [
+            'required' => 'Giá sản phẩm là bắt buộc.',
+        ],
+        'stock_qty' => [
+            'required' => 'Số lượng sản phẩm trong kho là bắt buộc.',
+            'numeric' => 'Số lượng sản phẩm trong kho phải là một số.',
+        ],
+        'image_url' => [
+            'required' => 'Hình ảnh sản phẩm là bắt buộc.',
+            'string' => 'Không tìm thấy hình ảnh sản phẩm. Vui lòng thử lại!',
+        ],
+        'import_price' => [
+            'nullable' => 'Giá nhập khẩu là tùy chọn.',
+        ],
+        'description' => [
+            'nullable' => 'Mô tả là tùy chọn.',
+        ],
+        'short_description' => [
+            'nullable' => 'Mô tả ngắn là tùy chọn.',
+        ],
+        'images' => [
+            'nullable' => 'Trường hình ảnh là tùy chọn.',
+            'array' => 'Trường hình ảnh phải là một mảng.',
+        ],
+        'categories' => [
+            'nullable' => 'Trường danh mục là tùy chọn.',
+            'array' => 'Trường danh mục phải là một mảng.',
+        ],
     ],
+
     'post_request' => [
-        "title.required" => "Tiêu đề là bắt buộc.",
-        "slug.required" => "Slug là bắt buộc.",
-        "content.required" => "Nội dung là bắt buộc.",
-        "topic_id.required" => "ID chủ đề là bắt buộc.",
-        "author_id.required" => "ID tác giả là bắt buộc.",
+        'title' => [
+            'required' => 'Tiêu đề là bắt buộc.',
+        ],
+        'slug' => [
+            'required' => 'Slug là bắt buộc.',
+        ],
+        'content' => [
+            'required' => 'Nội dung là bắt buộc.',
+        ],
+        'topic_id' => [
+            'required' => 'ID chủ đề là bắt buộc.',
+        ],
+        'author_id' => [
+            'required' => 'ID tác giả là bắt buộc.',
+        ],
     ],
+
     'create_order_request' => [
-        'receiver_email.required' => 'Email người nhận là bắt buộc.',
-        'receiver_email.email' => 'Email không hợp lệ.',
-        'total_amount.required' => 'Số tiền tổng là bắt buộc.',
-        'payment_method.required' => 'Phương thức thanh toán là bắt buộc.',
-        'payment_status.required' => 'Trạng thái thanh toán là bắt buộc.',
-        'shipping_method.required' => 'Phương thức vận chuyển là bắt buộc.',
-        'shipping_cost.required' => 'Chi phí vận chuyển là bắt buộc.',
-        'amount_collected.required' => 'Số tiền thu được là bắt buộc.',
-        'receiver_full_name.required' => 'Tên đầy đủ của người nhận là bắt buộc.',
-        'phone.required' => 'Số điện thoại là bắt buộc.',
-        'city.required' => 'Thành phố là bắt buộc.',
-        'country.required' => 'Quốc gia là bắt buộc.',
-        'address.required' => 'Địa chỉ là bắt buộc.',
-        'status.required' => 'Trạng thái là bắt buộc.',
-        'total_amount.numeric' => 'Số tiền tổng phải là một giá trị số.',
-        'payment_method.string' => 'Phương thức thanh toán phải là một chuỗi văn bản.',
-        'payment_status.string' => 'Trạng thái thanh toán phải là một chuỗi văn bản.',
-        'shipping_method.string' => 'Phương thức vận chuyển phải là một chuỗi văn bản.',
-        'shipping_cost.numeric' => 'Chi phí vận chuyển phải là một giá trị số.',
-        'amount_collected.numeric' => 'Số tiền thu được phải là một giá trị số.',
-        'receiver_full_name.string' => 'Tên đầy đủ của người nhận phải là một chuỗi văn bản.',
-        'phone.string' => 'Số điện thoại phải là một chuỗi văn bản.',
-        'city.string' => 'Thành phố phải là một chuỗi văn bản.',
-        'country.string' => 'Quốc gia phải là một chuỗi văn bản.',
-        'address.string' => 'Địa chỉ phải là một chuỗi văn bản.',
+        'receiver_email' => [
+            'required' => 'Email người nhận là bắt buộc.',
+            'email' => 'Email không hợp lệ.',
+        ],
+        'total_amount' => [
+            'required' => 'Số tiền tổng là bắt buộc.',
+            'numeric' => 'Số tiền tổng phải là một giá trị số.',
+        ],
+        'payment_method' => [
+            'required' => 'Phương thức thanh toán là bắt buộc.',
+            'string' => 'Phương thức thanh toán phải là một chuỗi văn bản.',
+        ],
+        'payment_status' => [
+            'required' => 'Trạng thái thanh toán là bắt buộc.',
+            'string' => 'Trạng thái thanh toán phải là một chuỗi văn bản.',
+        ],
+        'shipping_method' => [
+            'required' => 'Phương thức giao hàng là bắt buộc.',
+            'string' => 'Phương thức giao hàng phải là một chuỗi văn bản.',
+        ],
+        'shipping_cost' => [
+            'required' => 'Chi phí vận chuyển là bắt buộc.',
+            'numeric' => 'Chi phí vận chuyển phải là một giá trị số.',
+        ],
+        'amount_collected' => [
+            'required' => 'Số tiền thu được là bắt buộc.',
+            'numeric' => 'Số tiền thu được phải là một giá trị số.',
+        ],
+        'receiver_full_name' => [
+            'required' => 'Họ và tên người nhận là bắt buộc.',
+            'string' => 'Họ và tên người nhận phải là một chuỗi văn bản.',
+        ],
+        'phone' => [
+            'required' => 'Số điện thoại là bắt buộc.',
+            'string' => 'Số điện thoại phải là một chuỗi văn bản.',
+        ],
+        'city' => [
+            'required' => 'Thành phố là bắt buộc.',
+            'string' => 'Thành phố phải là một chuỗi văn bản.',
+        ],
+        'country' => [
+            'required' => 'Quốc gia là bắt buộc.',
+            'string' => 'Quốc gia phải là một chuỗi văn bản.',
+        ],
+        'address' => [
+            'required' => 'Địa chỉ là bắt buộc.',
+            'string' => 'Địa chỉ phải là một chuỗi văn bản.',
+        ],
+        'status' => [
+            'required' => 'Trạng thái là bắt buộc.',
+        ],
     ],
     'create_category_request' => [
-        'name.required' => 'Trường tên là bắt buộc.',
-        'name.string' => 'Tên phải là một chuỗi văn bản.',
-        'parents.array' => 'Trường phụ huynh phải là một mảng.',
-        'parents.nullable' => 'Trường phụ huynh có thể để trống.',
-
+        'name' => [
+            'required' => 'Trường tên là bắt buộc.',
+            'string' => 'Tên phải là một chuỗi văn bản.',
+        ],
+        'parents' => [
+            'array' => 'Trường phụ huynh phải là một mảng.',
+            'nullable' => 'Trường phụ huynh có thể để trống.',
+        ],
     ],
     'update_category_request' => [
-        'name.required' => 'Trường tên là bắt buộc.',
-        'name.string' => 'Tên phải là một chuỗi văn bản.',
-        'parents.array' => 'Trường phụ huynh phải là một mảng.',
-        'parents.nullable' => 'Trường phụ huynh có thể để trống.',
-        'image_url.nullable' => 'Trường URL hình ảnh có thể để trống.',
-        'image_url.string' => 'URL hình ảnh phải là một chuỗi văn bản.',
+        'name' => [
+            'required' => 'Trường tên là bắt buộc.',
+            'string' => 'Tên phải là một chuỗi văn bản.',
+        ],
+        'parents' => [
+            'array' => 'Trường phụ huynh phải là một mảng.',
+            'nullable' => 'Trường phụ huynh có thể để trống.',
+        ],
+        'image_url' => [
+            'nullable' => 'Trường URL hình ảnh có thể để trống.',
+            'string' => 'URL hình ảnh phải là một chuỗi văn bản.',
+        ],
     ],
+
     'add_cart_request' => [
-        "user_id.require" => "ID người dùng là bắt buộc.",
-        "quantity.require" => "Số lượng là bắt buộc.",
+        'user_id' => [
+            'require' => 'User ID là bắt buộc.',
+        ],
+        'quantity' => [
+            'require' => 'Số lượng là bắt buộc.',
+        ],
     ],
+
     'password_request' => [
-        'password.required' => 'Mật khẩu là bắt buộc.',
-        'newPassword.required' => 'Mật khẩu mới là bắt buộc.',
-        'newPassword.min' => 'Mật khẩu mới phải có ít nhất 8 ký tự.',
-        'password.string' => 'Mật khẩu phải là một chuỗi văn bản.',
-        'newPassword.string' => 'Mật khẩu mới phải là một chuỗi văn bản.',
+        'password' => [
+            'required' => 'Mật khẩu là bắt buộc.',
+            'string' => 'Mật khẩu phải là một chuỗi văn bản.',
+        ],
+        'newPassword' => [
+            'required' => 'Mật khẩu mới là bắt buộc.',
+            'min' => 'Mật khẩu mới phải có ít nhất 8 ký tự.',
+            'string' => 'Mật khẩu mới phải là một chuỗi văn bản.',
+        ],
     ],
+
     'error_middleware' => [
         'error_custom' => 'Quá nhiều yêu cầu, vui lòng thử lại sau.',
         'error_isAdmin' => 'Không được phép.',

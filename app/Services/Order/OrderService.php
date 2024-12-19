@@ -111,7 +111,7 @@ class OrderService implements OrderServiceInterface
             }
             if (request()->user()) {
                 $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => null, "description" => request()->user()->name . " created order"]);
-            } else $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => null, "description" => "Guess" . " created order"]);
+            } else $this->orderHistoryService->create(["order_id" => $order->id, "user_id" => null, "description" => "Guess  created order"]);
 
             if (isset($data['cart_ids'])) {
                 foreach ($data['cart_ids'] as $id) {
