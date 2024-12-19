@@ -81,6 +81,11 @@ class OrdersController extends Controller
                     'error' => $throw->getMessage()
                 ],404);
             }
+            if($throw instanceof InvalidArgumentException){
+                return \response()->json([
+                    'error' => $throw->getMessage(),
+                ],403);
+            }
             return \response()->json([
                 'status' => false,
                 'error' => __('messages.error-internal-server'),

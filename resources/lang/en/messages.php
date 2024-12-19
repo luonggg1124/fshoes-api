@@ -62,7 +62,8 @@ return [
         'error-returned-processing' => 'Order returned processing',
         'error-returned' => 'Order is returned',
         'error-can-not-order' => 'Cannot cancel order',
-        'cant-cancel' => 'The order is already paid.Can not be canceled.'
+        'cant-cancel' => 'The order is already paid.Can not be canceled.',
+        'cant-delete' => 'You cannot delete this order.'
     ],
     'voucher' => [
         'error-voucher' => 'Voucher is out of uses',

@@ -304,7 +304,9 @@ class OrderService implements OrderServiceInterface
     public function delete(int|string $id){
         $order = $this->orderRepository->find($id);
         if (!$order) throw new ModelNotFoundException(__('messages.error-not-found'));
-        
+        if($order->status >= 3){
+            throw new InvalidArgumentException(__('messages.order.cant-delete'));
+        }
         $order->forceDelete();
         Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return response()->json(["message" => __('messages.delete-success')], 200);
