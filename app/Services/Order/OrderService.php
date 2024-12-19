@@ -301,4 +301,12 @@ class OrderService implements OrderServiceInterface
         Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return $order;
     }
+    public function delete(int|string $id){
+        $order = $this->orderRepository->find($id);
+        if (!$order) throw new ModelNotFoundException(__('messages.error-not-found'));
+        
+        $order->forceDelete();
+        Cache::tags([$this->cacheTag,...$this->relations])->flush();
+        return response()->json(["message" => __('messages.delete-success')], 200);
+    }
 }

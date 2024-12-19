@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Order\OrderService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\Process\Exception\InvalidArgumentException;
 
@@ -59,9 +60,32 @@ class OrdersController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string|int $id)
     {
-
+        try {
+            $this->orderService->delete($id);
+            return \response()->json([
+                'status' => true,
+                'message' => __('messages.delete-success'),
+            ]);
+        }catch (\Throwable $throw){
+            Log::error(
+                message: __CLASS__.'@'.__FUNCTION__,context: [
+                'line' => $throw->getLine(),
+                'message' => $throw->getMessage()
+            ]
+            );
+            if($throw instanceof ModelNotFoundException){
+                return \response()->json([
+                    'status' => false,
+                    'error' => $throw->getMessage()
+                ],404);
+            }
+            return \response()->json([
+                'status' => false,
+                'error' => __('messages.error-internal-server'),
+            ],500);
+        }
     }
     public function me(){
         try {
