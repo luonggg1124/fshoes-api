@@ -132,15 +132,18 @@ class ProductService implements ProductServiceInterface
             if ($product->categories) {
                 foreach ($product->categories as $category) {
                     foreach ($category->products()->orderBy('qty_sold', 'desc')->take(3)->get() as $p)
-                        $productRelated[] = $p;
+                    if($p->id != $product->id) {
+                        $productRelated[] = $p; 
+                    }
                     if (count($productRelated) === 20) break;
                 }
             }
             $uniProductRelated = collect($productRelated)->unique('id');
             $collectProduct = [];
             if (count($uniProductRelated) < 20) {
-                $topSold = $this->productRepository->query()->orderBy('qty_sold', 'desc')->take(30)->get();
+                $topSold = $this->productRepository->query()->where('id','!=',$product)->orderBy('qty_sold', 'desc')->take(30)->get();
                 foreach ($topSold as $item) {
+                    
                     $uniProductRelated[] = $item;
                     if (count(collect($uniProductRelated)->unique('id')) === 20) {
                         $collectProduct = collect($uniProductRelated)->unique('id');
@@ -152,6 +155,7 @@ class ProductService implements ProductServiceInterface
             }
             $suggestedProduct = [...$collectProduct];
             foreach ($collectProduct as $item) $item->load('categories');
+            
             $product->suggestedProduct = $suggestedProduct;
             return new ProductDetailResource($product);
         });
