@@ -71,11 +71,11 @@ class StatisticsService implements StatisticsServiceInterface
         $countAll = $repository->query()->count();
         $totalExceptNew = $countAll - $count;
         $percentage = 0;
-        if ($totalExceptNew === 0) {
+        if ($totalExceptNew == 0 && $count != 0) {
             $percentage = 100;
         } else if ($count > 0) {
             $percentage = ($count / $totalExceptNew) * 100;
-        }else if($count == 0){
+        }else if($count == 1){
             $percentage = 0;
         }
 

@@ -52,7 +52,7 @@ class SaleService implements SaleServiceInterface
                 $formattedProduct = $products->mapWithKeys(function ($product) {
                     return [
                         $product->id => [
-                            'quantity' => $product->stock_qty,
+                            'quantity' => 0,
                         ]
                     ];
                 })->toArray();
@@ -60,7 +60,7 @@ class SaleService implements SaleServiceInterface
                 $formattedVariation = $variations->mapWithKeys(function ($variation) {
                     return [
                         $variation->id => [
-                            'quantity' => $variation->stock_qty,
+                            'quantity' => 0,
                         ]
                     ];
                 })->toArray();
