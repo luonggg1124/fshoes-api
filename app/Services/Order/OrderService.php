@@ -239,8 +239,10 @@ class OrderService implements OrderServiceInterface
         $details = $this->orderRepository->find($id)->orderDetails;
         foreach ($details as $item) {
             if($item->product_variation_id){
+
                 $variation = $this->variationRepository->find($item->product_variation_id);
-                if($variation){
+                $product = $this->productRepository->find($variation->product->id);
+                if($variation && $product){
                     Cart::create([
                         "user_id" => request()->user()->id,
                         "product_variation_id" => $variation->id ,
