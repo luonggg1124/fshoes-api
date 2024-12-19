@@ -78,7 +78,7 @@ class UserService implements UserServiceInterface
                 throw \Illuminate\Validation\ValidationException::withMessages([
                     'email' => __('messages.user.error-email')
                 ]);
-            if (isset($data) && empty($data['group_id'])) $data['group_id'] = 1;
+            if (isset($data) && empty($data['group_id'])) $data['group_id'] = 3;
             
             if(isset($data['is_admin']) && $data['is_admin'] != 'false'){
                 $data['is_admin'] = true;

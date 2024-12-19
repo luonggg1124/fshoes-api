@@ -5,6 +5,7 @@ namespace App\Services\Category;
 
 
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\ProductResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Http\Traits\Cloudinary;
 use App\Http\Traits\Paginate;
@@ -109,8 +110,11 @@ class CategoryService implements CategoryServiceInterface
                     }
                 }
             }
-            $category->products = $listProduct;
-            return $category;
+           
+            return [
+                'category' => $category,
+                'products' => ProductResource::collection($listProduct)
+            ];
         });
     }
     public function findById(int|string $id)
