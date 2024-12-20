@@ -7,8 +7,6 @@ namespace App\Models;
 
 use App\Models\User\UserAddress;
 use App\Models\User\UserProfile;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,11 +14,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use  HasFactory, Notifiable,SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -32,7 +31,6 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'google_id',
         'email_verified_at',
         'avatar_url',
         'is_active',
@@ -76,18 +74,12 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(UserProfile::class);
     }
-    public function interestingCategories():BelongsToMany
-    {
-        return $this->belongsToMany(Category::class,'user_interests','user_id','category_id');
-    }
+    
     public function favoriteProducts():BelongsToMany
     {
         return $this->belongsToMany(Product::class,'user_product','user_id','product_id');
     }
-    public function addresses():HasMany
-    {
-        return $this->hasMany(UserAddress::class);
-    }
+   
     public function group():BelongsTo
     {
         return $this->belongsTo(Groups::class,'group_id');

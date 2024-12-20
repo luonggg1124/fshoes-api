@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_addresses', function (Blueprint $table) {
+        Schema::create('order_detail_attribute_value', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('address');
-            $table->string('phone_num');
-            $table->string('name');
+            $table->foreignId('order_detail_id')->constrained('order_details');
+            $table->foreignId('attribute_value_id')->constrained('attribute_values');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_addresses');
+        Schema::dropIfExists('order_detail_attribute_value');
     }
 };

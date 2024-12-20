@@ -15,8 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('nickname')->nullable();
             $table->string('name')->nullable();
-            $table->string('avatar_url')->nullable();
-            $table->string('avatar_public_id')->nullable();
             $table->boolean('is_admin')->default(0);
             $table->enum('status',['active','banned'])->default('active');
             $table->string('email')->unique();
@@ -24,6 +22,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('google_id')->nullable();
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
 
