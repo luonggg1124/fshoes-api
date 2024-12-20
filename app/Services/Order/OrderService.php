@@ -307,6 +307,9 @@ class OrderService implements OrderServiceInterface
         if($order->status >= 3){
             throw new InvalidArgumentException(__('messages.order.cant-delete'));
         }
+        if($order->payment_status != 'not_yet_paid'){
+            throw new InvalidArgumentException(__('messages.order.cant-delete'));
+        }
         $order->forceDelete();
         Cache::tags([$this->cacheTag,...$this->relations])->flush();
         return response()->json(["message" => __('messages.delete-success')], 200);
