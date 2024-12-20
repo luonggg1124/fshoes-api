@@ -287,11 +287,13 @@ class OrderService implements OrderServiceInterface
     {
         $order = $this->orderRepository->find($id);
         if (!$order) throw new ModelNotFoundException(__('messages.error-not-found'));
+        
         if ($paymentStatus) {
             $order->payment_status = 'paid';
         } else {
             $order->payment_status = 'not_yet_paid';
         }
+       
         $order->payment_method = $paymentMethod;
         $order->save();
         if($order->payment_status){
