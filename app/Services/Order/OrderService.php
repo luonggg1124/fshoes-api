@@ -8,8 +8,7 @@ use App\Jobs\PaidOrder;
 use Exception;
 use App\Models\Cart;
 use App\Models\Voucher;
-use App\Mail\CreateOrder;
-use Illuminate\Support\Facades\Mail;
+
 use App\Http\Resources\OrdersCollection;
 use Illuminate\Validation\UnauthorizedException;
 use App\Repositories\Cart\CartRepositoryInterface;
@@ -48,7 +47,7 @@ class OrderService implements OrderServiceInterface
         }
         $orders->latest();
         return OrdersCollection::collection(
-            $orders->get()
+            $orders->paginate(10)
         );
     }
 
