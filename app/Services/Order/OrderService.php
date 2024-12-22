@@ -39,16 +39,14 @@ class OrderService implements OrderServiceInterface
         protected UserRepositoryInterface        $userRepository,
     ) {}
 
-    public function getAll($params): AnonymousResourceCollection
+    public function getAll($params)
     {
         $orders = $this->orderRepository->query()->with(['orderDetails', 'orderHistory', 'user', 'orderDetails.variation', 'orderDetails.product'])->orderBy('created_at', 'desc');
         if (isset($params['user_id'])) {
             $orders->where('user_id', $params['user_id']);
         }
-        $orders->latest();
-        return OrdersCollection::collection(
-            $orders->paginate(10)
-        );
+        $orders->latest()->paginate(10);
+        return OrdersCollection::collection($orders);
     }
 
     public function findById(int|string $id)
@@ -302,17 +300,5 @@ class OrderService implements OrderServiceInterface
         Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return $order;
     }
-    public function delete(int|string $id){
-        $order = $this->orderRepository->find($id);
-        if (!$order) throw new ModelNotFoundException(__('messages.error-not-found'));
-        if($order->status >= 3){
-            throw new InvalidArgumentException(__('messages.order.cant-delete'));
-        }
-        if($order->payment_status != 'not_yet_paid'){
-            throw new InvalidArgumentException(__('messages.order.cant-delete'));
-        }
-        $order->forceDelete();
-        Cache::tags([$this->cacheTag,...$this->relations])->flush();
-        return response()->json(["message" => __('messages.delete-success')], 200);
-    }
+
 }

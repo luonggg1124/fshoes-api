@@ -5,11 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OrderDetails extends Model
 {
-    use HasFactory,softDeletes;
+    use HasFactory;
     protected $table = 'order_details';
     protected $fillable = [
         "order_id",
@@ -18,6 +17,7 @@ class OrderDetails extends Model
         "price",
         "quantity",
         "total_amount",
+        "detail_item"
     ];
     public  function order():BelongsTo
     {
@@ -25,10 +25,10 @@ class OrderDetails extends Model
     }
     public function variation():BelongsTo
     {
-        return $this->belongsTo(ProductVariations::class,'product_variation_id');
+        return $this->belongsTo(ProductVariations::class,'product_variation_id')->withTrashed();
     }
     public function product():BelongsTo
     {
-        return $this->belongsTo(Product::class,'product_id');
+        return $this->belongsTo(Product::class,'product_id')->withTrashed();
     }
 }
