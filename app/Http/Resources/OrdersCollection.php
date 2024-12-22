@@ -19,7 +19,6 @@ class OrdersCollection extends JsonResource
             "id"=>$this->id,
             "user_id"=>$this->user_id,
             "user"=>  UserResource::make($this->whenLoaded('user')),
-
             "total_amount"=> $this->total_amount,
             "payment_method"=>$this->payment_method,
             "payment_status"=>$this->payment_status,
@@ -28,6 +27,7 @@ class OrdersCollection extends JsonResource
             "tax_amount"=>$this->tax_amount,
             "amount_collected"=>$this->amount_collected,
             "receiver_full_name"=>$this->receiver_full_name,
+            "receiver_email"=>$this->receiver_email,
             "address"=>$this->address,
             "phone"=>$this->phone,
             "city"=>$this->city,

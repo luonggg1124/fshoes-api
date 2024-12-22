@@ -25,7 +25,8 @@ class OrderDetailsCollection extends JsonResource
             'quantity' => $this->quantity,
             'total_amount' => $this->total_amount,
             'variation' => new VariationResource($this->whenLoaded('variation')),
-            'product' => new ProductResource($this->whenLoaded('product')),
+            'product' => new ProductResource(resource: $this->whenLoaded('product')),
+            'detail_item'=>$this->detail_item,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];
