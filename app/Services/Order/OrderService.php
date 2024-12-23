@@ -39,16 +39,14 @@ class OrderService implements OrderServiceInterface
         protected UserRepositoryInterface        $userRepository,
     ) {}
 
-    public function getAll($params): AnonymousResourceCollection
+    public function getAll($params)
     {
         $orders = $this->orderRepository->query()->with(['orderDetails', 'orderHistory', 'user', 'orderDetails.variation', 'orderDetails.product'])->orderBy('created_at', 'desc');
         if (isset($params['user_id'])) {
             $orders->where('user_id', $params['user_id']);
         }
-        $orders->latest();
-        return OrdersCollection::collection(
-            $orders->paginate(10)
-        );
+        $orders->latest()->paginate(10);
+        return OrdersCollection::collection($orders);
     }
 
     public function findById(int|string $id)
