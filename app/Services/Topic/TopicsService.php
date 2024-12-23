@@ -37,7 +37,7 @@ class TopicsService implements TopicServiceInterface
             $topic = $this->topicsRepository->create([
                 'topic_name' => $data['topic_name'],
                 'slug' => $data['slug'],
-                'parent_topic_id' => $data['parent_topic_id']
+                'parent_topic_id' => isset($data['parent_topic_id']) ? $data['parent_topic_id'] : null
             ]);
             return TopicsResource::make($topic);
         } catch (Exception $exception) {
