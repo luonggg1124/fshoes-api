@@ -15,15 +15,11 @@ class UserProfile extends Model
         'user_id',
         'given_name',
         'family_name',
-        'address_active_id',
         'birth_date'
     ];
     public function user():BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-    public function addressActive():BelongsTo
-    {
-        return $this->belongsTo(UserAddress::class,'address_active_id');
-    }
+    
 }

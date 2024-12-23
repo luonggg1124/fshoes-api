@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('price',10,2);
             $table->decimal('import_price',10,2)->nullable();
             $table->text('image_url');
+            $table->boolean('is_variant')->nullable();
             $table->text('short_description')->nullable();
             $table->text('description')->nullable();
             $table->boolean('status')->default(1)->nullable();

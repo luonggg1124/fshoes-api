@@ -5,7 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 
-use App\Models\User\UserAddress;
+
 use App\Models\User\UserProfile;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -32,11 +32,12 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'email_verified_at',
-        'avatar_url',
+        'image_id',
         'is_active',
         'status',
         'group_id',
         'is_admin'
+
     ];
 
     /**
@@ -79,7 +80,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(Product::class,'user_product','user_id','product_id');
     }
-   
+    public function image():BelongsTo
+    {
+        return $this->belongsTo(Image::class,'image_id');
+    }
     public function group():BelongsTo
     {
         return $this->belongsTo(Groups::class,'group_id');

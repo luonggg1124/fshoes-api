@@ -22,7 +22,7 @@ class UserResource extends JsonResource
         $resource = [
             'id' => $this->id,
             'nickname' => $this->nickname,
-            'avatar_url' => $this->avatar_url ?? asset('default_avatar.png'),
+            'avatar_url' => isset($this->image) && isset($this->image->url) ? $this->image->url : asset('default_avatar.png'),
             'name' => $this->name,
             'email' => $this->email,
             'email_verified_at' => $this->email_verified_at,

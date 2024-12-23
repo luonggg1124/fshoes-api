@@ -16,7 +16,7 @@ class AttributeValueService implements AttributeValueServiceInterface
 
     protected string $cacheTag = 'attributes_values';
     protected string $allQueryUrl;
-    private array $relations = ['attribute', 'variations','attributes'];
+    private array $relations = ['attribute', 'variations', 'attributes'];
     private array $columns = ['id', 'attribute_id', 'value', 'created_at', 'updated_at'];
 
     public function __construct(
@@ -39,11 +39,28 @@ class AttributeValueService implements AttributeValueServiceInterface
 
     public function create(int|string $aid, string|array $data)
     {
+        $errors = [];
         $attribute = $this->attributeRepository->find($aid);
-        if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
-        $value = $attribute->values()->create($data);
+        if (!$attribute) {
+            $errors[] = "Không tìm thấy thuộc tính";
+        } else {
+            if (isset($data['value'])) {
+                $existing = $attribute->values()->where('value', $data['value'])->exists();
+                if ($existing) {
+                    $errors[] = $attribute->name . ' đã tồn tại giá trị ' . $data['value'];
+                }
+                $value = $attribute->values()->create($data);
+            } else {
+                $errors[] = $data['value'] . ' không hợp lệ';
+            }
+        }
+
+
         Cache::tags([$this->cacheTag, ...$this->relations])->flush();
-        return new ValueResource($this->loadRelationships($value));
+        return [
+            'value' => new ValueResource($this->loadRelationships($value)),
+            'errors' => $errors
+        ];
     }
 
     public function createMany(int|string $aid, array $data)
@@ -52,41 +69,42 @@ class AttributeValueService implements AttributeValueServiceInterface
         if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
         $list = [];
 
-        if(empty($data)) throw new \InvalidArgumentException(__('messages.invalid-value'));
-        
+        if (empty($data)) throw new \InvalidArgumentException(__('messages.invalid-value'));
+        $errors = [];
         foreach ($data as $val) {
             if (isset($val)) {
                 if (is_array($val)) {
                     if (isset($val['id']) && isset($val['value'])) {
-                        $value = $attribute->values()->find($val['id']);
-                        if ($value) {
-                            $value->update([
-                                'value' => $val['value']
-                            ]);
-
-                            $list[] = $value;
-                        }
+                        $value = $this->update($aid, $val['id'], [
+                            'value' => $val['value']
+                        ]);
+                        $list[] = $value['value'];
+                        $errors[] = $value['errors'];
                     } elseif (isset($val['value'])) {
-                        $value = $attribute->values()->create(['value' => $val['value']]);
-                        $list[] = $value;
+                        $value = $this->create($aid, ['value' => $val['value']]);
+                        $list[] = $value['value'];
+                        $errors[] = $value['errors'];
                     }
                 }
             }
         }
         Cache::tags([$this->cacheTag, ...$this->relations])->flush();
-        return ValueResource::collection($list);
+        return [
+            'values' => ValueResource::collection($list),
+            'errors' => $errors
+        ];
     }
 
     public function find(int|string $aid, int|string $id)
     {
         return Cache::tags([$this->cacheTag])
-        ->remember('attribute' . $aid . '/' . 'value/' . $id . '?' . $this->allQueryUrl, 60, function () use ($aid, $id) {
-            $attribute = $this->attributeRepository->find($aid);
-            if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
-            $value = $attribute->values()->find($id);
-            if (!$value) throw new ModelNotFoundException(__('messages.error-not-found'));
-            return new ValueResource($this->loadRelationships($value));
-        });
+            ->remember('attribute' . $aid . '/' . 'value/' . $id . '?' . $this->allQueryUrl, 60, function () use ($aid, $id) {
+                $attribute = $this->attributeRepository->find($aid);
+                if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
+                $value = $attribute->values()->find($id);
+                if (!$value) throw new ModelNotFoundException(__('messages.error-not-found'));
+                return new ValueResource($this->loadRelationships($value));
+            });
     }
 
     public function update(int|string $aid, int|string $id, array $data)
@@ -95,9 +113,23 @@ class AttributeValueService implements AttributeValueServiceInterface
         if (!$attribute) throw new ModelNotFoundException(__('messages.error-not-found'));
         $value = $attribute->values()->find($id);
         if (!$value) throw new ModelNotFoundException(__('messages.error-not-found'));
+        $errors = [];
+
+        if (isset($data['value'])) {
+            $existing = $attribute->values()->where('value', $data['value'])->exists();
+            if ($existing) {
+                $errors[] = $attribute->name . ' đã tồn tại giá trị ' . $data['value'];
+            }
+            $value = $value->update($data);
+        } else {
+            $errors[] = $data['value'] . ' không hợp lệ';
+        }
         $value->update($data);
         Cache::tags([$this->cacheTag, ...$this->relations])->flush();
-        return new ValueResource($this->loadRelationships($value));
+        return [
+            'value' => new ValueResource($this->loadRelationships($value)),
+            'errors' => $errors
+        ];
     }
 
     public function delete(int|string $aid, int|string $id)
@@ -106,10 +138,10 @@ class AttributeValueService implements AttributeValueServiceInterface
         if (!$attribute) throw new ModelNotFoundException(message: __('messages.error-not-found'));
         $value = $attribute->values()->find($id);
         if (!$value) throw new ModelNotFoundException(message: __('messages.error-not-found'));
-        if(count([...$value->variations]) > 0){
+        if (count([...$value->variations]) > 0) {
             throw new \InvalidArgumentException(__('messages.error-delete-attribute-variations'));
         }
-      
+
         $value->delete();
         Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return true;
