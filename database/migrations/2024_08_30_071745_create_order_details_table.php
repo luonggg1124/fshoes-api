@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('price',11,2);
             $table->integer('quantity');
             $table->decimal('total_amount',15,2);
-            $table->json("detail_item")->default(null);
+            $table->json("detail_item")->nullable();
             $table->timestamps();
         });
     }
