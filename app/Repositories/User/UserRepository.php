@@ -3,8 +3,7 @@
 namespace App\Repositories\User;
 
 use App\Models\User;
-use App\Models\User\UserAddress;
-use App\Models\User\UserAvatar;
+
 use App\Models\User\UserProfile;
 use App\Repositories\BaseRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -14,8 +13,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     public function __construct(
         User $model,
         public UserProfile $profile,
-        public UserAddress $address,
-        public UserAvatar $avatar
+
     )
     {
         parent::__construct($model);
@@ -49,7 +47,5 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
         if(!$user) return null;
         return $user;
     }
-    public function createAvatar(array $data){
-        return $this->avatar->query()->create($data);
-    }
+
 }

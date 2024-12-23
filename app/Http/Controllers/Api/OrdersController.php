@@ -60,9 +60,9 @@ class OrdersController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string|int $id)
+    public function destroy()
     {
-      
+        
     }
     public function me(){
         try {

@@ -4,6 +4,7 @@ namespace App\Services\User;
 
 use App\Http\Resources\ProductResource;
 use App\Repositories\Product\ProductRepositoryInterface;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Hash;
@@ -14,8 +15,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\User\UserResource;
 use App\Http\Traits\CanLoadRelationships;
+use App\Repositories\Image\ImageRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\UnauthorizedException;
 
@@ -24,7 +25,7 @@ class UserService implements UserServiceInterface
 {
     use CanLoadRelationships, Cloudinary, Paginate;
 
-    protected array $relations = ['profile', 'interestingCategories', 'addresses', 'allAvatars', 'favoriteProducts','group','statistics'];
+    protected array $relations = ['profile', 'favoriteProducts','group','statistics'];
     private array $columns = [
         'nickname',
         'name',
@@ -41,7 +42,8 @@ class UserService implements UserServiceInterface
 
     public function __construct(
         public UserRepositoryInterface       $userRepository,
-        protected ProductRepositoryInterface $productRepository
+        protected ProductRepositoryInterface $productRepository,
+        protected ImageRepositoryInterface $imageRepository
     )
     {
     }
@@ -300,12 +302,20 @@ class UserService implements UserServiceInterface
         $userRequest = request()->user();
         $userModel = $this->userRepository->find($userRequest->id);
         if(!$userModel) throw new ModelNotFoundException(__('messages.error-not-found'));
-        if($userModel->avatar_public_id)
-        $this->deleteImageCloudinary($userModel->avatar_public_id);
-        $avatar = $this->uploadImageCloudinary( $file,'avatars');
+        if($userModel->image){
+            $this->deleteImageCloudinary($userModel->image->public_id);
+        }
         
-        $userModel->avatar_url = $avatar['path'];
-        $userModel->avatar_public_id = $avatar['public_id'];
+        $avatar = $this->uploadImageCloudinary( $file,'avatars');
+        $image = $this->imageRepository->create([
+            'url' => $avatar['path'],
+            'public_id' => $avatar['public_id'],
+            
+        ]);
+        if(!$image){
+            throw new Exception('Không thể cập nhật ảnh đại diện');
+        }
+        $userModel->image_id = $image->id; 
         $userModel->save();
         Cache::tags([...$this->relations])->flush();
         return new UserResource($this->loadRelationships($userModel));

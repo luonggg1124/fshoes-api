@@ -165,7 +165,8 @@ class ProductService implements ProductServiceInterface
         array $data,
         array $options = [
             'images' => [],
-            'categories' => []
+            'categories' => [],
+            'variants' => [],
         ]
     ) {
         return DB::transaction(function () use ($data, $options) {

@@ -39,7 +39,7 @@ class AttributeValueController extends Controller
             $values = $this->service->createMany($aid, $data);
             return \response()->json([
                 'status' => true,
-                'values' => $values,
+                ...$values,
                 'message' => __('messages.update-success')
             ], 201);
         } catch (\Throwable $throw) {

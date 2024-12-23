@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\User\SocialiteController;
+
 
 Route::get('/', function () {
     return response()->json([
@@ -20,5 +20,4 @@ Route::get('test', function () {
    ]);
 });
 
-Route::get('auth/google/redirect', [SocialiteController::class, 'googleRedirect']);
-Route::get('auth/google/callback', [SocialiteController::class, 'googleCallback']);
+
