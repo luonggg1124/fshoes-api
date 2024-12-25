@@ -46,7 +46,10 @@ class OrderService implements OrderServiceInterface
         if (isset($params['user_id'])) {
             $orders->where('user_id', $params['user_id']);
         }
-        return $orders->paginate(10);
+         return $orders->paginate(10)->map(function($order) {
+            $order->user->image = $order->user->image ?? asset('default_avatar.png');
+            return $order;
+        });
     }
 
     public function findById(int|string $id)
