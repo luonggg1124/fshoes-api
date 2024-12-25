@@ -23,7 +23,7 @@ class OrdersController extends Controller
     {
 
         return response()->json(
-            $this->orderService->getAll($request) ,200
+            $this->orderService->getAll($request->all()) ,200
          );
     }
 
