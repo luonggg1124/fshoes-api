@@ -41,17 +41,17 @@ class OrderService implements OrderServiceInterface
 
     public function getAll($params)
     {
-        $orders = $this->orderRepository->query()->with(['orderDetails', 'orderHistory', 'user', 'orderDetails.variation', 'orderDetails.product'])->orderBy('created_at', 'desc');
+        $orders = $this->orderRepository->query()->with(['orderDetails', 'orderHistory', 'user' , 'user.image', 'orderDetails.variation', 'orderDetails.product'])
+                  ->orderBy('created_at', 'desc');
         if (isset($params['user_id'])) {
             $orders->where('user_id', $params['user_id']);
         }
-        $orders->latest()->paginate(10);
-        return OrdersCollection::collection($orders);
+        return $orders->paginate(10);
     }
 
     public function findById(int|string $id)
     {
-        $order = $this->orderRepository->query()->where('id', $id)->with(["orderDetails", 'orderHistory', 'user', 'orderDetails.variation', 'orderDetails.product', 'voucher'])->first();
+        $order = $this->orderRepository->query()->where('id', $id)->with(["orderDetails", 'orderHistory', 'user' , 'user.image', 'orderDetails.variation', 'orderDetails.product', 'voucher'])->first();
         if (!$order) {
             throw new ModelNotFoundException(__('messages.error-not-found'));
         }
@@ -300,5 +300,5 @@ class OrderService implements OrderServiceInterface
         Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return $order;
     }
-    
+
 }
