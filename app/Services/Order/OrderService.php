@@ -227,7 +227,7 @@ class OrderService implements OrderServiceInterface
         $user = request()->user();
         if ($order->user_id != $user->id) throw new AuthorizationException(__('messages.order.error-can-not-order'));
         if (!$order) throw new ModelNotFoundException(__('messages.error-not-found'));
-        if ($order->status >= 3 || $order->status === 0) throw new InvalidArgumentException(__('messages.order.error-can-not-order'));
+        if ($order->status > 3 || $order->status === 0) throw new InvalidArgumentException(__('messages.order.error-can-not-order'));
    
         $voucher = $order->voucher;
         $items = $order->orderDetails;
