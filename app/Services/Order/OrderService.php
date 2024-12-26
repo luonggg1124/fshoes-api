@@ -99,9 +99,7 @@ class OrderService implements OrderServiceInterface
                 } else {
                     $item = $this->variationRepository->query()->where('id', $detail["product_variation_id"])->first();
                 }
-                $item->stock_qty = $item->stock_qty - $detail["quantity"];
-                $item->qty_sold = $item->qty_sold + $detail["quantity"];
-
+              
                 if ($item->currentSale()) {
                     $item->sales()->updateExistingPivot($item->currentSale()->id, [
                         'quantity' => $item->currentSale()->pivot->quantity + $detail["quantity"],
@@ -145,8 +143,11 @@ class OrderService implements OrderServiceInterface
                 if ($detail['product_id']) {
                     $item = $this->productRepository->query()->where('id', $detail["product_id"])->first();
                 } else $item = $this->variationRepository->query()->where('id', $detail["product_variation_id"])->first();
-
-                if ($data["status"] == 0 || $data["status"] == 7) {
+                if($data["status"] == 3){
+                    $item->stock_qty = $item->stock_qty - $detail["quantity"];
+                    $item->qty_sold = $item->qty_sold + $detail["quantity"];    
+                }
+                if ($data["status"] == 0 || $data["status"] == 9) {
                     $item->stock_qty = $item->stock_qty + $detail["quantity"];
                     $item->qty_sold = $item->qty_sold - $detail["quantity"] > 0 ? $item->qty_sold - $detail["quantity"] : 0;
                 }
