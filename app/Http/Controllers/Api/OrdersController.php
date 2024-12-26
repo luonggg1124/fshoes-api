@@ -146,4 +146,8 @@ class OrdersController extends Controller
             ],status: 500);
         }
     }
+
+    public function returnOrder(Request $request , $id){
+        return response()->json($this->orderService->update($id , $request->all()) , 200);
+    }
 }
