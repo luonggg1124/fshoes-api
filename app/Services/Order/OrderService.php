@@ -239,14 +239,14 @@ class OrderService implements OrderServiceInterface
                         $variation = $this->variationRepository->find($item->product_variation_id);
                         if($variation){
                             $variation->stock_qty += $item->quantity;
-                            $variation->qty_sold -= $item->qty_sold;
+                            $variation->qty_sold -= $item->quantity;
                             $variation->save();
                         }
                     }else if($item->product_id){
                         $product = $this->productRepository->find($item->product_id);
                         if($product){
                             $product->stock_qty += $item->quantity;
-                            $product->qty_sold -= $item->qty_sold;
+                            $product->qty_sold -= $item->quantity;
                             $product->save();
                         }
                     }
