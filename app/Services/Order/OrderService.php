@@ -147,7 +147,7 @@ class OrderService implements OrderServiceInterface
                     $item->stock_qty = $item->stock_qty - $detail["quantity"];
                     $item->qty_sold = $item->qty_sold + $detail["quantity"];    
                 }
-                if ($data["status"] == 0 || $data["status"] == 9) {
+                if (($data["status"] == 0 && $order->status == 3) || $data["status"] == 9) {
                     $item->stock_qty = $item->stock_qty + $detail["quantity"];
                     $item->qty_sold = $item->qty_sold - $detail["quantity"] > 0 ? $item->qty_sold - $detail["quantity"] : 0;
                 }
