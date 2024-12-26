@@ -143,6 +143,7 @@ class OrderService implements OrderServiceInterface
                 if ($detail['product_id']) {
                     $item = $this->productRepository->query()->where('id', $detail["product_id"])->first();
                 } else $item = $this->variationRepository->query()->where('id', $detail["product_variation_id"])->first();
+
                 if($data["status"] == 3){
                     $item->stock_qty = $item->stock_qty - $detail["quantity"];
                     $item->qty_sold = $item->qty_sold + $detail["quantity"];    
@@ -236,8 +237,7 @@ class OrderService implements OrderServiceInterface
                 if($order->status ==3){
                     if($item->product_variation_id){
                         $variation = $this->variationRepository->find($item->product_variation_id);
-                        $product = $this->productRepository->find($variation->product->id);
-                        if($variation && $product){
+                        if($variation){
                             $variation->stock_qty += $item->quantity;
                             $variation->qty_sold -= $item->qty_sold;
                             $variation->save();
