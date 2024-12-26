@@ -41,7 +41,14 @@ class OrderService implements OrderServiceInterface
 
     public function getAll($params)
     {
-        $orders = $this->orderRepository->query()->with(['orderDetails', 'orderHistory', 'user' , 'user.image', 'orderDetails.variation', 'orderDetails.product'])
+        $orders = $this->orderRepository->query()
+                ->with(['orderDetails', 'orderHistory', 'user.image',
+                  'orderDetails.variation',
+                  'orderDetails.product.images',
+                   'orderDetails.product',
+                   'orderDetails.product.images',
+                   'voucher', 
+                   ])
                   ->orderBy('created_at', 'desc');
         if (isset($params['user_id'])) {
             $orders->where('user_id', $params['user_id']);
