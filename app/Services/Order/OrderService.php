@@ -43,9 +43,7 @@ class OrderService implements OrderServiceInterface
     {
         $orders = $this->orderRepository->query()
                 ->with(['orderDetails', 'orderHistory', 'user.image',
-                  'orderDetails.variation',
-                  'orderDetails.product.images',
-                   'orderDetails.product',
+                  'orderDetails.variation.images',
                    'orderDetails.product.images',
                    'voucher', 
                    ])
