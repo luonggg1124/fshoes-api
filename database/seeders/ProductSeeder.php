@@ -37,7 +37,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '700000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'Giày Gazelle Bold x Liberty London',
@@ -56,7 +56,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '2700000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'Giày adidas Superstar',
@@ -75,7 +75,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '200000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'Giày Dame 9',
@@ -94,7 +94,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '600000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'Giày Superstar II Trẻ Em',
@@ -113,7 +113,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '600000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'ANTHONY EDWARDS 1 LOW',
@@ -132,7 +132,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '600000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'ATHLETICS II BASKETBALL',
@@ -151,7 +151,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '900000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'BW ARMY HARTCOPY',
@@ -170,7 +170,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '900000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'Giày Chạy Bộ Supernova Stride 2',
@@ -189,7 +189,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '900000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'Giày Chạy Bộ Supernova Rise 2',
@@ -209,7 +209,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '900000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'Nike Air Max Nuaxis',
@@ -228,7 +228,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '650000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'Nike Air Force 1 Shadow',
@@ -247,7 +247,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '380000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'Nike Air Force 1 Mid 07',
@@ -266,7 +266,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '320000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'Air Jordan 1 Low',
@@ -285,7 +285,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '350000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'Nike Cortez EasyOn',
@@ -304,7 +304,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '125000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'Nike Revolution 7',
@@ -323,7 +323,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '325000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'Air Jordan 1 Mid',
@@ -342,7 +342,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '260000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'Nike Interact Run',
@@ -361,7 +361,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '180000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'Nike Dunk Low Next Nature',
@@ -380,7 +380,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '290000',
-                'status' => 1,
+                
             ],
             [
                 'name' => 'Nike Killshot 2 Leather',
@@ -399,7 +399,7 @@ class ProductSeeder extends Seeder
                 'stock_qty' => random_int(21, 100),
                 'qty_sold' => random_int(0, 20),
                 'import_price' => '270000',
-                'status' => 1,
+                
             ],
         ];
         
@@ -414,8 +414,7 @@ class ProductSeeder extends Seeder
                'short_description' => $data['short_description'],
                'stock_qty' => $data['stock_qty'],
                 'qty_sold' => $data['qty_sold'],
-                'import_price' => $data['import_price'],
-               'status' => $data['status'],
+                
                'image_url' => $data['images'][0],
             ]);
             foreach($data['images'] as $i){

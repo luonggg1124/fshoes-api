@@ -12,9 +12,9 @@ use App\Repositories\Product\Variation\VariationRepositoryInterface;
 use App\Services\Image\ImageServiceInterface;
 use App\Http\Resources\ProductResource;
 use App\Http\Traits\CanLoadRelationships;
+use App\Repositories\Attribute\Value\AttributeValueRepositoryInterface;
 use App\Repositories\Category\CategoryRepositoryInterface;
 use App\Repositories\Product\ProductRepositoryInterface;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +34,7 @@ class ProductService implements ProductServiceInterface
         'short_description',
         'description',
         'sku',
-        'status',
+        'is_variant',
         'created_at',
         'updated_at',
     ];
@@ -43,7 +43,8 @@ class ProductService implements ProductServiceInterface
         protected ProductRepositoryInterface   $productRepository,
         protected VariationRepositoryInterface $variationRepository,
         protected ImageServiceInterface        $imageService,
-        protected CategoryRepositoryInterface $categoryRepository
+        protected CategoryRepositoryInterface $categoryRepository,
+        protected AttributeValueRepositoryInterface $attributeValueRepository
 
     ) {}
 
@@ -107,7 +108,7 @@ class ProductService implements ProductServiceInterface
         $allQuery = http_build_query(request()->query());
         return Cache::tags([$this->cacheTag])->remember('product-detail/' . $id . '?' . $allQuery, 60, function () use ($id) {
             $product = $this->productRepository->query()->find($id);
-            if(!$product->status){
+            if (!$product->status) {
                 throw new ModelNotFoundException(__('messages.error-not-found'));
             }
             if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
@@ -132,18 +133,18 @@ class ProductService implements ProductServiceInterface
             if ($product->categories) {
                 foreach ($product->categories as $category) {
                     foreach ($category->products()->orderBy('qty_sold', 'desc')->take(3)->get() as $p)
-                    if($p->id != $product->id) {
-                        $productRelated[] = $p; 
-                    }
+                        if ($p->id != $product->id) {
+                            $productRelated[] = $p;
+                        }
                     if (count($productRelated) === 20) break;
                 }
             }
             $uniProductRelated = collect($productRelated)->unique('id');
             $collectProduct = [];
             if (count($uniProductRelated) < 20) {
-                $topSold = $this->productRepository->query()->where('id','!=',$product)->orderBy('qty_sold', 'desc')->take(30)->get();
+                $topSold = $this->productRepository->query()->where('id', '!=', $product)->orderBy('qty_sold', 'desc')->take(30)->get();
                 foreach ($topSold as $item) {
-                    
+
                     $uniProductRelated[] = $item;
                     if (count(collect($uniProductRelated)->unique('id')) === 20) {
                         $collectProduct = collect($uniProductRelated)->unique('id');
@@ -155,7 +156,7 @@ class ProductService implements ProductServiceInterface
             }
             $suggestedProduct = [...$collectProduct];
             foreach ($collectProduct as $item) $item->load('categories');
-            
+
             $product->suggestedProduct = $suggestedProduct;
             return new ProductDetailResource($product);
         });
@@ -169,40 +170,213 @@ class ProductService implements ProductServiceInterface
             'variants' => [],
         ]
     ) {
-        return DB::transaction(function () use ($data, $options) {
-            if (empty($data['status'])) $data['status'] = 0;
-            $product = $this->productRepository->create($data);
-            if (!$product) throw new \Exception(__('messages.error-not-found'));
-            $product->slug = $this->slug($product->name, $product->id);
-            $product->save();
-            if (count($options['images']) > 0) {
-                $product->images()->attach($options['images']);
+
+        if (isset($data['is_variant'])) {
+            $createData = [
+                'name' => $data['name'],
+                'price' => $data['price'],
+                'description' => $data['description'],
+                'short_description' => $data['short_description'],
+                'stock_qty' => null,
+                'image_url' => $data['image_url'],
+                'qty_sold' => null,
+                'is_variant' => 1,
+            ];
+            if (empty($data['status'])) {
+                $createData['deleted_at'] = now();
             }
-            if (count($options['categories']) > 0) $product->categories()->attach($options['categories']);
-            Cache::tags([$this->cacheTag, ...$this->relations])->flush();
-            return new ProductResource($this->loadRelationships($product));
-        });
+            return DB::transaction(function () use ($options, $createData) {
+                $errors = [];
+                $product = $this->productRepository->create($createData);
+                if (!$product) throw new \Exception(__('không thể tạo sản phẩm'));
+                $product->slug = $this->slug($product->name, $product->id);
+                $product->save();
+                if (count($options['images']) > 0) {
+                    $product->images()->attach($options['images']);
+                }
+                if (count($options['categories']) > 0) $product->categories()->attach($options['categories']);
+                if (isset($options['variants']) && count($options['variants']) > 0) {
+                    foreach ($options['variants'] as $variant) {
+                        $variantData = [
+                            'product_id' => $product->id,
+                            'price' => $variant['price'] ?: 0,
+                            'stock_qty' => $variant['stock_qty'] ?: 0,
+                            'qty_sold' => 0,
+                            'sku' => $variant['sku'] ?: null
+                        ];
+                        $existsValues = $this->attributeValueRepository->query()->whereIn('id', $variant['values'])->pluck('id')->toArray();
+                        if (count([...$existsValues]) != count($variant['values']) || empty($variant['values'])) {
+                            $errors['variant_value'] = "Một số biến thể sẽ không được khởi tạo do thuộc tính không tồn tại";
+                        } else {
+                            sort($variant['values']);
+                            $variantData['code_identifier'] = $product->id . implode('', $variant['values']);
+                            $variation = $this->variationRepository->create($variantData);
+                            if (!$variation) throw new \Exception(__('Có lỗi xảy ra!Hãy thử tạo lại sản phẩm'));
+                            $variation->values()->attach($variant['values']);
+                            $valuesName = [...$variation->values()->get()->pluck('value')];
+                            $strName = implode(' - ', $valuesName);
+                            $variation->name = $variation->product->name . '[' . $strName . ']';
+                            $values = $variation->values()->pluck('value');
+                            $valueArr = [];
+                            foreach ($values as $value) {
+                                $v = Str::slug($value);
+                                $valueArr[] = $v;
+                            }
+                            $valueStr = implode('-', $valueArr);
+                            $slug = $valueStr . '.' . $variation->id;
+                            $variation->slug = $slug;
+                            $variation->classify = $strName;
+                            $variation->save();
+                        }
+                    }
+                }
+                Cache::tags([$this->cacheTag, ...$this->relations])->flush();
+
+                return [
+                    'errors' => $errors,
+                    'products' =>  new ProductResource($this->loadRelationships($product)),
+                ];
+            });
+        } else {
+            $createData = [
+                'name' => $data['name'],
+                'price' => $data['price'],
+                'description' => $data['description'],
+                'short_description' => $data['short_description'],
+                'stock_qty' => $data['stock_qty'],
+                'image_url' => $data['image_url'],
+                'qty_sold' => 0,
+                'is_variant' => null
+            ];
+            if (empty($data['status'])) {
+                $createData['deleted_at'] = now();
+            }
+            return  DB::transaction(function () use ($options, $createData) {
+                $product = $this->productRepository->create($createData);
+                if (!$product) throw new \Exception(__('không thể tạo sản phẩm'));
+                $product->slug = $this->slug($product->name, $product->id);
+                $product->save();
+                if (count($options['images']) > 0) {
+                    $product->images()->attach($options['images']);
+                }
+                if (count($options['categories']) > 0) $product->categories()->attach($options['categories']);
+                Cache::tags([$this->cacheTag, ...$this->relations])->flush();
+                return new ProductResource($this->loadRelationships($product));
+            });
+        }
     }
 
     public function update(int|string $id, array $data, array $options = [
         'images' => [],
-        'categories' => []
+        'categories' => [],
+        'variants' => [],
     ])
     {
-        return DB::transaction(function () use ($id, $data, $options) {
-            $product = $this->productRepository->find($id);
+        $product = $this->productRepository->find($id);
+        if (!$product) throw new ModelNotFoundException('Không tìm thấy sản phẩm');
+        if ($product->is_variant) {
+            return DB::transaction(function () use ($options, $data, $product) {
+                $errors = [];
+                if(isset($data['status'])){
+                    $product->deleted_at = null;
+                }
+                $product->name = $data['name'];
+                $product->slug = $this->slug($product->name, $product->id);
+                $product->description = $data['description'];
+                $product->short_description = $data['short_description'];
+                $product->stock_qty = $data['stock_qty'];
+                $product->image_url = $data['image_url'];
+                $product->save();
 
-            if (!$product) throw new \Exception(__('messages.error-not-found'));
-            $product->update($data);
-            $product->slug = $this->slug($product->name, $product->id);
-            $product->save();
-            if (count($options['images']) > 0) {
-                $product->images()->sync($options['images']);
-            }
-            if (count($options['categories']) > 0) $product->categories()->sync($options['categories']);
-            Cache::tags([$this->cacheTag, ...$this->relations])->flush();
-            return new ProductResource($this->loadRelationships($product));
-        });
+                if (isset($options['images']) && count($options['images']) > 0) {
+                    $product->images()->sync($options['images']);
+                }
+                if (count($options['categories']) > 0) $product->categories()->sync($options['categories']);
+                if (isset($options['variants']) && count($options['variants']) > 0) {
+                    foreach ($options['variants'] as $variant) {
+                        if (empty($variant['values'])) throw new Exception('Có lỗi đã xảy ra!Không thể tìm thấy thuộc tính biến thể');
+                        sort($variant['values']);
+                        $code_identifier = $product->id . implode('', $variant['values']);
+                        $variation = $product->variations()->withTrashed()->where('code_identifier', $code_identifier)->first();
+                        if ($variation) {
+                            $variation->price = $variant['price'] ?? $variation->price;
+                            $variation->stock_qty = $variant['stock_qty'] ?? $variation->stock_qty;
+                            $variation->sku = $variant['sku'] ?? $variation->sku;
+                            $variation->name = $variation->product->name . " " . $variation->classify;
+                            $variation->deleted_at = null;
+                            $variation->save();
+                            if (isset($variant['images']) && count($variant['images']) > 0) {
+                                $variation->images()->sync($variant['images']);
+                            }
+                        } else {
+                            sort($variant['values']);
+                            $code_identifier = $product->id . implode('', $variant['values']);
+                            $variantData = [
+                                'product_id' => $product->id,
+                                'price' => $variant['price'] ?: 0,
+                                'stock_qty' => $variant['stock_qty'] ?: 0,
+                                'qty_sold' => 0,
+                                'sku' => $variant['sku'] ?: null,
+                                'code_identifier' => $code_identifier
+                            ];
+                            $existsValues = $this->attributeValueRepository->query()->whereIn('id', $variant['values'])->pluck('id')->toArray();
+                            if (count([...$existsValues]) != count($variant['values']) || empty($variant['values'])) {
+                                $errors['variant_value'] = "Một số biến thể sẽ không được khởi tạo do thuộc tính không tồn tại";
+                            } else {
+                                $variation = $this->variationRepository->create($variantData);
+                                if (isset($variant['images']) && count($variant['images']) > 0) {
+                                    $variation->images()->attach($variant['images']);
+                                }
+                                $variation->values()->attach($variant['values']);
+                                $valuesName = [...$variation->values()->get()->pluck('value')];
+                                $strName = implode(' - ', $valuesName);
+                                $variation->name = $variation->product->name . '[' . $strName . ']';
+                                $values = $variation->values()->pluck('value');
+                                $valueArr = [];
+                                foreach ($values as $value) {
+                                    $v = Str::slug($value);
+                                    $valueArr[] = $v;
+                                }
+                                $valueStr = implode('-', $valueArr);
+                                $slug = $valueStr . '.' . $variation->id;
+                                $variation->slug = $slug;
+                                $variation->classify = $strName;
+                                $variation->save();
+                            }
+                        }
+                    }
+                }
+                Cache::tags([$this->cacheTag, ...$this->relations])->flush();
+                return [
+                    'product' =>  new ProductResource($this->loadRelationships($product)),
+                    'errors' => $errors
+                ];
+            });
+        } else {
+
+            $product = $this->productRepository->find($id);
+            if (!$product) throw new ModelNotFoundException('Không tìm thấy sản phẩm');
+            return  DB::transaction(function () use ($options, $product, $data) {
+                $product->name = $data['name'];
+                $product->price = $data['price'];
+                if (empty($data['status'])) {
+                    $product->deleted_at = now();
+                }
+                $product->description = $data['description'];
+                $product->short_description = $data['short_description'];
+                $product->stock_qty = $data['stock_qty'];
+                $product->image_url = $data['image_url'];
+                if (!$product) throw new \Exception(__('không thể tạo sản phẩm'));
+                $product->slug = $this->slug($product->name, $product->id);
+                $product->save();
+                if (count($options['images']) > 0) {
+                    $product->images()->sync($options['images']);
+                }
+                if (count($options['categories']) > 0) $product->categories()->sync($options['categories']);
+                Cache::tags([$this->cacheTag, ...$this->relations])->flush();
+                return new ProductResource($this->loadRelationships($product));
+            });
+        }
     }
 
     public function productAttribute(int|string $id)
@@ -234,15 +408,7 @@ class ProductService implements ProductServiceInterface
         ];
     }
 
-    public function updateStatus(string|int|bool $status, int|string $id)
-    {
-        $product = $this->productRepository->find($id);
-        if (!$product) throw new ModelNotFoundException(__('messages.error-not-found'));
-        $product->status = $status;
-        $product->save();
-        Cache::tags([$this->cacheTag, ...$this->relations])->flush();
-        return new ProductResource($this->loadRelationships($product));
-    }
+
 
     protected function slug(string $name, int|string $id)
     {
@@ -326,11 +492,11 @@ class ProductService implements ProductServiceInterface
         return true;
     }
 
-    public function findByAttributeValues()
+    public function filterProduct()
     {
         $allQuery = http_build_query(request()->query());
 
-        return Cache::tags([$this->cacheTag])->remember('find-by-attribute-values?' . $allQuery, 60, function () {
+        return Cache::tags([$this->cacheTag])->remember('product/filter?' . $allQuery, 60, function () {
             $perPage = request()->query('per_page');
             $attributeQuery = request()->query('attributes');
             $categoryId = request()->query('categoryId');
@@ -350,7 +516,7 @@ class ProductService implements ProductServiceInterface
                 $arrAttrVal = $intElements;
             }
 
-            $products = $this->productRepository->query()->where('status',1)->when(count($arrAttrVal) > 0, function ($q) use ($arrAttrVal) {
+            $products = $this->productRepository->query()->where('status', 1)->when(count($arrAttrVal) > 0, function ($q) use ($arrAttrVal) {
                 $q->whereHas('variations', function ($q) use ($arrAttrVal) {
                     $q->whereHas('values', function ($q) use ($arrAttrVal) {
                         $q->whereIn('attribute_value_id', $arrAttrVal);
@@ -380,14 +546,5 @@ class ProductService implements ProductServiceInterface
             $products = $this->loadRelationships($this->productRepository->query()->orderBy('updated_at', 'desc'))->get();
             return ProductSummary::collection($products);
         });
-    }
-    //Just for statistics
-    public function countByDateForStatistics($from, $to): int
-    {
-        $count = $this->productRepository->query()->whereBetween('created_at', [
-            Carbon::parse($from)->startOfDay(),
-            Carbon::parse($to)->endOfDay()
-        ])->count();
-        return $count;
     }
 }

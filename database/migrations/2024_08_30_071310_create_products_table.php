@@ -16,14 +16,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique()->nullable();
             $table->decimal('price',10,2);
-            $table->decimal('import_price',10,2)->nullable();
             $table->text('image_url');
             $table->boolean('is_variant')->nullable();
             $table->text('short_description')->nullable();
             $table->text('description')->nullable();
-            $table->boolean('status')->default(1)->nullable();
-            $table->integer('stock_qty')->default(0);
-            $table->integer('qty_sold')->default(0);
+            $table->integer('stock_qty')->default(0)->nullable();
+            $table->integer('qty_sold')->default(0)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
