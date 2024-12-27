@@ -31,6 +31,7 @@ return new class extends Migration
             $table->integer("status")->comment("0: Cancelled, 1: Waiting Payment , 2: Waiting Confirm, 3: Confirmed, 4: Delivering , 5: Delivered , 6: Waiting Accept Return ,  7:Return Processing, 8: Denied Return, 9: Returned");
             $table->text("reason_cancelled")->nullable();
             $table->text("reason_return")->nullable();
+            $table->text("reason_denied_return")->nullable();
             $table->text('note')->nullable();
             $table->timestamps();
         });

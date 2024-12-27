@@ -33,7 +33,8 @@ class Order extends Model
         "total_amount",
         "status",
         "reason_cancelled",
-        "reason_return"
+        "reason_return",
+        "reason_denied_return"
     ];
 
 
