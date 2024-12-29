@@ -369,7 +369,6 @@ class ProductService implements ProductServiceInterface
                 if(isset($data['stock_qty'])){
                     $product->stock_qty = $data['stock_qty'];
                 }
-                
                 $product->image_url = $data['image_url'];
                 $product->slug = $this->slug($product->name, $product->id);
                 $product->save();
