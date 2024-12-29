@@ -307,5 +307,5 @@ class OrderService implements OrderServiceInterface
         Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return $order;
     }
-    
+
 }

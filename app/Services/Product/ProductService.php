@@ -177,20 +177,18 @@ class ProductService implements ProductServiceInterface
                 'price' => $data['price'],
                 'description' => $data['description'],
                 'short_description' => $data['short_description'],
-                'stock_qty' => null,
+                'stock_qty' => 0,
                 'image_url' => $data['image_url'],
-                'qty_sold' => null,
+                'qty_sold' => 0,
                 'is_variant' => 1,
             ];
-            if (empty($data['status'])) {
-                $createData['deleted_at'] = now();
-            }
+            
             return DB::transaction(function () use ($options, $createData) {
                 $errors = [];
                 $product = $this->productRepository->create($createData);
                 if (!$product) throw new \Exception(__('không thể tạo sản phẩm'));
                 $product->slug = $this->slug($product->name, $product->id);
-                $product->save();
+                
                 if (count($options['images']) > 0) {
                     $product->images()->attach($options['images']);
                 }
@@ -206,7 +204,7 @@ class ProductService implements ProductServiceInterface
                         ];
                         $existsValues = $this->attributeValueRepository->query()->whereIn('id', $variant['values'])->pluck('id')->toArray();
                         if (count([...$existsValues]) != count($variant['values']) || empty($variant['values'])) {
-                            $errors['variant_value'] = "Một số biến thể sẽ không được khởi tạo do thuộc tính không tồn tại";
+                            $errors['variant_value']= "Một số biến thể sẽ không được khởi tạo do thuộc tính không tồn tại";
                         } else {
                             sort($variant['values']);
                             $variantData['code_identifier'] = $product->id . implode('', $variant['values']);
@@ -230,6 +228,8 @@ class ProductService implements ProductServiceInterface
                         }
                     }
                 }
+                $product->stock_qty = $product->variations()->pluck('stock_qty')->toArray() ? array_sum($product->variations()->pluck('stock_qty')->toArray()) : 0;
+                $product->save();
                 Cache::tags([$this->cacheTag, ...$this->relations])->flush();
 
                 return [
@@ -248,9 +248,7 @@ class ProductService implements ProductServiceInterface
                 'qty_sold' => 0,
                 'is_variant' => null
             ];
-            if (empty($data['status'])) {
-                $createData['deleted_at'] = now();
-            }
+            
             return  DB::transaction(function () use ($options, $createData) {
                 $product = $this->productRepository->create($createData);
                 if (!$product) throw new \Exception(__('không thể tạo sản phẩm'));
@@ -276,15 +274,18 @@ class ProductService implements ProductServiceInterface
         if (!$product) throw new ModelNotFoundException('Không tìm thấy sản phẩm');
         if ($product->is_variant) {
             return DB::transaction(function () use ($options, $data, $product) {
+                $product->variations()->delete();
                 $errors = [];
-                if(isset($data['status'])){
-                    $product->deleted_at = null;
-                }
+                
                 $product->name = $data['name'];
                 $product->slug = $this->slug($product->name, $product->id);
-                $product->description = $data['description'];
-                $product->short_description = $data['short_description'];
-                $product->stock_qty = $data['stock_qty'];
+                if(isset($data['description'])){
+                    $product->description = $data['description'];
+                }
+                if(isset($data['short_description'])){
+                    $product->short_description = $data['short_description'];
+                }
+                
                 $product->image_url = $data['image_url'];
                 $product->save();
 
@@ -294,7 +295,7 @@ class ProductService implements ProductServiceInterface
                 if (count($options['categories']) > 0) $product->categories()->sync($options['categories']);
                 if (isset($options['variants']) && count($options['variants']) > 0) {
                     foreach ($options['variants'] as $variant) {
-                        if (empty($variant['values'])) throw new Exception('Có lỗi đã xảy ra!Không thể tìm thấy thuộc tính biến thể');
+                        if (empty($variant['values'])) $errors['empty_variant_value'] = 'Một số biến thể không thể tìm thấy thuộc tính nên sẽ không được khởi tạo';
                         sort($variant['values']);
                         $code_identifier = $product->id . implode('', $variant['values']);
                         $variation = $product->variations()->withTrashed()->where('code_identifier', $code_identifier)->first();
@@ -356,17 +357,20 @@ class ProductService implements ProductServiceInterface
 
             $product = $this->productRepository->find($id);
             if (!$product) throw new ModelNotFoundException('Không tìm thấy sản phẩm');
-            return  DB::transaction(function () use ($options, $product, $data) {
+            $update =  DB::transaction(function () use ($options, $product, $data) {
                 $product->name = $data['name'];
                 $product->price = $data['price'];
-                if (empty($data['status'])) {
-                    $product->deleted_at = now();
+                if(isset($data['description'])){
+                    $product->description = $data['description'];
                 }
-                $product->description = $data['description'];
-                $product->short_description = $data['short_description'];
-                $product->stock_qty = $data['stock_qty'];
+                if(isset($data['short_description'])){
+                    $product->short_description = $data['short_description'];
+                }
+                if(isset($data['stock_qty'])){
+                    $product->stock_qty = $data['stock_qty'];
+                }
+                
                 $product->image_url = $data['image_url'];
-                if (!$product) throw new \Exception(__('không thể tạo sản phẩm'));
                 $product->slug = $this->slug($product->name, $product->id);
                 $product->save();
                 if (count($options['images']) > 0) {
@@ -376,6 +380,11 @@ class ProductService implements ProductServiceInterface
                 Cache::tags([$this->cacheTag, ...$this->relations])->flush();
                 return new ProductResource($this->loadRelationships($product));
             });
+            if($update){
+                return $update;
+            }else{
+                throw new Exception('Không thể cập nhật sản phẩm');
+            }
         }
     }
 

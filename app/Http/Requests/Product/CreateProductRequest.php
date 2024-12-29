@@ -29,7 +29,7 @@ class CreateProductRequest extends FormRequest
             'description' => 'nullable',
             'short_description' => 'nullable',
             'image_url' => 'required|string',
-            'stock_qty' => 'required|numeric',
+            'stock_qty' => 'nullable|numeric',
             'status' => 'nullable|boolean',
             'images' => 'nullable|array',
             'categories' => 'nullable|array',
@@ -38,7 +38,7 @@ class CreateProductRequest extends FormRequest
             'variations.*.price' => 'required|numeric',
             'variations.*.stock_qty' => 'required|numeric',
             'variations.*.status' => 'nullable|boolean',
-            'variations.*.attributes' => 'nullable|array',
+            'variations.*.values' => 'required|array',
             'variations.*.sku' => "nullable|string"
         ];
     }

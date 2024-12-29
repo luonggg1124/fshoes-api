@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('slug')->unique()->nullable();
             $table->decimal('price',10,2);
             $table->text('image_url');
+            $table->string('status')->nullable();
             $table->boolean('is_variant')->nullable();
             $table->text('short_description')->nullable();
             $table->text('description')->nullable();

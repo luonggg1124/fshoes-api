@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('classify')->nullable();
             $table->string('sku')->nullable();
+            $table->string('status')->nullable();
             $table->string('slug')->unique()->nullable();
             $table->decimal('price',10,2);
             $table->integer('stock_qty');
