@@ -206,6 +206,24 @@ class ProductController extends Controller
                     'message' => $throwable->getMessage()
                 ]
             );
+            if($throwable instanceof Exception){
+                return response()->json([
+                   'status' => false,
+                   'message' => $throwable->getMessage()
+                ], 500);
+            }
+            if($throwable instanceof \InvalidArgumentException){
+                return \response()->json([
+                    'status' => false,
+                    'message' => $throwable->getMessage()
+                ], 400);
+            }
+            if($throwable instanceof ModelNotFoundException){
+                return \response()->json([
+                    'status' => false,
+                    'message' => $throwable->getMessage()
+                ], 404);
+            }
             return response()->json([
                 'message' => __('messages.error-internal-server'),
                 'status' => false,
