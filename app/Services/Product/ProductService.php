@@ -43,7 +43,8 @@ class ProductService implements ProductServiceInterface
         protected ProductRepositoryInterface   $productRepository,
         protected VariationRepositoryInterface $variationRepository,
         protected ImageServiceInterface        $imageService,
-        protected CategoryRepositoryInterface $categoryRepository
+        protected CategoryRepositoryInterface $categoryRepository,
+        
 
     ) {}
 
@@ -169,20 +170,12 @@ class ProductService implements ProductServiceInterface
             'variants' => [],
         ]
     ) {
-        return DB::transaction(function () use ($data, $options) {
-            if (empty($data['status'])) $data['status'] = 0;
-            $product = $this->productRepository->create($data);
-            if (!$product) throw new \Exception(__('messages.error-not-found'));
-            $product->slug = $this->slug($product->name, $product->id);
-            $product->save();
-            if (count($options['images']) > 0) {
-                $product->images()->attach($options['images']);
-            }
-            if (count($options['categories']) > 0) $product->categories()->attach($options['categories']);
-            Cache::tags([$this->cacheTag, ...$this->relations])->flush();
-            return new ProductResource($this->loadRelationships($product));
-        });
+
+       
     }
+
+
+
 
     public function update(int|string $id, array $data, array $options = [
         'images' => [],
