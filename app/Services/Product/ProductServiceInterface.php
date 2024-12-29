@@ -11,7 +11,7 @@ interface ProductServiceInterface
     function productAttribute(int|string $id);
     function createAttributeValues(int $id,string $attributeName,array $values = []);
     function create(array $data,array $options = []);
-    public function updateStatus(string|int|bool $status,int|string $id);
+
     public function update(int|string $id, array $data,array $options=[]);
     function productWithTrashed();
     public function productTrashed();
@@ -19,8 +19,8 @@ interface ProductServiceInterface
     function findProductTrashed(int|string $id);
     public function destroy(int|string $id);
     function productByCategory(int|string $categoryId);
-    function findByAttributeValues();
+    function filterProduct();
     function allSummary();
-    function countByDateForStatistics($from, $to);
+
     function forceDestroy(int|string $id);
 }

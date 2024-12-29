@@ -61,7 +61,7 @@ class VariationService implements VariationServiceInterface
                         unset($value->attribute);
                     }
                 }
-                // automatically assign attributes
+               
                 $product->attributes = [...$attributes];
             }
             return [

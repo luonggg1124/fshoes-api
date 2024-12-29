@@ -63,7 +63,6 @@ class VariationSeeder extends Seeder
                 $variation = $p->variations()->create([
                     'sku' => $p->sku . '-' . Str::random(5),
                     'price' => $p->price + (random_int(1,12) / 10 * $p->price),
-                    'import_price' => $p->price - (random_int(1,12) / 10 * $p->price),
                     'stock_qty' => random_int(20, 70),
                     'qty_sold' => random_int(20, 70),
                 ]);

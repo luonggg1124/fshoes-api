@@ -31,7 +31,8 @@ class ProductResource extends JsonResource
             'sale_price' => $this->salePrice(),
             'description' => $this->description,
             'short_description' => $this->short_description,
-            'status' => $this->status,
+            'is_variant' => $this->is_variant,
+            'status' => $this->deleted_at ? true : false,
             'stock_qty' => $this->stock_qty,
             'qty_sold' => $this->qty_sold,
             'qty_sale' => $this->saleQuantity(),
@@ -58,7 +59,7 @@ class ProductResource extends JsonResource
         if ($this->includeTimes($this->model)) {
             $resource['created_at']  = $this->created_at;
             $resource['updated_at']  = $this->updated_at;
-            $resource['deleted_at']  = $this->updated_at;
+            $resource['deleted_at']  = $this->deleted_at;
         }
         return $resource;
     }

@@ -33,7 +33,6 @@ class CategoryService implements CategoryServiceInterface
     {
 
         $allQuery = http_build_query(request()->query());
-
         $key = 'all_products?' . $allQuery;
         return Cache::tags([$this->cacheTag])
             ->remember($key, 60, function () {
@@ -94,12 +93,10 @@ class CategoryService implements CategoryServiceInterface
             }
             $listProduct = [];
             $category = $this->categoryRepository->query()->where('display', $serial)->first();
-            
-            $productsInCategory = $category->products()->where('status',1)->get();
-            
+            $productsInCategory = $category->products()->where('status',true)->get();
             $listProduct = [...$productsInCategory];
             if (count($productsInCategory) < $quantity) {
-                $listAllProducts = $this->productRepository->query()->where('status',1)->get();
+                $listAllProducts = $this->productRepository->query()->where('status',true)->get();
                 $arrayId = $category->products()->orderBy('qty_sold', 'desc')->get()->pluck('id');
                 foreach ($listAllProducts as $p) {
                     if (!in_array($p->id, [...$arrayId])) {

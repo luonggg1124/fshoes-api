@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\CreateProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Services\Product\ProductServiceInterface;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,11 +19,11 @@ class ProductController extends Controller
 {
 
 
-    public function __construct(protected ProductServiceInterface $productService){}
+    public function __construct(protected ProductServiceInterface $productService) {}
     /**
      * Display a listing of the resource.
      */
-    public function index():Response|JsonResponse
+    public function index(): Response|JsonResponse
 
     {
         return response()->json(
@@ -34,93 +35,110 @@ class ProductController extends Controller
     public function store(CreateProductRequest $request)
     {
 
-         try{
-
-             $data = $request->all();
-             $images = $request->images ?? [];
-             $categories = $request->categories ?? [];
-             $data['qty_sold'] = 0;
-             $product = $this->productService->create($data,[
-                 'images' => $images,
-                 'categories' => $categories
-             ]);
-             return response()->json([
-                 'message' => __('messages.created-success'),
-                 'status' => true,
-                 'product' => $product
-             ],201);
-         }catch(\Throwable $throwable){
-             Log::error(
-                 message: __CLASS__.'@'.__FUNCTION__,context: [
-                 'line' => $throwable->getLine(),
-                 'message' => $throwable->getMessage()
-             ]
-             );
-             return response()->json([
-                 'message' => __('messages.error-internal-server'),
-                 'status' => false,
-             ],500);
-         }
-
+        try {
+            $data = $request->all();
+            $images = $request->images ?: [];
+            $categories = $request->categories ?: [];
+            $variants = $request->variations ?: [];
+         
+            $create = $this->productService->create($data, [
+                'images' => $images,
+                'categories' => $categories,
+                'variants' => $variants
+            ]);
+            return response()->json([
+                'message' => __('messages.created-success'),
+                'status' => true,
+                ...$create
+            ], 201);
+        } catch (\Throwable $throwable) {
+            Log::error(
+                message: __CLASS__ . '@' . __FUNCTION__,
+                context: [
+                    'line' => $throwable->getLine(),
+                    'message' => $throwable->getMessage()
+                ]
+            );
+            if($throwable instanceof Exception){
+                return response()->json([
+                   'status' => false,
+                   'message' => $throwable->getMessage()
+                ], 500);
+            }
+            if($throwable instanceof \InvalidArgumentException){
+                return \response()->json([
+                    'status' => false,
+                    'message' => $throwable->getMessage()
+                ], 400);
+            }
+            return response()->json([
+                'message' => __('messages.error-internal-server'),
+                'status' => false,
+            ], 500);
+        }
     }
-    
-    
-    
 
-    public function createAttributeValues(int $id,Request $request):Response|JsonResponse
+
+
+
+    public function createAttributeValues(int $id, Request $request): Response|JsonResponse
     {
         try {
-            if(empty($request->attribute)){
+            if (empty($request->attribute)) {
                 return \response()->json([
                     'status' => false,
                     'error' => __('messages.error-required'),
-                ],400);
+                ], 400);
             }
-            if(empty($request->values)){
+            if (empty($request->values)) {
                 return \response()->json([
                     'status' => false,
                     'error' => __('messages.error-required'),
-                ],400);
-            }elseif (!is_array($request->values)){
+                ], 400);
+            } elseif (!is_array($request->values)) {
                 return \response()->json([
                     'status' => false,
                     'error' => __('messages.error-value'),
-                ],400);
+                ], 400);
             }
             $attribute = $request->attribute;
             $values = $request->values;
-            $data = $this->productService->createAttributeValues($id,$attribute,$values);
+            $data = $this->productService->createAttributeValues($id, $attribute, $values);
             return \response()->json(
-                $data
-            ,201);
-        }catch (\Throwable $throw){
-            Log::error(
-                message: __CLASS__.'@'.__FUNCTION__,context: [
-                'line' => $throw->getLine(),
-                'message' => $throw->getMessage()
-            ]
+                $data,
+                201
             );
-            if ($throw instanceof ModelNotFoundException){
+        } catch (\Throwable $throw) {
+            Log::error(
+                message: __CLASS__ . '@' . __FUNCTION__,
+                context: [
+                    'line' => $throw->getLine(),
+                    'message' => $throw->getMessage()
+                ]
+            );
+            if ($throw instanceof ModelNotFoundException) {
                 return \response()->json([
                     'status' => false,
                     'error' => $throw->getMessage()
-                ],404);
+                ], 404);
             }
             return \response()->json([
                 'status' => false,
                 'error' => $throw->getMessage()
-            ],500);
+            ], 500);
         }
     }
-    public function getAttributeValues(int|string $id){
+    public function getAttributeValues(int|string $id)
+    {
         try {
             return response()->json($this->productService->productAttribute($id));
-        }catch (\Throwable $throw){
+        } catch (\Throwable $throw) {
             Log::error(
-                message: __CLASS__.'@'.__FUNCTION__,context: [
-                'line' => $throw->getLine(),
-                'message' => $throw->getMessage()
-            ]
+                message: __CLASS__ . '@' . __FUNCTION__,
+                context: [
+                    'line' => $throw->getLine(),
+                    'message' => $throw->getMessage()
+                ]
             );
             return response()->json([
                 'error' => $throw->getMessage(),
@@ -131,26 +149,28 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string|int $id):Response|JsonResponse
+    public function show(string|int $id): Response|JsonResponse
     {
         try {
             return response()->json($this->productService->findById($id));
-        }catch (ModelNotFoundException $e){
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'error' => $e->getMessage(),
                 'status' => false
             ], 404);
         }
     }
-    public function productDetail(string|int $id){
+    public function productDetail(string|int $id)
+    {
         try {
             return response()->json($this->productService->productDetail($id));
-        }catch (\Throwable $throw){
+        } catch (\Throwable $throw) {
             Log::error(
-                message: __CLASS__.'@'.__FUNCTION__,context: [
-                'line' => $throw->getLine(),
-                'message' => $throw->getMessage()
-            ]
+                message: __CLASS__ . '@' . __FUNCTION__,
+                context: [
+                    'line' => $throw->getLine(),
+                    'message' => $throw->getMessage()
+                ]
             );
             return response()->json([
                 'error' => $throw->getMessage(),
@@ -163,59 +183,43 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, string|int $id)
     {
-        try{
+        try {
             $data = $request->all();
-            $images = $request->images ?? [];
-            $categories = $request->categories ?? [];
-            $product = $this->productService->update($id,$data,[
+            $images = $request->images ?: [];
+            $categories = $request->categories ?: [];
+            $variants = $request->variations ?: [];
+            $update = $this->productService->update($id, $data, [
                 'images' => $images,
-                'categories' => $categories
+                'categories' => $categories,
+                'variants' => $variants,
             ]);
             return response()->json([
                 'message' => __('messages.update-success'),
                 'status' => true,
-                'product' => $product
-            ],201);
-        }catch(\Throwable $throwable){
+                ...$update
+            ], 201);
+        } catch (\Throwable $throwable) {
             Log::error(
-                message: __CLASS__.'@'.__FUNCTION__,context: [
-                'line' => $throwable->getLine(),
-                'message' => $throwable->getMessage()
-            ]
+                message: __CLASS__ . '@' . __FUNCTION__,
+                context: [
+                    'line' => $throwable->getLine(),
+                    'message' => $throwable->getMessage()
+                ]
             );
             return response()->json([
                 'message' => __('messages.error-internal-server'),
                 'status' => false,
-            ],500);
+            ], 500);
         }
     }
-    public function productsByCategory(int|string $categoryId){
+    public function productsByCategory(int|string $categoryId)
+    {
         return response()->json([
             'status' => true,
             'products' => $this->productService->productByCategory($categoryId),
         ]);
     }
-    public function updateProductStatus(Request $request, string|int $id){
-        try {
-            $status = $request->status;
-            $product = $this->productService->updateStatus($status,$id);
-            return response()->json([
-                'message' => __('messages.update-success'),
-                'status' => true,
-            ],201);
-        }catch (\Throwable $throwable){
-            Log::error(
-                message: __CLASS__.'@'.__FUNCTION__,context: [
-                'line' => $throwable->getLine(),
-                'message' => $throwable->getMessage()
-            ]
-            );
-            return response()->json([
-                'message' => __('messages.error-internal-server'),
-                'status' => false
-            ],500);
-        }
-    }
+
 
     /**
      * Remove the specified resource from storage.
@@ -228,64 +232,70 @@ class ProductController extends Controller
                 'status' => true,
                 'message' => __('messages.delete-success'),
             ]);
-        }catch (\Throwable $throw){
+        } catch (\Throwable $throw) {
             Log::error(
-                message: __CLASS__.'@'.__FUNCTION__,context: [
-                'line' => $throw->getLine(),
-                'message' => $throw->getMessage()
-            ]
+                message: __CLASS__ . '@' . __FUNCTION__,
+                context: [
+                    'line' => $throw->getLine(),
+                    'message' => $throw->getMessage()
+                ]
             );
-            if($throw instanceof ModelNotFoundException){
+            if ($throw instanceof ModelNotFoundException) {
                 return \response()->json([
                     'status' => false,
                     'error' => $throw->getMessage()
-                ],404);
+                ], 404);
             }
             return \response()->json([
                 'status' => false,
                 'error' => __('messages.error-internal-server'),
-            ],500);
+            ], 500);
         }
     }
 
-    public function productWithTrashed(){
+    public function productWithTrashed()
+    {
         return \response()->json([
             'status' => true,
             'products' => $this->productService->productWithTrashed()
-        ],200);
+        ], 200);
     }
-    public function productTrashed(){
+    public function productTrashed()
+    {
         return \response()->json([
             'status' => true,
             'products' => $this->productService->productTrashed()
-        ],200);
+        ], 200);
     }
-    public function getOneTrashed(int|string $id){
+    public function getOneTrashed(int|string $id)
+    {
         try {
             return response()->json($this->productService->findProductTrashed($id));
-        }catch (ModelNotFoundException $e){
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'error' => $e->getMessage(),
                 'status' => false
             ], 404);
         }
     }
-    public function restore(int|string $id){
+    public function restore(int|string $id)
+    {
         try {
             $product = $this->productService->restore($id);
             return \response()->json([
                 'status' => true,
                 'product' => $product,
                 'message' => __('messages.restore-success'),
-            ],201);
-        }catch (ModelNotFoundException $e){
+            ], 201);
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'error' => $e->getMessage(),
                 'status' => false
             ], 404);
         }
     }
-    public function forceDestroy(int|string $id){
+    public function forceDestroy(int|string $id)
+    {
         try {
             $sucess = $this->productService->forceDestroy($id);
             return \response()->json([
@@ -293,38 +303,40 @@ class ProductController extends Controller
                 'message' => __('messages.delete-success'),
 
             ]);
-        }catch (\Throwable $throwable){
+        } catch (\Throwable $throwable) {
             Log::error(
-                message: __CLASS__.'@'.__FUNCTION__,context: [
-                'line' => $throwable->getLine(),
-                'message' => $throwable->getMessage()
-            ]
+                message: __CLASS__ . '@' . __FUNCTION__,
+                context: [
+                    'line' => $throwable->getLine(),
+                    'message' => $throwable->getMessage()
+                ]
             );
-            if($throwable instanceof ModelNotFoundException){
+            if ($throwable instanceof ModelNotFoundException) {
                 return \response()->json([
                     'status' => false,
                     'error' => $throwable->getMessage()
-                ],404);
+                ], 404);
             }
             return response()->json([
                 'status' => false,
                 'error' => __('messages.error-internal-server'),
-            ],500);
+            ], 500);
         }
     }
 
-    public function productsByAttributeValues(){
+    public function filterProduct()
+    {
         return \response()->json([
             'status' => true,
-            'products' => $this->productService->findByAttributeValues()
+            'products' => $this->productService->filterProduct()
         ]);
     }
 
-    public function allSummary(){
+    public function allSummary()
+    {
         return \response()->json([
             'status' => true,
             'products' => $this->productService->allSummary()
         ]);
     }
-    
 }

@@ -30,9 +30,17 @@ class UpdateProductRequest extends FormRequest
             'description' => 'nullable',
             'short_description' => 'nullable',
             'image_url' => 'required|string',
-            'stock_qty' => 'required|numeric',
+            'stock_qty' => 'nullable|numeric',
+            'status' => 'nullable|boolean',
             'images' => 'nullable|array',
             'categories' => 'nullable|array',
+            'is_variant' => 'nullable|boolean',
+            'variations' => 'nullable|array',
+            'variations.*.price' => 'required|numeric',
+            'variations.*.stock_qty' => 'required|numeric',
+            'variations.*.status' => 'nullable|boolean',
+            'variations.*.values' => 'required|array',
+            'variations.*.sku' => "nullable|string"
         ];
     }
     protected function failedValidation(Validator $validator)
