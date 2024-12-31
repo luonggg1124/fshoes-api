@@ -39,7 +39,7 @@ class OrderService implements OrderServiceInterface
         protected UserRepositoryInterface        $userRepository,
     ) {}
 
-    public function getAll($params)
+     public function getAll($params)
     {
         $orders = $this->orderRepository->query()
                 ->with(['orderDetails', 'orderHistory', 'user.image',
