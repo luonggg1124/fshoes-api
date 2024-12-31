@@ -42,10 +42,9 @@ class OrderService implements OrderServiceInterface
      public function getAll($params)
     {
         $orders = $this->orderRepository->query()
-                ->with(['orderDetails', 'orderHistory', 'user' , 'user.image',
-                  'orderDetails.variation',
-                  'orderDetails.product.images',
-                   'orderDetails.product',
+                ->with(['orderDetails', 'orderHistory', 'user.image',
+                   'orderDetails.variation.images',
+                   'orderDetails.variation.product',
                    'orderDetails.product.images',
                    'voucher', 
                    ])
@@ -100,9 +99,7 @@ class OrderService implements OrderServiceInterface
                 } else {
                     $item = $this->variationRepository->query()->where('id', $detail["product_variation_id"])->first();
                 }
-                $item->stock_qty = $item->stock_qty - $detail["quantity"];
-                $item->qty_sold = $item->qty_sold + $detail["quantity"];
-
+              
                 if ($item->currentSale()) {
                     $item->sales()->updateExistingPivot($item->currentSale()->id, [
                         'quantity' => $item->currentSale()->pivot->quantity + $detail["quantity"],
@@ -147,7 +144,11 @@ class OrderService implements OrderServiceInterface
                     $item = $this->productRepository->query()->where('id', $detail["product_id"])->first();
                 } else $item = $this->variationRepository->query()->where('id', $detail["product_variation_id"])->first();
 
-                if ($data["status"] == 0 || $data["status"] == 7) {
+                if($data["status"] == 3){
+                    $item->stock_qty = $item->stock_qty - $detail["quantity"];
+                    $item->qty_sold = $item->qty_sold + $detail["quantity"];    
+                }
+                if (($data["status"] == 0 && $order->status == 3) || $data["status"] == 9) {
                     $item->stock_qty = $item->stock_qty + $detail["quantity"];
                     $item->qty_sold = $item->qty_sold - $detail["quantity"] > 0 ? $item->qty_sold - $detail["quantity"] : 0;
                 }
@@ -227,25 +228,27 @@ class OrderService implements OrderServiceInterface
         $user = request()->user();
         if ($order->user_id != $user->id) throw new AuthorizationException(__('messages.order.error-can-not-order'));
         if (!$order) throw new ModelNotFoundException(__('messages.error-not-found'));
-        if ($order->status >= 3 || $order->status === 0) throw new InvalidArgumentException(__('messages.order.error-can-not-order'));
-        $order->status = 0;
-        $order->reason_cancelled = $data["reason_cancelled"];
+        if ($order->status > 3 || $order->status === 0) throw new InvalidArgumentException(__('messages.order.error-can-not-order'));
+   
         $voucher = $order->voucher;
         $items = $order->orderDetails;
         if($items){
             foreach ($items as $item) {
-                if($item->product_variation_id){
-                    $variation = $this->variationRepository->find($item->product_variation_id);
-                    $product = $this->productRepository->find($variation->product->id);
-                    if($variation && $product && $variation->stock_qty > 0){
-                        $variation->stock_qty += $item->quantity;
-                        $variation->save();
-                    }
-                }else if($item->product_id){
-                    $product = $this->productRepository->find($item->product_id);
-                    if($product && $product->stock_qty){
-                        $product->stock_qty += $item->quantity;
-                        $product->save();
+                if($order->status ==3){
+                    if($item->product_variation_id){
+                        $variation = $this->variationRepository->find($item->product_variation_id);
+                        if($variation){
+                            $variation->stock_qty += $item->quantity;
+                            $variation->qty_sold -= $item->quantity;
+                            $variation->save();
+                        }
+                    }else if($item->product_id){
+                        $product = $this->productRepository->find($item->product_id);
+                        if($product){
+                            $product->stock_qty += $item->quantity;
+                            $product->qty_sold -= $item->quantity;
+                            $product->save();
+                        }
                     }
                 }
             }
@@ -253,6 +256,8 @@ class OrderService implements OrderServiceInterface
         if ($voucher) {
             $user->voucherUsed()->detach([$voucher->id]);
         }
+        $order->status = 0;
+        $order->reason_cancelled = $data["reason_cancelled"];
         $order->save();
         Cache::tags([$this->cacheTag, ...$this->relations])->flush();
         return new OrdersCollection($order);

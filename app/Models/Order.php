@@ -32,7 +32,9 @@ class Order extends Model
         "address",
         "total_amount",
         "status",
-        "reason_cancelled"
+        "reason_cancelled",
+        "reason_return",
+        "reason_denied_return"
     ];
 
 

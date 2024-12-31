@@ -37,6 +37,8 @@ class OrdersCollection extends JsonResource
             "order_history"=> $this->whenLoaded('orderHistory'),
             "status"=>$this->status,
             "reason_cancelled"=>$this->reason_cancelled,
+            "reason_return"=>$this->reason_cancelled,
+            "reason_denied_return"=>$this->reason_denied_return,
             "note"=>$this->note,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at

@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Http\Resources\Product\VariationResource;
+use App\Http\Resources\Product\VariationResourceForCart;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,7 +25,7 @@ class CartCollection extends JsonResource
             'product_id' => $this->product_id,
             'quantity' => $this->quantity,
             'product' => new ProductResource($this->product),
-            'product_variation' => new VariationResource($this->product_variation),
+            'product_variation' => new VariationResourceForCart($this->product_variation),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];
