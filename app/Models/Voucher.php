@@ -18,6 +18,7 @@ class Voucher extends Model
         "date_start",
         "date_end",
         "min_total_amount",
+        "max_total_amount",
         "quantity",
         "status"
     ];
