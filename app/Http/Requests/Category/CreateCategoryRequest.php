@@ -24,7 +24,7 @@ class CreateCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
+            'name' => 'required|string|unique:categories,name',
             'parents' => 'array|nullable',
         ];
     }
