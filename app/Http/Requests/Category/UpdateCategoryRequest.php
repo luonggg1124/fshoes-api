@@ -25,7 +25,7 @@ class UpdateCategoryRequest extends FormRequest
     {
         $id = $this->route('id');
         return [
-            'name' => 'required|string',
+            'name' => 'required|string|unique:categories,name,'.$id,
             'parents' => 'array|nullable',
             'image_url' => 'nullable|string',
         ];

@@ -218,13 +218,12 @@ class AuthController extends Controller
             'refresh_token' => $refreshToken,
             'user' => $user,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth()->factory()->getTTL() * 5
         ]);
     }
     public function changePassword(ChangePasswordRequest $request)
     {
         try {
-
             $this->service->changePassword($request->password, $request->newPassword,);
             return \response()->json([
                 'status' => true,
