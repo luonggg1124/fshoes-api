@@ -31,7 +31,6 @@ class CategoryService implements CategoryServiceInterface
 
     public function getAll()
     {
-
         $allQuery = http_build_query(request()->query());
         $key = 'all_products?' . $allQuery;
         return Cache::tags([$this->cacheTag])
@@ -39,7 +38,7 @@ class CategoryService implements CategoryServiceInterface
                 $perPage = request()->query('per_page');
                 $paginate = request()->query('paginate');
                 if ($paginate) {
-                    $categories = $this->loadRelationships($this->categoryRepository->query()->where('is_main', '!=', 1)->sortByColumn(columns: $this->columns))->paginate(is_numeric($perPage) ? $perPage : 15);
+                    $categories = $this->loadRelationships($this->categoryRepository->query()->sortByColumn(columns: $this->columns))->paginate(is_numeric($perPage) ? $perPage : 15);
                     return [
                         'paginator' => $this->paginate($categories),
                         'data' => CategoryResource::collection(
@@ -47,7 +46,7 @@ class CategoryService implements CategoryServiceInterface
                         ),
                     ];
                 } else {
-                    $categories = $this->loadRelationships($this->categoryRepository->query()->where('is_main', '!=', 1)->sortByColumn(columns: $this->columns))->get();
+                    $categories = $this->loadRelationships($this->categoryRepository->query()->sortByColumn(columns: $this->columns))->get();
                 return [
                     'data' => CategoryResource::collection(
                         $categories
@@ -195,10 +194,9 @@ class CategoryService implements CategoryServiceInterface
             throw new ModelNotFoundException(__('messages.error-not-found'));
         }
         if ($category->is_main || $category->display) {
-            throw new AuthorizationException('Forbidden');
+            throw new AuthorizationException(__('messages.delete-category-forbidden'));
         }
-
-        $category->delete($id);
+        $category->forceDelete($id);
         Cache::tags($this->cacheTag)->flush();
         return true;
     }

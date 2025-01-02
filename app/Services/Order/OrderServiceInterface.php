@@ -6,7 +6,7 @@ use Illuminate\Http\UploadedFile;
 
 interface OrderServiceInterface
 {
-    function getAll($params);
+    function getAll();
     function findById(int|string $id);
 
     function create(array $data, array $option = []);
