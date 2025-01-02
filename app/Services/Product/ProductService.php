@@ -88,7 +88,6 @@ class ProductService implements ProductServiceInterface
     }
 
 
-
     public function findById(int|string $id)
     {
         $allQuery = http_build_query(request()->query());

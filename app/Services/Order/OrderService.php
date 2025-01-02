@@ -18,7 +18,6 @@ use App\Repositories\Order\OrderRepositoryInterface;
 use App\Repositories\Product\ProductRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Services\OrderHistory\OrderHistoryServiceInterface;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Repositories\OrderDetail\OrderDetailRepositoryInterface;
 use Symfony\Component\Process\Exception\InvalidArgumentException;
 use App\Repositories\Product\Variation\VariationRepositoryInterface;
@@ -39,7 +38,7 @@ class OrderService implements OrderServiceInterface
         protected UserRepositoryInterface        $userRepository,
     ) {}
 
-     public function getAll($params)
+     public function getAll()
     {
         $orders = $this->orderRepository->query()
                 ->with(['orderDetails', 'orderHistory', 'user.image',
@@ -49,9 +48,7 @@ class OrderService implements OrderServiceInterface
                    'voucher', 
                    ])
                   ->orderBy('created_at', 'desc');
-        if (isset($params['user_id'])) {
-            $orders->where('user_id', $params['user_id']);
-        }
+        
         return $orders->paginate(10);
     }
 
