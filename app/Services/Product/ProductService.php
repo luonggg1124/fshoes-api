@@ -171,6 +171,7 @@ class ProductService implements ProductServiceInterface
         ]
     ) {
 
+
         if (isset($data['is_variant'])) {
             $createData = [
                 'name' => $data['name'],
@@ -262,7 +263,11 @@ class ProductService implements ProductServiceInterface
                 return new ProductResource($this->loadRelationships($product));
             });
         }
+
     }
+
+
+
 
     public function update(int|string $id, array $data, array $options = [
         'images' => [],
