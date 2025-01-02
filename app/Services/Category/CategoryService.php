@@ -31,16 +31,14 @@ class CategoryService implements CategoryServiceInterface
 
     public function getAll()
     {
-
         $allQuery = http_build_query(request()->query());
-
         $key = 'all_products?' . $allQuery;
         return Cache::tags([$this->cacheTag])
             ->remember($key, 60, function () {
                 $perPage = request()->query('per_page');
                 $paginate = request()->query('paginate');
                 if ($paginate) {
-                    $categories = $this->loadRelationships($this->categoryRepository->query()->where('is_main', '!=', 1)->sortByColumn(columns: $this->columns))->paginate(is_numeric($perPage) ? $perPage : 15);
+                    $categories = $this->loadRelationships($this->categoryRepository->query()->sortByColumn(columns: $this->columns))->paginate(is_numeric($perPage) ? $perPage : 15);
                     return [
                         'paginator' => $this->paginate($categories),
                         'data' => CategoryResource::collection(
@@ -48,7 +46,7 @@ class CategoryService implements CategoryServiceInterface
                         ),
                     ];
                 } else {
-                    $categories = $this->loadRelationships($this->categoryRepository->query()->where('is_main', '!=', 1)->sortByColumn(columns: $this->columns))->get();
+                    $categories = $this->loadRelationships($this->categoryRepository->query()->sortByColumn(columns: $this->columns))->get();
                 return [
                     'data' => CategoryResource::collection(
                         $categories
@@ -94,12 +92,10 @@ class CategoryService implements CategoryServiceInterface
             }
             $listProduct = [];
             $category = $this->categoryRepository->query()->where('display', $serial)->first();
-            
-            $productsInCategory = $category->products()->where('status',1)->get();
-            
+            $productsInCategory = $category->products()->where('status',true)->get();
             $listProduct = [...$productsInCategory];
             if (count($productsInCategory) < $quantity) {
-                $listAllProducts = $this->productRepository->query()->where('status',1)->get();
+                $listAllProducts = $this->productRepository->query()->where('status',true)->get();
                 $arrayId = $category->products()->orderBy('qty_sold', 'desc')->get()->pluck('id');
                 foreach ($listAllProducts as $p) {
                     if (!in_array($p->id, [...$arrayId])) {
@@ -198,10 +194,9 @@ class CategoryService implements CategoryServiceInterface
             throw new ModelNotFoundException(__('messages.error-not-found'));
         }
         if ($category->is_main || $category->display) {
-            throw new AuthorizationException('Forbidden');
+            throw new AuthorizationException(__('messages.delete-category-forbidden'));
         }
-
-        $category->delete($id);
+        $category->forceDelete($id);
         Cache::tags($this->cacheTag)->flush();
         return true;
     }

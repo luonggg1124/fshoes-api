@@ -18,7 +18,6 @@ use App\Repositories\Order\OrderRepositoryInterface;
 use App\Repositories\Product\ProductRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Services\OrderHistory\OrderHistoryServiceInterface;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use App\Repositories\OrderDetail\OrderDetailRepositoryInterface;
 use Symfony\Component\Process\Exception\InvalidArgumentException;
 use App\Repositories\Product\Variation\VariationRepositoryInterface;
@@ -39,20 +38,34 @@ class OrderService implements OrderServiceInterface
         protected UserRepositoryInterface        $userRepository,
     ) {}
 
-    public function getAll($params)
+     public function getAll()
     {
+        $listStatus = [0, 1, 2, 3, 4, 5, 6, 7,8, 9];
+        $status = request()->get('status');
+        if(!in_array($status, $listStatus)){
+            $status = '';
+        }
+        $perPage = request()->query('per_page');
         $orders = $this->orderRepository->query()
                 ->with(['orderDetails', 'orderHistory', 'user.image',
                    'orderDetails.variation.images',
                    'orderDetails.variation.product',
                    'orderDetails.product.images',
                    'voucher', 
-                   ])
-                  ->orderBy('created_at', 'desc');
-        if (isset($params['user_id'])) {
-            $orders->where('user_id', $params['user_id']);
-        }
-        return $orders->paginate(10);
+                   ])->when(
+                    $status || $status != '',function($q) use ($status){
+                        
+                        $q->where('status', $status);
+                    }
+                   )
+                  ->orderBy('created_at', 'desc')->paginate(is_numeric($perPage) ? $perPage : 10);
+        
+         return [
+            'paginator' => $this->paginate($orders),
+            'data' => OrdersCollection::collection(
+                $orders->items()
+            ),
+        ];;
     }
 
     public function findById(int|string $id)
@@ -191,7 +204,7 @@ class OrderService implements OrderServiceInterface
 
     public function me()
     {
-        $listStatus = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+        $listStatus = [0, 1, 2, 3, 4, 5, 6, 7,8,9];
         $status = request()->query('status');
         $perPage = request()->query('per_page');
         if (!in_array((int)$status, $listStatus)) {

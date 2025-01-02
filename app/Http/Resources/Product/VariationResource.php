@@ -28,19 +28,20 @@ class VariationResource extends JsonResource
             'id' => $this->id,
             'slug' => $this->slug,
             'name' => $this->name,
+            'code_identifier' => $this->code_identifier,
             'classify' => $this->classify,
             'price' => $this->price,
             'sale_price' => $this->salePrice(),
             'sku' => $this->sku,
-            'status' => $this->status,
+            'status' => $this->deleted_at ? true : false,
             'stock_qty' => $this->stock_qty,
             'qty_sold' => $this->qty_sold,
-            'image_url' => count($this->images) > 0 ? $this->images[0]['url'] : $this->product->image_url,
+            'image_url' => $this->product->image_url,
             'qty_sale' => $this->saleQuantity(),
             'currentSale' => new SaleResource($this->currentSale()),
             'product' => new ProductResource($this->whenLoaded('product')),
-            'images' => ImageResource::collection($this->whenLoaded('images')),
-            'values' => ValueResource::collection($this->whenLoaded('values')),
+            'images' => ImageResource::collection($this->images),
+            'values' => ValueResource::collection($this->values),
             
         ];
         if($this->shouldSummaryRelation($this->model)) $resource = [
@@ -50,8 +51,8 @@ class VariationResource extends JsonResource
             'price' => $this->price,
             'sale_price' => $this->salePrice(),
             'product' => new ProductResource($this->whenLoaded('product')),
-            'images' => ImageResource::collection($this->whenLoaded('images')),
-            'values' => ValueResource::collection($this->whenLoaded('values')),
+            'images' => ImageResource::collection($this->images),
+            'values' => ValueResource::collection($this->values),
         ];
         if ($this->includeTimes($this->model))
         {

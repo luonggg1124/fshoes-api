@@ -36,11 +36,14 @@ class AttributeValueController extends Controller
                 $data = [];
             }
          
-            $values = $this->service->createMany($aid, $data);
+            $creatingProcess = $this->service->createMany($aid, $data);
+            if(isset($creatingProcess['errors'])){
+                return response()->json([
+                    ...$creatingProcess
+                ]);
+            }
             return \response()->json([
-                'status' => true,
-                ...$values,
-                'message' => __('messages.update-success')
+                'message' => 'Các giá trị đã được tạo thành công'
             ], 201);
         } catch (\Throwable $throw) {
             Log::error(

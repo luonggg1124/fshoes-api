@@ -20,7 +20,6 @@ class Product extends Model
         'name',
         'slug',
         'price',
-        'import_price',
         'image_url',
         'short_description',
         'description',
@@ -28,6 +27,7 @@ class Product extends Model
         'status',
         'qty_sold',
         'stock_qty',
+        'is_variant'
 
     ];
 

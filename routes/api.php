@@ -19,9 +19,8 @@ use App\Http\Controllers\Api\User\AuthController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Api\VouchersController;
 use App\Http\Controllers\TestController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Sabberworm\CSS\Property\Import;
+
 
 //Route::get('/user', function (Request $request) {
 //    return $request->user();
@@ -45,7 +44,6 @@ Route::group(['middleware' => ['auth:api', 'is_admin','user_banned']], function 
     Route::get('product/trashed/{id}', [ProductController::class, 'getOneTrashed'])->name('product.one.trashed');
     Route::post('product/restore/{id}', [ProductController::class, 'restore'])->name('product.restore');
     Route::delete('product/force-delete/{id}', [ProductController::class, 'forceDestroy'])->name('product.force.delete');
-    Route::put('status/product/{id}', [ProductController::class, 'updateProductStatus'])->name('product.update.status');
     Route::apiResource('product.variation', VariationController::class)->parameters(['product' => 'pid', 'variation' => 'id']);
 
     Route::apiResource('user', UserController::class)->parameter('user', 'id');
@@ -153,7 +151,7 @@ Route::get('display/home-page/products', [CategoryController::class, 'displayAtH
 Route::get('product/detail/{id}', [ProductController::class, 'productDetail'])->name('product.detail');
 Route::apiResource('product', ProductController::class)->parameter('product', 'id')->only('index', 'show');
 Route::get('products/category/{categoryId}', [ProductController::class, 'productsByCategory'])->name('products.category');
-Route::get('product/by/attribute-values', [ProductController::class, 'productsByAttributeValues'])->name('product.by.attribute.values');
+Route::get('product/by/attribute-values', [ProductController::class, 'filterProduct'])->name('product.filter');
 Route::get('products/all/summary', [ProductController::class, 'allSummary'])->name('product.all.summary');
 
 //Product End

@@ -599,5 +599,5 @@ return [
         'error_isAdmin' => 'Không được phép.',
         'user_banned' => 'Tài khoản đã bị cấm!'
     ],
-
+     'delete-category-forbidden' => 'Bạn không thể xóa danh mục này'
 ];

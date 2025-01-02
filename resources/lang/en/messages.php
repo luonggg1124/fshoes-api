@@ -608,5 +608,5 @@ return [
         'error_isAdmin' => 'Unauthorized',
         'user_banned' => 'This account is already banned!'
     ],
-    
+    'delete-category-forbidden' => 'Forbidden'
 ];

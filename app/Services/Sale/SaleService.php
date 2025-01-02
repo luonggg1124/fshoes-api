@@ -16,14 +16,16 @@ class SaleService implements SaleServiceInterface
 {
     use CanLoadRelationships, Paginate;
     protected $cacheTag = 'sales';
-    
+    protected string $allQueryUrl;
     private array $relations = ['products', 'variations','statistics'];
     private array $columns = ['id', 'name', 'type', 'start_date', 'end_date', 'created_at', 'updated_at', 'deleted_at'];
     public function __construct(
         protected SaleRepositoryInterface $repository,
         protected ProductRepositoryInterface $productRepository,
         protected VariationRepositoryInterface $variationRepository
-    ) {}
+    ) {
+        $this->allQueryUrl = http_build_query(request()->query());
+    }
 
     public function all()
     {
