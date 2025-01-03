@@ -45,6 +45,8 @@ class OrderService implements OrderServiceInterface
         if(!in_array($status, $listStatus)){
             $status = '';
         }
+        $search = request()->get('search');
+
         $perPage = request()->query('per_page');
         $orders = $this->orderRepository->query()
                 ->with(['orderDetails', 'orderHistory', 'user.image',
@@ -54,12 +56,13 @@ class OrderService implements OrderServiceInterface
                    'voucher', 
                    ])->when(
                     $status || $status != '',function($q) use ($status){
-                        
                         $q->where('status', $status);
                     }
                    )
+                    ->when($search,function($q) use($search){
+                        $q->where('receiver_email', 'like', '%'. $search. '%');
+                    })
                   ->orderBy('created_at', 'desc')->paginate(is_numeric($perPage) ? $perPage : 10);
-        
          return [
             'paginator' => $this->paginate($orders),
             'data' => OrdersCollection::collection(
@@ -142,7 +145,10 @@ class OrderService implements OrderServiceInterface
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
+    public function createAsAdmin(array $data){
+        dd($data);
+        return 1;
+    }
     public function update(int|string $id, array $data, array $option = [])
     {
         if (isset($data["status"]) && $data["status"] == "0" && !isset($data["reason_cancelled"])) {

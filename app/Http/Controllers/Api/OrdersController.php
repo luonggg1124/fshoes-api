@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\Order\CreateOrderAsAdminRequest;
 use App\Http\Requests\Order\CreateOrderRequest;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Order\OrderService;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\Process\Exception\InvalidArgumentException;
+use Throwable;
 
 class OrdersController extends Controller
 {
@@ -19,11 +22,11 @@ class OrdersController extends Controller
      */
     public function __construct(protected OrderService $orderService)
     {}
-    public function index(Request $request)
+    public function index()
     {
 
         return response()->json(
-            $this->orderService->getAll($request->all()) ,200
+            $this->orderService->getAll() ,200
          );
     }
 
@@ -63,6 +66,23 @@ class OrdersController extends Controller
     public function destroy()
     {
         
+    }
+
+    public function createAsAdmin(CreateOrderAsAdminRequest $request){
+        try{
+            $data = $request->all();
+            $order = $this->orderService->createAsAdmin($data);
+        }catch(Exception $e){
+            return response()->json([
+                'status' => 'false',
+                'message' => 'Something went wrong!'
+            ]);
+        }catch(Throwable $throw){
+            return response()->json([
+                'status' => 'false',
+                'message' => 'Error Systems!',
+            ],500);
+        }
     }
     public function me(){
         try {

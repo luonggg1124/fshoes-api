@@ -30,12 +30,12 @@ class OrderSeeder extends Seeder
                 'shipping_cost' => 10000,
                 'amount_collected' => 100000,
                 'receiver_full_name' => $user->name,
-               'receiver_email'=>"ok",
+               'receiver_email'=>"luongnm1124@gmail.com",
                 'address' => 'VietNam',
                 'phone' => '0123456789',
                 'city' => 'Hanoi',
                 'country' => 'VietNam',
-                'status' => 4,
+                'status' => rand(0,6),
                 'created_at' => Carbon::now()->subYear()->addDays(rand(0, 365)),
                 'updated_at' => Carbon::now()
             ]);
@@ -52,7 +52,7 @@ class OrderSeeder extends Seeder
                         'order_id' => $order->id,
                         'product_variation_id' => $pro->variations[0]->id ?? null,
                         'product_id' => $pro->id,
-                        'price' => $pro->variations()->first()->price || $pro->price,
+                        'price' => $pro->variations()->first()->price ?? $pro->price,
                         'quantity' => 1,
                         'total_amount' => $pro->variations()->first()->price,
                     ]);

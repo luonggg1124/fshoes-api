@@ -161,6 +161,7 @@ class StatisticsService implements StatisticsServiceInterface
 
     public function productBestSelling()
     {
+            
         return Cache::tags([$this->cacheTag])->remember('product/best_selling?' . $this->allQueryUrl, 60, function () {
             $startDate = request()->query('from');
             $endDate = request()->query('to');
@@ -168,7 +169,6 @@ class StatisticsService implements StatisticsServiceInterface
             if (!$this->isValidTime($startDate)) {
                 $startDate = $this->oneWeekAgo();
             }
-
             if (!$this->isValidTime($endDate)) {
                 $endDate = $this->now();
             }
@@ -177,7 +177,11 @@ class StatisticsService implements StatisticsServiceInterface
                 $endDate = $this->now();
             }
             $bestSellingProducts = $this->orderDetailRepository->query()->with('product')
-                ->select('product_id', DB::raw('SUM(quantity) as total_sold_quantity'))
+            ->select(
+                DB::raw('COALESCE(order_details.product_id, product_variations.product_id) as product_id'),
+                DB::raw('SUM(order_details.quantity) as total_sold_quantity')
+            )
+            ->leftJoin('product_variations', 'order_details.product_variation_id', '=', 'product_variations.id')
                 ->whereHas('order', function ($q) use ($startDate, $endDate) {
                     $q->whereBetween('created_at', [
                         Carbon::createFromFormat('Y-m-d', $startDate)->startOfDay(),
@@ -186,7 +190,7 @@ class StatisticsService implements StatisticsServiceInterface
                 })->groupBy('product_id')
                 ->orderByDesc('total_sold_quantity')
                 ->get();
-               
+         
             return BestSellingProductResource::collection($bestSellingProducts);
         });
     }
