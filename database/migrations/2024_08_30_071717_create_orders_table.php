@@ -13,20 +13,20 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained('users');
             $table->decimal('total_amount',15,2);
             $table->string('payment_method');
             $table->string('payment_status');
-            $table->string('shipping_method');
+            $table->string('shipping_method')->nullable();
             $table->string('shipping_cost')->default(0);
             $table->decimal('tax_amount')->nullable();
             $table->integer('amount_collected');
-            $table->string('receiver_full_name');
-            $table->string('receiver_email');
-            $table->string('address');
-            $table->string('phone');
-            $table->string('city');
-            $table->string('country');
+            $table->string('receiver_full_name')->nullable();
+            $table->string('receiver_email')->nullable();
+            $table->string('address')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('city')->nullable();
+            $table->string('country')->nullable();
             $table->foreignId('voucher_id')->nullable();
             $table->integer("status")->comment("0: Cancelled, 1: Waiting Payment , 2: Waiting Confirm, 3: Confirmed, 4: Delivering , 5: Delivered , 6: Waiting Accept Return ,  7:Return Processing, 8: Denied Return, 9: Returned");
             $table->text("reason_cancelled")->nullable();

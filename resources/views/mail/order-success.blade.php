@@ -195,15 +195,15 @@
 
                 <td># @switch($order->payment_method)
                         @case (strtolower($order->payment_method) == 'banking')
-                            {{ __('messages.mail.order-success.status_order.payment_method.banking') }}
+                            {{ __('messages.mail.order-success.payment_method.banking') }}
                         @break
 
                         @case (strtolower($order->payment_method) == 'momo')
-                            {{ __('messages.mail.order-success.status_order.payment_method.momo') }}
+                            {{ __('messages.mail.order-success.payment_method.momo') }}
                         @break
 
                         @case (strtolower($order->payment_method) == 'vnpay')
-                            {{ __('messages.mail.order-success.status_order.payment_method.vnpay') }}
+                            {{ __('messages.mail.order-success.payment_method.vnpay') }}
                         @break
 
                         @case (strtolower($order->payment_method) == 'cash_on_delivery')

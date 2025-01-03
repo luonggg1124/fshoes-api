@@ -15,7 +15,7 @@ class BestSellingProductResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->product->id,
+            'id' => $this->product_id,
             'name' => $this->product->name,
             'price' => $this->product->price,
             'image_url' => $this->product->image_url,
